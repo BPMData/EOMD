@@ -23,8 +23,9 @@ _Last updated: Oct 20, 2026 (open-source pass in the cloud: real folders instead
     MP3 encoder noise). The non-GUI scripts were run by path from another folder (build, build_cdrom, cdrom_ambient, render_piece,
     calibrate, midi, hershey_words); the GUI ones (gen_export, html_to_mp4, porter, regress) opened their windows, and
     gen_export's MAKE HTML and the porter's score picker were driven. **Not run in the cloud:** an MP4 export (the sandbox's
-    Playwright wanted a newer Chromium), anything on a Mac or in Thonny itself. The starter engine can't build on its own: it
-    needs `engine/fonts/DHSDisplay.ttf` + `DHSText.ttf`, which were never in the repo (same before the move).
+    Playwright wanted a newer Chromium), anything on a Mac or in Thonny itself. The starter engine's missing fonts are fixed: `engine/fonts/`
+    now holds `DHSDisplay.ttf` + `DHSText.ttf` + `OFL.txt` (Bricolage Grotesque, copied from `academies-film/source/fonts/`) and the
+    generated `engine/src/core/fontdata.js`, so `engine/dev.html` opens and `node tools/build-player.js` builds and plays (tested headless).
   - **CI** (`.github/workflows/ci.yml`, badge on README): gen build + smoke test + "generated files committed" check, and the
     audio regression CHECK on Node 22, on every push and PR. First run on GitHub still to be confirmed.
   - **CONTRIBUTING.md** + issue forms (bug, cartridge idea); README's "planned" paragraph now links to it. README's

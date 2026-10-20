@@ -161,6 +161,6 @@ and so is work written with an AI assistant. See **[CONTRIBUTING.md](CONTRIBUTIN
 ## License
 
 Code: MIT, © 2026 Bryan Patrick Murphy (see `LICENSE`). Fonts keep their own SIL Open Font License (`fonts/OFL-*.txt`,
-`gen/fonts/OFL-Montserrat.txt`, `academies-film/source/fonts/OFL.txt`). The Academies of Danbury High School names and
+`gen/fonts/OFL-Montserrat.txt`, `academies-film/source/fonts/OFL.txt`, `engine/fonts/OFL.txt`). The Academies of Danbury High School names and
 logos in `academies-film/` and `proj/academies/*` belong to the school; they're here as an example piece and aren't
 covered by the MIT license.
