@@ -42,6 +42,7 @@ Generative motion graphics as small JSON cartridges (Truchet, 3D dot meshes, flo
 ## File map
 | File(s) | What it is | Open when |
 |---|---|---|
+| `index.html` | Landing page of the GitHub Pages site (bpmdata.github.io/EOMD): links to every player. `.nojekyll` must stay, or Pages hides `gen/carts/_bundle.js` | Adding or renaming a player |
 | `README.md`, `LICENSE` | The public face of the repo (github.com/BPMData/EOMD): what EOMD is, how to try it, build, make an MP4; MIT. Keep the README true when tools or builds change | Changing how people use or build it |
 | `STATUS.md` | Current status, music direction, known limits, next steps, open taste questions | Start of every session |
 | `proj__<name>__*` | One piece's brief, decisions, source copy | Working on that piece |

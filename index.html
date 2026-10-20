@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EOMD</title>
+<style>
+  :root { --bg: #121212; --fg: #f2f2f2; --dim: #a8a8a8; --accent: #ffd500; --card: #1e1e1e; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 17px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 32px 16px 48px; }
+  h1 { font-size: 2.2rem; margin: 0 0 4px; color: var(--accent); letter-spacing: 0.04em; }
+  .sub { color: var(--dim); margin: 0 0 24px; }
+  h2 { font-size: 1.1rem; margin: 28px 0 8px; }
+  a.card { display: block; background: var(--card); color: var(--fg); text-decoration: none; padding: 12px 14px; margin: 8px 0; border-radius: 8px; border: 1px solid #2c2c2c; }
+  a.card:hover, a.card:focus { border-color: var(--accent); }
+  a.card b { color: var(--accent); }
+  a.card span { display: block; color: var(--dim); font-size: 0.95rem; }
+  p a { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <h1>EOMD</h1>
+  <p class="sub">Efficient Offline Motion Designer: motion graphics and synthesized music in single HTML files. Click one to play it; press Start sound for the music, move the mouse for the controls.</p>
+
+  <h2>Players</h2>
+  <a class="card" href="players/gen-player.html"><b>Gen player</b><span>Generative motion cartridges. Press G for the gallery, K for the knobs.</span></a>
+  <a class="card" href="players/jukebox.html"><b>Jukebox</b><span>Every music cartridge: lounge, film scores, study loops, chip music.</span></a>
+  <a class="card" href="players/cdrom-player.html"><b>CS Lab Screensaver</b><span>Five retro computer worlds, chip music, trilingual coding-tip cards.</span></a>
+  <a class="card" href="players/cdrom-ambient.html"><b>CS Lab Screensaver: Ambient</b><span>The same worlds without the tip cards.</span></a>
+  <a class="card" href="players/living-player.html"><b>Living poster</b><span>Vines grow and write words in cursive, with a reading soundtrack.</span></a>
+  <a class="card" href="players/living-player-cs.html"><b>Living poster: CS</b><span>With trilingual (EN/ES/PT) computer-science tip cards.</span></a>
+  <a class="card" href="players/living-player-ex.html"><b>Living poster: Exploration Seminar</b><span>With trilingual cards for a 9th-grade seminar.</span></a>
+  <a class="card" href="academies-film/danbury-academies-player.html"><b>The Academies of Danbury High School</b><span>A 60-second seamless hallway film with its own soundtrack.</span></a>
+
+  <h2>Make your own</h2>
+  <p>Clone the repo and point your AI coding assistant at it: <a href="https://github.com/BPMData/EOMD">github.com/BPMData/EOMD</a>. The README explains how to build players and turn any of them into an MP4.</p>
+</main>
+</body>
+</html>

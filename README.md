@@ -4,6 +4,8 @@ Motion graphics and music that live in a single HTML file. The picture is drawn 
 synthesized live in the browser: no video files, no audio files, no After Effects, no internet once it's built.
 Open the file and it plays, forever if you like. When you want a video, one tool turns any player into an MP4.
 
+**Play them in your browser right now:** https://bpmdata.github.io/EOMD/
+
 It started as screens for a high school (hallway loops, classroom posters, a retro computer-lab screensaver), but
 nothing here is classroom-only. Make whatever you want. Animate your tax returns.
 
