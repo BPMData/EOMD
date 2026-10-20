@@ -81,8 +81,7 @@ GEN.CARTS = {
     "dur": 27.8,
     "label": "LETTERS TO DUST AND BACK",
     "params": {
-     "word": "DUST",
-     "colors": "#5cc8e8,#3e9cc9,#2fb59a,#e9efee"
+     "word": "DUST"
     }
    },
    {
@@ -91,8 +90,7 @@ GEN.CARTS = {
     "label": "BURST",
     "params": {
      "word": "GEN",
-     "mode": "explode",
-     "colors": "#5cc8e8,#3e9cc9,#2fb59a,#e9efee"
+     "mode": "explode"
     }
    },
    {
@@ -101,8 +99,7 @@ GEN.CARTS = {
     "label": "COALESCE",
     "params": {
      "word": "TYPE",
-     "mode": "assemble",
-     "colors": "#5cc8e8,#3e9cc9,#2fb59a,#e9efee"
+     "mode": "assemble"
     }
    }
   ],

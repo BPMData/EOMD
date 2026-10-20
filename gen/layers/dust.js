@@ -75,7 +75,7 @@
       font: "Font family list for the letters. GenDisplay is the font build.py embeds (DISPLAY_FONT).",
       weight: "Font weight. Heavier letters hold more powder and read better as dust.",
       track: "Space between letters, as a share of the letter size.",
-      colors: "Dust colours as hex codes separated by commas (2 to 6). Empty = taken from the palette.",
+      colors: "Dust colours as hex codes separated by commas (2 to 6). Empty = ink, accent, dim and a dim-ink blend from the palette; when set, the palette only tints the glow and bokeh.",
       hold: "Seconds the clean letters stay on screen at the start and end of each loop.",
       crack: "Seconds for the cracks to spread across a letter before it bursts (and to heal after it re-forms).",
       stagger: "Seconds between one letter and the next, left to right, in both directions.",
@@ -122,7 +122,7 @@
       const R = mulberry(E.seed * 31 + 5);
       // colours
       let cols = String(P.colors || '').split(',').map((s) => s.trim()).filter((s) => /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.test(s)).slice(0, 6).map(hex);
-      if (cols.length < 2) { const ink = hex(E.pal.ink), ac = hex(E.pal.accent), dm = hex(E.pal.dim); cols = [ink, ac, mixA(ac, ink, 0.45), mixA(ac, dm, 0.5)]; }
+      if (cols.length < 2) { const ink = hex(E.pal.ink), ac = hex(E.pal.accent), dm = hex(E.pal.dim); cols = [mixA(dm, ink, 0.4), dm, ac, ink]; }
       S.cols = cols; S.nc = cols.length;
       // sprites: colour x softness (0 packed ball .. 4 loose smoke) x shade
       const SZ = 64; S.spr = [];

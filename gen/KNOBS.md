@@ -51,7 +51,7 @@ Letters burst into coloured powder (top-down slow motion) and dust coalesces bac
 - `size: 340` [80 to 600, step 5]  Letter size in pixels at 1080p. Long words shrink to fit the screen.
 - `weight: 700` [100 to 900, step 100]  Font weight. Heavier letters hold more powder and read better as dust.
 - `track: 0.03` [-0.1 to 0.4, step 0.01]  Space between letters, as a share of the letter size.
-- `colors: ''`  Dust colours as hex codes separated by commas (2 to 6). Empty = taken from the palette.
+- `colors: ''`  Dust colours as hex codes separated by commas (2 to 6). Empty = ink, accent, dim and a dim-ink blend from the palette; when set, the palette only tints the glow and bokeh.
 - `hold: 1.8` [0 to 6, step 0.1]  Seconds the clean letters stay on screen at the start and end of each loop.
 - `crack: 0.45` [0 to 2, step 0.05]  Seconds for the cracks to spread across a letter before it bursts (and to heal after it re-forms).
 - `stagger: 0.16` [0 to 1, step 0.01]  Seconds between one letter and the next, left to right, in both directions.
