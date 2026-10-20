@@ -1,8 +1,37 @@
 # STATUS.md: status + next steps (update at the end of each working session)
 
-_Last updated: Oct 20, 2026 (moved to Claude Code: git repo, spent patchers and Track 2 auditions deleted, CLAUDE.md + this file; gen dust layer wired in; `tools/html_to_mp4.py`. Earlier: Oct 15 Dust Type study; 9e Overclock long form; 9f airship parts; 9g PATCHES folded into the player source; 9h ambient screensaver + CD-ROM music in the jukebox (not yet run); living posters' time-left readout; Academies film heroes, icons and word blocks)_
+> **Visitors:** this is the project's working log (what's approved, what's untested, what's next), kept for the people and AI assistants working on it. For what EOMD is and how to use it, start with [README.md](README.md).
+
+_Last updated: Oct 20, 2026 (open-source pass in the cloud: real folders instead of `__` names, CI, CONTRIBUTING, regression baseline settled for Node 22. Before that: moved to Claude Code: git repo, spent patchers and Track 2 auditions deleted, CLAUDE.md + this file; gen dust layer wired in; `tools/html_to_mp4.py`. Earlier: Oct 15 Dust Type study; 9e Overclock long form; 9f airship parts; 9g PATCHES folded into the player source; 9h ambient screensaver + CD-ROM music in the jukebox (not yet run); living posters' time-left readout; Academies film heroes, icons and word blocks)_
 
 ## Status
+- **Open-source pass (Oct 20, Claude Code in the cloud; branch `claude/loving-mccarthy-83ac1l`, one PR into main).**
+  Bryan approved all four parts:
+  - **Real folders.** The ~95 flat files moved with `git mv` (history follows: the rename commit changes no content):
+    `audio/`, `score/` (+ `FORMAT.md`), `tools/`, `proj/<piece>/` (academies, cdrom, cs, ex, pltw, ssr), `living/`, `jukebox/`,
+    `engine/` (now the real tree: `engine/src/audio/dsp.js`), `notes/`, `tests/hashes.json`, `fonts/OFL-*.txt` (next to the TTFs).
+    `tools__unpack.py` deleted (nothing left to unpack). Every `tools/*.py` resolves paths from the repo root (its parent folder),
+    so Thonny's Run button still works: **open `tools/build.py` instead of `tools__build.py`**. All five audio loaders,
+    `tools/build_cdrom.py`, comments, CLAUDE.md, README.md, gen/API.md and this file use the new paths (names of files deleted
+    before Oct 20 are left as history). Old notes may still say `audio__x.js`: that's `audio/x.js`.
+  - **Checked in the cloud (Linux, Node 22.22, Python 3.13, Chromium 141):** regression CHECK 0 mismatches of 93 after the move;
+    every published player rebuilt from the new layout (jukebox, cdrom-player, cdrom-ambient, the three living posters, gen-player,
+    pltw-cse) and compared with builds of the untouched clone: same code apart from file names in comments (CD-ROM fonts differ
+    only by fontTools' build timestamp). Each loaded headless with no page errors, canvases drawing, and sound measured after
+    pressing the button (Web Audio players: signal at the speakers; gen: the embedded 60-s MP3 playing). The PLTW MP3 was
+    re-rendered first with `tools/render_piece.py` (-16.3 LUFS, -1.5 dBTP, same length; differs from the published one only by
+    MP3 encoder noise). The non-GUI scripts were run by path from another folder (build, build_cdrom, cdrom_ambient, render_piece,
+    calibrate, midi, hershey_words); the GUI ones (gen_export, html_to_mp4, porter, regress) opened their windows, and
+    gen_export's MAKE HTML and the porter's score picker were driven. **Not run in the cloud:** an MP4 export (the sandbox's
+    Playwright wanted a newer Chromium), anything on a Mac or in Thonny itself. The starter engine can't build on its own: it
+    needs `engine/fonts/DHSDisplay.ttf` + `DHSText.ttf`, which were never in the repo (same before the move).
+  - **CI** (`.github/workflows/ci.yml`, badge on README): gen build + smoke test + "generated files committed" check, and the
+    audio regression CHECK on Node 22, on every push and PR. First run on GitHub still to be confirmed.
+  - **CONTRIBUTING.md** + issue forms (bug, cartridge idea); README's "planned" paragraph now links to it. README's
+    "Why the file names look like `audio__style-lounge.js`" section became "Where things are".
+  - **STATUS.md** visitor header (top of this file).
+  - Cloud notes: `tools/build.py`'s font URLs (`github.com/.../raw/...`) were blocked by the sandbox proxy, so its font cache was
+    filled from `raw.githubusercontent.com` (same files; `tools/build_cdrom.py` already uses that host). Commits use the noreply address.
 - **PLTW CSE promo r2 (Oct 20, full creative mode; UNSEEN and UNHEARD by Bryan): `gen/carts/pltw-cse.json`, 60 s, 120 BPM.**
   r1 (captions over unrelated cartridges + the hallway film's music) was rejected: "words on top of unconnected visuals ...
   looks bad", and the seven-academy music made no sense for CS. r2 makes the visuals FORM the words:
@@ -124,7 +153,10 @@ _Last updated: Oct 20, 2026 (moved to Claude Code: git repo, spent patchers and 
 - **Track 2 history** is in the brief (rounds 1–3; Overclock chosen; 142.5 BPM, −3 st; clear sampler). The audition pages were
   deleted Oct 20 (not kept in git).
 - **Tools:** Node v26 via Homebrew on the Mac; Thonny may need `NODE_EXE` set to the full path (`which node`).
-- **Regression check: UNRESOLVED, do not SAVE BASELINE yet.** First CHECK on the Mac (Node v26) against the Oct 5 baseline (Node v22,
+- **Regression check: SETTLED for Node 22 (Oct 20, cloud).** CHECK on the untouched clone under Node 22.22 (Linux) matched the Oct 5
+  baseline 27/27, so the Mac's 16 mismatches come from (a) Node 26 / the Mac, not from the files. SAVE BASELINE then extended
+  `tests/hashes.json` to all 93 sections (the 27 old hashes unchanged); CI checks it on Node 22. On the Mac, CHECK needs Node 22
+  (`brew install node@22`, `NODE_EXE` = `/opt/homebrew/opt/node@22/bin/node`) or just let CI check. Earlier notes: First CHECK on the Mac (Node v26) against the Oct 5 baseline (Node v22,
   Linux): `ssr-tv-science` 11/11 match; **16 mismatches** = all of `late-library` (11), `academies-hallway` (1), `corporate-calm` (4).
   Causes not yet separated: (a) Node 26 / Apple-silicon math in the piano + film voices; (b) a copy-paste slip in
   `audio/instruments.js` or `audio/instruments-film.js`; (c) the baseline came from different copies of those scores. Test (a):
@@ -227,8 +259,7 @@ Chips music (the plain `chip` style): Bryan Oct 9, "it's so bad lol"; kept as a 
 2. **Check the 9h builds (built Oct 20, in `players/`):** listen/watch: the jukebox's 10 new cartridges (levels next to the others) and a few minutes of
    `dist/cdrom-ambient.html` (Starfield should still go to hyperspace; the AMBIENT_VER stamp is unseen).
 3. **Stage 5 extras:** fontTools subsetting for size (`pip install fonttools`), QA note, ZIP. Publish.
-4. **Settle the regression baseline** (see the Regression bullet) before any change to an existing shared audio file: run CHECK under
-   Node 22 and 26 side by side.
+4. **Regression baseline: settled for Node 22** (see the Regression bullet); CI runs CHECK. Optional: install node@22 on the Mac.
 5. Measure Overclock levels across a whole 9e set per chip (and the unmeasured items above); adjust `master_db` if a chip drifts.
 6. Update `proj/cdrom/brief.md` with the 9c passes, the 9e long form and the 9h ambient version.
 7. Check in passing: 9e long form and 9f airship in the player (built, not yet confirmed), and from Oct 8 Lounge (Chipped) levels →
@@ -245,8 +276,8 @@ Chips music (the plain `chip` style): Bryan Oct 9, "it's so bad lol"; kept as a 
 9. **Dust Type:** check the gen knobs across their ranges. Then Bryan's call: use it in a real piece (a title or end-card shot in
    another cartridge), a brand palette, impact/whoosh sound. Ideas not yet tried: a bake in a Web Worker (no hitch on knob changes),
    a per-letter colour palette from a brand file.
-10. Optional, later: turn the `__` names into real folders (the build scripts already accept both); one commit, rebuild, diff.
-11. **Community cartridges (Bryan, Oct 20):** a way for people to submit their own gen cartridges and music scores (`score/*.json`) to the public repo. For now the README says: open a pull request or an issue. Ideas: an issue template, a `community/` folder, a CI check that runs `gen/build.py` + `gen/tests/smoke.js` on each pull request.
+10. **Real folders: DONE (Oct 20, open-source pass).** After merging: on the Mac, `git pull`; Thonny scripts are now `tools/<name>.py`.
+11. **Community cartridges: DONE (Oct 20):** CONTRIBUTING.md, issue forms, CI on every pull request. Left: a `community/` folder if many arrive; watch the first CI runs on GitHub.
 
 ## Open taste questions
 - Clear sampler for the Chips music on Their Finest Duds too (Chips is approved music: Bryan's call).
