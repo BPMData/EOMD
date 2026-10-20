@@ -1,0 +1,87 @@
+{
+ "name": "music-video-template",
+ "title": "GEN",
+ "subtitle": "MUSIC VIDEO",
+ "seed": 1,
+ "bpm": 100,
+ "palette": {
+  "bg": "#0d0d0f",
+  "ink": "#f2efe6",
+  "accent": "#ff4f3a",
+  "dim": "#55535c"
+ },
+ "hud": {
+  "stats": false,
+  "beat": false
+ },
+ "shots": [
+  {
+   "layer": "type",
+   "dur": 600,
+   "label": "VIDEO",
+   "params": {
+    "script": [
+     {
+      "t": 0.5,
+      "text": "YOUR TRACK HERE",
+      "fx": "slam"
+     },
+     {
+      "t": 2,
+      "text": "drop an MP3 on this page",
+      "fx": "line"
+     },
+     {
+      "t": 4.5,
+      "text": "KNOBS/SCRIPT/WHISPER JSON",
+      "fx": "stack"
+     },
+     {
+      "t": 8,
+      "text": "or TAP TIMING",
+      "fx": "type"
+     },
+     {
+      "t": 10.5,
+      "text": "one line per cue",
+      "fx": "line"
+     },
+     {
+      "t": 12.5,
+      "text": "shout",
+      "fx": "slam",
+      "bg": "#ff7a1a"
+     },
+     {
+      "t": 14,
+      "text": "whisper",
+      "fx": "whisper",
+      "bg": "#0d0d0f"
+     },
+     {
+      "t": 16,
+      "text": "drawn out",
+      "fx": "stretch"
+     },
+     {
+      "t": 18.5,
+      "text": "tremble",
+      "fx": "shake"
+     },
+     {
+      "t": 20,
+      "text": "COPY JSON",
+      "fx": "zoom",
+      "bg": "#2d5bff"
+     },
+     {
+      "t": 22,
+      "text": "save it in carts/private",
+      "fx": "line",
+      "bg": "#0d0d0f"
+     }
+    ]
+   }
+  }
+ ]
+}

@@ -1,0 +1,173 @@
+{
+ "name": "kinetic-demo",
+ "title": "GEN",
+ "subtitle": "KINETIC TYPE",
+ "seed": 3,
+ "bpm": 104,
+ "palette": {
+  "bg": "#0d0d0f",
+  "ink": "#f2efe6",
+  "accent": "#ff4f3a",
+  "dim": "#55535c"
+ },
+ "hud": {
+  "stats": false
+ },
+ "shots": [
+  {
+   "layer": "type",
+   "dur": 44,
+   "label": "COLORS",
+   "params": {
+    "script": [
+     {
+      "t": 0.4,
+      "text": "LISTEN",
+      "fx": "slam"
+     },
+     {
+      "t": 1.6,
+      "text": "to a color",
+      "fx": "line",
+      "words": [
+       0,
+       0.35,
+       0.6
+      ]
+     },
+     {
+      "t": 3.2,
+      "text": "YELLOW",
+      "fx": "zoom",
+      "bg": "#ffd100"
+     },
+     {
+      "t": 4.4,
+      "text": "hums",
+      "fx": "wave"
+     },
+     {
+      "t": 5.6,
+      "text": "like a/kitchen/at noon",
+      "fx": "stack"
+     },
+     {
+      "t": 8.2,
+      "text": "BLUE",
+      "fx": "slam",
+      "bg": "#2d5bff"
+     },
+     {
+      "t": 9.4,
+      "text": "takes its time",
+      "fx": "type"
+     },
+     {
+      "t": 11.4,
+      "text": "sloooow",
+      "fx": "stretch",
+      "size": 1.1
+     },
+     {
+      "t": 13.6,
+      "text": "RED",
+      "fx": "scatter",
+      "bg": "#e8322b"
+     },
+     {
+      "t": 14.8,
+      "text": "doesn't knock",
+      "fx": "shake"
+     },
+     {
+      "t": 16.4,
+      "text": "it just",
+      "fx": "line"
+     },
+     {
+      "t": 17.4,
+      "text": "COMES IN",
+      "fx": "slam"
+     },
+     {
+      "t": 18.8,
+      "text": "GREEN",
+      "fx": "spin",
+      "bg": "#2fbf5b"
+     },
+     {
+      "t": 20.2,
+      "text": "grows sideways",
+      "fx": "wave"
+     },
+     {
+      "t": 22,
+      "text": "PURPLE",
+      "fx": "orbit",
+      "bg": "#8a3ffc"
+     },
+     {
+      "t": 24.4,
+      "text": "the color/of a/long/word",
+      "fx": "stack"
+     },
+     {
+      "t": 27.2,
+      "text": "GRAY",
+      "fx": "whisper",
+      "bg": "#8a8a90"
+     },
+     {
+      "t": 28.8,
+      "text": "waits by the door",
+      "fx": "whisper"
+     },
+     {
+      "t": 31,
+      "text": "BLACK",
+      "fx": "zoom",
+      "bg": "#0b0b0d"
+     },
+     {
+      "t": 32.2,
+      "text": "holds every color",
+      "fx": "outline"
+     },
+     {
+      "t": 34.6,
+      "text": "at once",
+      "fx": "scatter"
+     },
+     {
+      "t": 36,
+      "text": "ORANGE",
+      "fx": "drip",
+      "bg": "#ff7a1a"
+     },
+     {
+      "t": 38,
+      "text": "is",
+      "fx": "line"
+     },
+     {
+      "t": 38.6,
+      "text": "LOUD",
+      "fx": "slam",
+      "size": 1.4
+     },
+     {
+      "t": 40.2,
+      "text": "LISTEN",
+      "fx": "spin",
+      "bg": "#0d0d0f"
+     },
+     {
+      "t": 41.6,
+      "text": "again",
+      "fx": "whisper"
+     }
+    ]
+   }
+  }
+ ]
+}

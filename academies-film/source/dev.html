@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Academies of DHS — dev player</title>
+<style>
+  :root { --bg:#0b1020; --panel:#141b33; --ink:#e9edf7; --dim:#8a93ad; --acc:#009CA6; }
+  html,body { margin:0; height:100%; background:var(--bg); color:var(--ink); font:14px/1.35 system-ui, sans-serif; }
+  #wrap { display:grid; grid-template-rows:1fr auto; height:100%; }
+  #stage { display:flex; align-items:center; justify-content:center; min-height:0; background:#000; }
+  canvas { max-width:100%; max-height:100%; display:block; }
+  #ui { background:var(--panel); padding:10px 14px 12px; display:grid; gap:8px; }
+  .row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  button, select { background:#222b4d; color:var(--ink); border:1px solid #2e3a66; border-radius:6px; padding:6px 10px; font:inherit; cursor:pointer; }
+  button:hover { border-color:var(--acc); }
+  #scrub { position:relative; height:34px; background:#0d1330; border-radius:6px; cursor:pointer; overflow:hidden; }
+  #scrub .sec { position:absolute; top:0; bottom:0; opacity:.55; }
+  #scrub .lbl { position:absolute; top:3px; font-size:11px; color:#fff; white-space:nowrap; pointer-events:none; text-shadow:0 1px 2px #000; }
+  #head { position:absolute; top:0; bottom:0; width:2px; background:#fff; pointer-events:none; }
+  #time { font-variant-numeric:tabular-nums; min-width:210px; }
+  #status { color:var(--dim); }
+  kbd { background:#222b4d; border-radius:4px; padding:1px 5px; font-size:12px; }
+</style></head>
+<body><div id="wrap">
+  <div id="stage"><canvas id="c"></canvas></div>
+  <div id="ui">
+    <div id="scrub"><div id="head"></div></div>
+    <div class="row">
+      <button id="play">Pause</button>
+      <button id="restart">Restart</button>
+      <button id="back">◀ frame</button><button id="fwd">frame ▶</button>
+      <button id="mute">Unmute (synth audio)</button>
+      <select id="orient"><option value="landscape">1920×1080</option><option value="vertical">1080×1920</option></select>
+      <select id="jump"><option value="">Jump to section…</option></select>
+      <span id="time"></span><span id="status"></span>
+    </div>
+    <div class="row" style="color:var(--dim)"><span><kbd>Space</kbd> play/pause · <kbd>←</kbd><kbd>→</kbd> frame (<kbd>Shift</kbd> = 1 s) · <kbd>R</kbd> restart · <kbd>M</kbd> mute · <kbd>F</kbd> fullscreen canvas</span></div>
+  </div>
+</div>
+<script src="config.js"></script>
+<script src="src/core/core.js"></script>
+<script src="src/core/fontdata.js"></script>
+<script src="src/draw/draw.js"></script>
+<script src="src/draw/icons.js"></script>
+<script src="src/scenes/common.js"></script>
+<script src="src/scenes/hub.js"></script>
+<script src="src/scenes/motifs.js"></script>
+<script src="src/scenes/academy.js"></script>
+<script src="src/scenes/exploration.js"></script>
+<script src="src/film.js"></script>
+<script src="src/audio/dsp.js"></script>
+<script src="src/audio/music.js"></script>
+<script src="src/audio/sfx.js"></script>
+<script src="src/audio/master.js"></script>
+<script src="src/player/runtime.js"></script>
+<script>
+(async () => {
+  await DHS.type.load(); DHS.film.build();
+  const $ = (id) => document.getElementById(id);
+  const P = DHS.runtime.create($('c'), { orientation: 'landscape', muted: true, maxScale: 1 });
+  const L = DHS.film.length, FPS = 30;
+  // section bands on the scrubber
+  const cols = { 'hub-title': '#0033A0', exploration: DHS.config.exploration.color, end: '#0033A0', rewind: '#1d3f9e' };
+  DHS.config.academies.forEach((a) => (cols[a.id] = a.color));
+  DHS.film.sections().forEach((s) => {
+    const el = document.createElement('div'); el.className = 'sec'; el.style.left = (s.t0 / L) * 100 + '%'; el.style.width = ((s.t1 - s.t0) / L) * 100 + '%'; el.style.background = cols[s.id] || '#333';
+    const lb = document.createElement('div'); lb.className = 'lbl'; lb.style.left = (s.t0 / L) * 100 + 0.3 + '%'; lb.textContent = s.label.split(' ')[0];
+    $('scrub').append(el, lb);
+    const o = document.createElement('option'); o.value = s.t0; o.textContent = `${s.t0.toFixed(1)} s  ${s.label}`; $('jump').append(o);
+  });
+  const seekFromEvent = (e) => { const r = $('scrub').getBoundingClientRect(); P.seek(((e.clientX - r.left) / r.width) * L); };
+  let drag = false;
+  $('scrub').onpointerdown = (e) => { drag = true; $('scrub').setPointerCapture(e.pointerId); seekFromEvent(e); };
+  $('scrub').onpointermove = (e) => drag && seekFromEvent(e);
+  $('scrub').onpointerup = () => (drag = false);
+  const step = (d) => { P.pause(); P.seek(Math.round(P.time() * FPS + d) / FPS); };
+  $('play').onclick = () => P.toggle();
+  $('restart').onclick = () => { P.seek(0); P.play(); };
+  $('back').onclick = () => step(-1); $('fwd').onclick = () => step(1);
+  $('mute').onclick = () => P.mute();
+  $('orient').onchange = (e) => P.orient(e.target.value);
+  $('jump').onchange = (e) => { if (e.target.value !== '') P.seek(+e.target.value); e.target.value = ''; };
+  addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'SELECT') return;
+    if (e.code === 'Space') { e.preventDefault(); P.toggle(); }
+    else if (e.code === 'ArrowLeft') step(e.shiftKey ? -FPS : -1);
+    else if (e.code === 'ArrowRight') step(e.shiftKey ? FPS : 1);
+    else if (e.key === 'r') { P.seek(0); P.play(); }
+    else if (e.key === 'm') P.mute();
+    else if (e.key === 'f') ($('c').requestFullscreen || (() => {})).call($('c'));
+  });
+  P.onStatus((s) => ($('status').textContent = { synth: 'Synthesizing audio (≈10 s)…', ready: 'Audio ready', playing: '♪ audio locked to picture', blocked: 'Click to allow audio', 'audio-error': 'Audio error (see console)' }[s] || s));
+  const ui = () => {
+    const t = P.time(); $('head').style.left = (t / L) * 100 + '%';
+    $('time').textContent = `${t.toFixed(3)} s · frame ${Math.floor(t * FPS)}/${L * FPS} · ${P.fps.toFixed(0)} fps`;
+    $('play').textContent = P.st.playing ? 'Pause' : 'Play';
+    $('mute').textContent = P.st.muted ? 'Unmute (synth audio)' : 'Mute';
+    requestAnimationFrame(ui);
+  };
+  P.start(); ui();
+})();
+</script></body></html>

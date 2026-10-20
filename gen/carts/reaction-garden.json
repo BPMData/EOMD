@@ -1,0 +1,55 @@
+{
+ "name": "reaction-garden",
+ "title": "GEN",
+ "subtitle": "REACTION-DIFFUSION",
+ "seed": 12,
+ "bpm": 90,
+ "palette": {
+  "bg": "#0d0d0f",
+  "ink": "#f2efe6",
+  "accent": "#ff4f3a",
+  "dim": "#55535c"
+ },
+ "transition": {
+  "type": "fade",
+  "dur": 3
+ },
+ "shots": [
+  {
+   "layer": "reaction",
+   "dur": 60,
+   "label": "CORAL"
+  },
+  {
+   "layer": "reaction",
+   "dur": 60,
+   "label": "MITOSIS",
+   "palette": {
+    "bg": "#f1ece1",
+    "ink": "#1c1b19",
+    "accent": "#e0452b",
+    "dim": "#a59f92"
+   },
+   "params": {
+    "pattern": "mitosis",
+    "seeds": 30,
+    "drops": 3
+   }
+  },
+  {
+   "layer": "reaction",
+   "dur": 60,
+   "label": "MAZE",
+   "palette": {
+    "bg": "#07070c",
+    "ink": "#dfe6ff",
+    "accent": "#ff3d7f",
+    "dim": "#2b2f4a"
+   },
+   "params": {
+    "pattern": "maze",
+    "sweep": 0.002
+   }
+  }
+ ]
+}

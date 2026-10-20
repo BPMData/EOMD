@@ -1,0 +1,53 @@
+{
+ "name": "truchet-waves",
+ "title": "GEN",
+ "subtitle": "TRUCHET STUDY",
+ "seed": 42,
+ "bpm": 96,
+ "palette": {
+  "bg": "#101012",
+  "ink": "#efece4",
+  "accent": "#ff6b4a",
+  "dim": "#5a5a62"
+ },
+ "transition": {
+  "type": "wipe",
+  "dur": 2.4
+ },
+ "shots": [
+  {
+   "layer": "truchet",
+   "dur": 40,
+   "label": "WAVES",
+   "params": {
+    "cell": 96,
+    "width": 0.17,
+    "waves": 3,
+    "speed": 1.2,
+    "gapA": 0,
+    "gapB": 0.35
+   }
+  },
+  {
+   "layer": "truchet",
+   "dur": 40,
+   "label": "BRAID",
+   "palette": {
+    "bg": "#f1ece1",
+    "ink": "#1c1b19",
+    "accent": "#e0452b",
+    "dim": "#a59f92"
+   },
+   "params": {
+    "cell": 64,
+    "width": 0.28,
+    "waves": 2,
+    "wavelength": 14,
+    "speed": 0.8,
+    "sharp": 9,
+    "gapA": 0.5,
+    "gapB": 0
+   }
+  }
+ ]
+}

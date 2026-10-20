@@ -1,0 +1,41 @@
+{
+ "name": "harmonograph",
+ "title": "GEN",
+ "subtitle": "HARMONOGRAPH",
+ "seed": 6,
+ "bpm": 72,
+ "palette": {
+  "bg": "#0d0d0f",
+  "ink": "#f2efe6",
+  "accent": "#ff4f3a",
+  "dim": "#55535c"
+ },
+ "transition": {
+  "type": "fade",
+  "dur": 3
+ },
+ "shots": [
+  {
+   "layer": "harmonograph",
+   "dur": 64,
+   "label": "PENDULUMS"
+  },
+  {
+   "layer": "harmonograph",
+   "dur": 64,
+   "label": "ROSE",
+   "palette": {
+    "bg": "#f1ece1",
+    "ink": "#1c1b19",
+    "accent": "#e0452b",
+    "dim": "#a59f92"
+   },
+   "params": {
+    "detune": 0.004,
+    "rotary": 2,
+    "width": 1,
+    "period": 20
+   }
+  }
+ ]
+}

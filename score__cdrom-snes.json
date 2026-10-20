@@ -1,0 +1,14 @@
+{
+ "id": "cdrom-snes",
+ "title": "CD-ROM · Contour Desk (16-bit sampler)",
+ "notes": "Era-chip backing for one screensaver channel; style chip, shared 116 BPM grid.",
+ "style": "chip",
+ "chip": "snes",
+ "bpm": 116,
+ "bars": 8,
+ "tail": 1.5,
+ "master_db": -13.72,
+ "seed": 116,
+ "airship": 4,
+ "lead": "split"
+}

@@ -1,0 +1,51 @@
+{
+ "name": "halftone-print",
+ "title": "GEN",
+ "subtitle": "HALFTONE",
+ "seed": 2,
+ "bpm": 96,
+ "palette": {
+  "bg": "#f4efe4",
+  "ink": "#1d3fbb",
+  "accent": "#ff4f6d",
+  "dim": "#b9b2a4"
+ },
+ "transition": {
+  "type": "wipe",
+  "dur": 2
+ },
+ "shots": [
+  {
+   "layer": "halftone",
+   "dur": 30,
+   "label": "RIPPLES"
+  },
+  {
+   "layer": "halftone",
+   "dur": 30,
+   "label": "WORD",
+   "params": {
+    "field": "text",
+    "text": "COLOR",
+    "cell": 16
+   }
+  },
+  {
+   "layer": "halftone",
+   "dur": 30,
+   "label": "RINGS",
+   "palette": {
+    "bg": "#07070c",
+    "ink": "#dfe6ff",
+    "accent": "#ff3d7f",
+    "dim": "#2b2f4a"
+   },
+   "params": {
+    "field": "rings",
+    "square": 1,
+    "cell": 22,
+    "angleB": 30
+   }
+  }
+ ]
+}

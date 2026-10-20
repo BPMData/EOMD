@@ -1,0 +1,24 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>render</title>
+<style>html,body{margin:0;background:#000}canvas{display:block}</style></head>
+<body><canvas id="c"></canvas>
+<script src="config.js"></script>
+<script src="src/core/core.js"></script>
+<script src="src/core/fontdata.js"></script>
+<script src="src/draw/draw.js"></script>
+<script src="src/draw/icons.js"></script>
+<script src="src/scenes/common.js"></script>
+<script src="src/scenes/hub.js"></script>
+<script src="src/scenes/motifs.js"></script>
+<script src="src/scenes/academy.js"></script>
+<script src="src/scenes/exploration.js"></script>
+<script src="src/film.js"></script>
+<script>
+// Headless capture page. ?w=1920&h=1080
+const q = new URLSearchParams(location.search);
+const W = +(q.get('w') || 1920), H = +(q.get('h') || 1080);
+const cv = document.getElementById('c'); cv.width = W; cv.height = H;
+const ctx = cv.getContext('2d', { alpha: false });
+window.renderAt = (t) => { DHS.film.render(ctx, t, W, H); };
+DHS.type.load().then(() => { DHS.film.build(); window.ready = true; });
+</script></body></html>

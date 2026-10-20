@@ -1,0 +1,38 @@
+{
+  "node": "v22.22.2",
+  "hashes": {
+    "score__academies-hallway.json | film24 | seed 1 | index 0": "e866a19dfa3d702b7efc2967",
+    "score__corporate-calm.json | rounds | seed 1 | index 0": "852fe83edf9163aabdeee150",
+    "score__corporate-calm.json | rounds | seed 1 | index 1": "7f4dbac18e84e16b5307fa2e",
+    "score__corporate-calm.json | rounds | seed 1 | index 2": "abf809d747a332d5bb32d52a",
+    "score__corporate-calm.json | rounds | seed 1 | index 72": "973aa23f161fb9f8c336daec",
+    "score__late-library.json | comp4 | seed 1 | index 0": "cffc7ec41592c0edc2c8b413",
+    "score__late-library.json | comp4 | seed 1 | index 1": "97b9cce6a5a7dd455fa1c0aa",
+    "score__late-library.json | comp4 | seed 1 | index 2": "c634b520a008f40aacfc90ab",
+    "score__late-library.json | comp4 | seed 1 | index 3": "6249ef2f1b1d7619f00d3c71",
+    "score__late-library.json | comp4 | seed 1 | index 4": "ec0e955f3f8ab7632576947e",
+    "score__late-library.json | comp4 | seed 1 | index 5": "bbca46e12e2b8f8510b698be",
+    "score__late-library.json | comp4 | seed 1 | index 6": "3a1d95691e1b305395bab227",
+    "score__late-library.json | comp4 | seed 1 | index 7": "a8efd2ef3a3dba8dd1b4fce2",
+    "score__late-library.json | comp4 | seed 42 | index 0": "0b911c479c6968f8fd7f4c68",
+    "score__late-library.json | comp4 | seed 42 | index 1": "a75639fb12d7329dc8149fbe",
+    "score__late-library.json | comp4 | seed 42 | index 2": "4286172198722d707146e6a7",
+    "score__ssr-tv-science.json | comp4 | seed 1 | index 0": "481ce322491b787962ea358f",
+    "score__ssr-tv-science.json | comp4 | seed 1 | index 1": "7c25213bcc0f8a0a95c4da9c",
+    "score__ssr-tv-science.json | comp4 | seed 1 | index 2": "4878981064cb052c57985f17",
+    "score__ssr-tv-science.json | comp4 | seed 1 | index 3": "9f33fa701ca78b0f4eeac56a",
+    "score__ssr-tv-science.json | comp4 | seed 1 | index 4": "29719340b9243b7f63539f41",
+    "score__ssr-tv-science.json | comp4 | seed 1 | index 5": "42613010b3e9036a27fc5bef",
+    "score__ssr-tv-science.json | comp4 | seed 1 | index 6": "facfa50776042f739336da71",
+    "score__ssr-tv-science.json | comp4 | seed 1 | index 7": "72a109f7a32916582f9e4a37",
+    "score__ssr-tv-science.json | comp4 | seed 42 | index 0": "8b44ea4e8b774045d3694038",
+    "score__ssr-tv-science.json | comp4 | seed 42 | index 1": "d41b0f9da7f3960931adb5b2",
+    "score__ssr-tv-science.json | comp4 | seed 42 | index 2": "d40175d4c5666730a349e458"
+  },
+  "saved": "2026-10-05 02:41",
+  "lib": [
+    "engine__src__audio__dsp.js",
+    "audio__instruments.js",
+    "audio__arranger.js"
+  ]
+}

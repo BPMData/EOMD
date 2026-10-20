@@ -1,0 +1,5 @@
+dist/
+*.bak
+__pycache__/
+.DS_Store
+font_cache/

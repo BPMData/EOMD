@@ -1,0 +1,12 @@
+{
+ "id": "cdrom-arcade",
+ "title": "CD-ROM · Starfield (arcade FM + PSG)",
+ "notes": "Era-chip backing for one screensaver channel; style chip, shared 116 BPM grid.",
+ "style": "chip",
+ "chip": "arcade",
+ "bpm": 116,
+ "bars": 8,
+ "tail": 1.5,
+ "master_db": -11.85,
+ "seed": 116
+}

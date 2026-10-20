@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gen Player</title>
+<style>
+/*__FONTFACE__*/
+:root { --bg: #0b0b0d; --panel: rgba(18,18,22,.94); --line: rgba(255,255,255,.12); --ink: #ecebe6; --dim: #8d8c93; --hot: #ff6b4a;
+        --mono: GenMono, ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); font: 12px/1.4 var(--mono); overflow: hidden; }
+canvas#view { position: fixed; inset: 0; width: 100vw; height: 100vh; display: block; }
+body.idle { cursor: none; }
+/* controls: hidden until the pointer moves, fade after 3 s */
+#bar { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom)); transform: translateX(-50%); display: flex; gap: 6px;
+       align-items: center; padding: 6px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; transition: opacity .4s; z-index: 5; }
+body.idle #bar { opacity: 0; pointer-events: none; }
+body.manual #bar { display: none; }
+button, select, input[type=text], input[type=number], textarea { font: inherit; color: var(--ink); background: #1d1d23; border: 1px solid var(--line); border-radius: 6px; }
+button { padding: 6px 10px; cursor: pointer; letter-spacing: .06em; }
+button:hover { border-color: var(--dim); }
+button.on { border-color: var(--hot); color: var(--hot); }
+select { padding: 5px 6px; max-width: 190px; }
+/* knob panel */
+#knobs { position: fixed; top: 0; right: 0; bottom: 0; width: min(360px, 92vw); background: var(--panel); border-left: 1px solid var(--line);
+         overflow-y: auto; padding: 14px 14px 90px; transform: translateX(105%); transition: transform .25s; z-index: 6; }
+body.knobs #knobs { transform: none; }
+#knobs h3 { margin: 18px 0 8px; font-size: 11px; letter-spacing: .14em; color: var(--dim); font-weight: 700; }
+#knobs h3:first-child { margin-top: 0; }
+.row { display: grid; grid-template-columns: 92px 1fr 54px; gap: 8px; align-items: center; margin: 5px 0; }
+.row label { color: var(--dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.row input[type=checkbox] { justify-self: start; width: 18px; height: 18px; accent-color: var(--hot); margin: 0; }
+.tip { color: #a9a8ae; font-size: 11px; line-height: 1.35; margin: -1px 0 9px; padding-left: 100px; }
+body.nohelp .tip { display: none; }
+#khead { position: sticky; top: -14px; margin: -14px -14px 10px; padding: 10px 14px; background: #121216; border-bottom: 1px solid var(--line);
+         display: flex; align-items: center; gap: 8px; z-index: 1; }
+#khead b { flex: 1; letter-spacing: .16em; font-size: 12px; }
+#khead button { padding: 5px 10px; }
+#intro { color: #a9a8ae; font-size: 11px; margin: 0 0 12px; }
+@media (max-width: 520px) { .tip { padding-left: 0; } }
+.row input[type=range] { width: 100%; accent-color: var(--hot); }
+.row .val { text-align: right; color: var(--ink); font-variant-numeric: tabular-nums; }
+.row input[type=text], .row select { grid-column: 2 / 4; width: 100%; padding: 4px 6px; }
+.row input[type=color] { grid-column: 2 / 4; width: 100%; height: 24px; background: none; border: 1px solid var(--line); border-radius: 6px; padding: 0 2px; }
+.shots { display: flex; flex-wrap: wrap; gap: 4px; }
+.shots button { padding: 4px 8px; font-size: 11px; }
+.btns { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; }
+#about { color: var(--dim); margin: 4px 0 8px; }
+#msg { position: fixed; left: 50%; top: 22px; transform: translateX(-50%); background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+       padding: 8px 14px; opacity: 0; transition: opacity .3s; z-index: 9; pointer-events: none; }
+#msg.show { opacity: 1; }
+textarea#paste { width: 100%; height: 110px; margin-top: 6px; display: none; }
+.row textarea, textarea.script { grid-column: 1 / 4; width: 100%; min-height: 90px; padding: 6px; resize: vertical; font: 11px/1.45 var(--mono); }
+textarea.script { min-height: 240px; white-space: pre; }
+.help { color: var(--dim); font-size: 11px; margin: 6px 0; }
+/* audio start + tap timing overlays */
+#start { position: fixed; inset: 0; display: none; place-items: center; z-index: 7; background: rgba(0,0,0,.35); }
+#start.show { display: grid; }
+#start button { font-size: 18px; padding: 16px 30px; letter-spacing: .2em; background: var(--panel); }
+#tapbox { position: fixed; left: 50%; top: calc(18px + env(safe-area-inset-top)); transform: translateX(-50%); z-index: 8; display: none;
+          background: var(--panel); border: 1px solid var(--hot); border-radius: 10px; padding: 10px 14px; text-align: center; min-width: 300px; }
+#tapbox.show { display: block; }
+#tapbox b { color: var(--hot); }
+#tapbox button { margin-top: 8px; font-size: 16px; padding: 12px 40px; }
+/* gallery */
+#gallery { position: fixed; inset: 0; overflow-y: auto; padding: 28px max(16px, env(safe-area-inset-left)); display: none; z-index: 4; background: var(--bg); }
+body.gallery #gallery { display: block; }
+body.gallery canvas#view, body.gallery #bar { display: none; }
+#gallery h1 { font-size: 13px; letter-spacing: .2em; margin: 0 0 18px; font-weight: 700; }
+#gallery .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(420px, 100%), 1fr)); gap: 16px; }
+#gallery figure { margin: 0; cursor: pointer; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #000; }
+#gallery figure:hover { border-color: var(--dim); }
+#gallery canvas { width: 100%; aspect-ratio: 16 / 9; display: block; }
+#gallery figcaption { padding: 8px 10px; display: flex; justify-content: space-between; color: var(--dim); }
+#gallery figcaption b { color: var(--ink); font-weight: 700; letter-spacing: .08em; }
+@media (prefers-reduced-motion: reduce) { #knobs, #bar { transition: none; } }
+</style>
+</head>
+<body>
+<canvas id="view" aria-label="Generative motion graphics"></canvas>
+
+<div id="bar" role="toolbar" aria-label="Player controls">
+  <button id="prev" title="Previous shot (Left arrow)">&#9664;</button>
+  <button id="play" title="Pause / play (Space)">PAUSE</button>
+  <button id="next" title="Next shot (Right arrow)">&#9654;</button>
+  <select id="cartSel" title="Cartridge" aria-label="Cartridge"></select>
+  <button id="knobBtn" title="Knobs (K)">KNOBS</button>
+  <button id="galBtn" title="Gallery (G)">GALLERY</button>
+  <button id="fsBtn" title="Fullscreen (F)">FULL</button>
+</div>
+
+<aside id="knobs" aria-label="Knobs">
+  <div id="khead"><b>KNOBS</b><button id="helpBtn" class="on" title="Show or hide the explanations">? HELP</button><button id="closeBtn" title="Close (K or Esc)">&#10005; CLOSE</button></div>
+  <div id="intro">Changes show live on the shot that's playing. Double-click a slider to put it back. When you like it, COPY JSON at the bottom saves your changes.</div>
+  <h3>CARTRIDGE</h3>
+  <div id="cartRows"></div>
+  <h3>SHOTS</h3>
+  <div class="shots" id="shotList"></div>
+  <h3 id="shotHead">SHOT</h3>
+  <div id="about"></div>
+  <div id="shotRows"></div>
+  <h3>SAVE</h3>
+  <div class="btns">
+    <button id="copyBtn" title="Copy the cartridge JSON (changed knobs only)">COPY JSON</button>
+    <button id="dlBtn">DOWNLOAD</button>
+    <button id="pasteBtn">PASTE JSON</button>
+    <button id="resetBtn">RESET</button>
+  </div>
+  <textarea id="paste" placeholder="Paste a cartridge JSON here, then press PASTE JSON again"></textarea>
+</aside>
+
+<section id="gallery"><h1>GEN &middot; CARTRIDGES</h1><div class="grid" id="grid"></div></section>
+<div id="msg" role="status"></div>
+<div id="start"><button id="startBtn">&#9654; START</button></div>
+<div id="tapbox" aria-live="polite"><div id="tapinfo"></div><button id="tapBtn">TAP (T)</button><div class="help">Esc = stop and keep the times</div></div>
+
+<!-- library load order (gen/build.py and gen/tests/smoke.js read this list) -->
+<script src="core.js"></script>
+<script src="m3d.js"></script>
+<script src="stage.js"></script>
+<script src="layers/truchet.js"></script>
+<script src="layers/depth.js"></script>
+<script src="layers/field.js"></script>
+<script src="layers/contour.js"></script>
+<script src="layers/tree.js"></script>
+<script src="layers/julia.js"></script>
+<script src="layers/type.js"></script>
+<script src="layers/tunnel.js"></script>
+<script src="layers/reaction.js"></script>
+<script src="layers/harmonograph.js"></script>
+<script src="layers/halftone.js"></script>
+<script src="layers/stack.js"></script>
+<script src="carts/_bundle.js"></script>
+<script>
+(function () {
+  'use strict';
+  const C = GEN.core, Q = new URLSearchParams(location.search);
+  const $ = (id) => document.getElementById(id);
+  const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+                  set(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* storage blocked: fine */ } } };
+  const BUNDLE = GEN.CARTS || {};
+  const names = Object.keys(BUNDLE);
+  if (!names.length) BUNDLE.empty = { name: 'empty', shots: [{ layer: 'depth', dur: 30 }] }, names.push('empty');
+  const clone = (o) => JSON.parse(JSON.stringify(o));
+  const reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const manual = Q.has('manual');
+  const RES = Math.max(0.25, Math.min(2, parseFloat(Q.get('scale')) || 1));   // ?scale=0.75 for slow boards
+
+  let raw = clone(BUNDLE[Q.get('cart')] || BUNDLE[store.get('gen.cart')] || BUNDLE.reel || BUNDLE[names[0]]);
+  if (Q.has('seed')) raw.seed = +Q.get('seed') || raw.seed;
+  if (Q.has('nohud')) raw.hud = { on: false };
+
+  const view = $('view');
+  const st = GEN.stage(view, raw, { reduced });
+  function fit() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2) * RES;
+    let w = Math.round(innerWidth * dpr), h = Math.round(innerHeight * dpr);
+    const cap = 3840 * 2160 * 0.6;                     // keep 4K boards responsive
+    if (w * h > cap) { const k = Math.sqrt(cap / (w * h)); w = Math.round(w * k); h = Math.round(h * k); }
+    st.resize(w, h);
+  }
+  fit(); addEventListener('resize', () => { fit(); if (manual || paused) st.renderAt(st.info().T); });
+  if (Q.has('shot')) st.goto((+Q.get('shot') || 1) - 1);
+
+  // embedded fonts may arrive after the first frames: re-measure text once they're in
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { st.refresh(); if (manual) st.renderAt(st.info().T); });
+
+  // ---------- audio: a cartridge with "audio" plays that track, and the picture follows its clock ----------
+  // Sources, in order: embedded by build.py (GEN.AUDIO), a file dropped on the page, or gen/audio/<name>.
+  let audio = null, audioOk = false;
+  const dropped = {};
+  function setupAudio() {
+    if (audio) { audio.pause(); audio = null; }
+    audioOk = false; $('start').classList.remove('show');
+    if (!raw.audio || manual) return;
+    const name = raw.audio, src = (GEN.AUDIO && GEN.AUDIO[name]) || dropped[name] || ('audio/' + name);
+    audio = new Audio(); audio.preload = 'auto'; audio.src = src;
+    audio.addEventListener('canplay', () => { if (!audioOk) { audioOk = true; if (audio.paused) $('start').classList.add('show'); } }, { once: true });
+    audio.addEventListener('error', () => { audio = null; msg('Drop "' + name + '" on the page to hear it with the picture'); });
+    audio.addEventListener('ended', () => { $('startBtn').textContent = '\u21BB REPLAY'; $('start').classList.add('show'); });
+  }
+  $('startBtn').onclick = () => {
+    if (!audio) return;
+    if (audio.ended) audio.currentTime = 0;
+    audio.play().then(() => { $('start').classList.remove('show'); paused = false; $('play').textContent = 'PAUSE'; }).catch(() => msg('The browser blocked audio; click again'));
+  };
+  const synced = () => audio && audioOk;
+
+  // ---------- loop ----------
+  let paused = false, last = 0;
+  function tick(now) {
+    const dt = last ? (now - last) / 1000 : 1 / 60; last = now;
+    if (!document.body.classList.contains('gallery')) {
+      if (synced()) st.advanceTo(audio.currentTime);
+      else if (!paused) st.advance(dt);
+    }
+    if (tap) tapShow();
+    requestAnimationFrame(tick);
+  }
+  if (manual) { window.advance = (dt) => st.advance(dt || 1 / 60); window.renderAt = (t) => st.renderAt(t); st.setFps(60); st.renderAt(+Q.get('t') || 0); }
+  else requestAnimationFrame(tick);
+  window.GEN_STAGE = st;
+  setupAudio();
+
+  // ---------- messages, idle controls ----------
+  let msgT = 0;
+  function msg(s) { const m = $('msg'); m.textContent = s; m.classList.add('show'); clearTimeout(msgT); msgT = setTimeout(() => m.classList.remove('show'), 1800); }
+  let idleT = 0;
+  function wake() { document.body.classList.remove('idle'); clearTimeout(idleT); idleT = setTimeout(() => { if (!document.body.classList.contains('knobs')) document.body.classList.add('idle'); }, 3000); }
+  ['mousemove', 'pointerdown', 'touchstart', 'keydown'].forEach((e) => addEventListener(e, wake, { passive: true }));
+  if (manual) document.body.classList.add('idle', 'manual'); else wake();
+
+  // ---------- controls ----------
+  for (const n of names) { const o = document.createElement('option'); o.value = n; o.textContent = n; $('cartSel').appendChild(o); }
+  $('cartSel').value = raw.name in BUNDLE ? raw.name : names[0];
+  function loadCart(c, keepTime) {
+    const sameAudio = keepTime && audio && c.audio === raw.audio;
+    raw = c; st.setCart(raw, keepTime); if (paused || manual) st.renderAt(keepTime ? st.info().T : 0);
+    if (!sameAudio) setupAudio();
+    buildPanel();
+  }
+  $('cartSel').onchange = (e) => { store.set('gen.cart', e.target.value); loadCart(clone(BUNDLE[e.target.value])); };
+  $('play').onclick = () => {
+    if (synced()) { if (audio.paused) $('startBtn').click(); else { audio.pause(); paused = true; $('play').textContent = 'PLAY'; } return; }
+    paused = !paused; $('play').textContent = paused ? 'PLAY' : 'PAUSE';
+  };
+  const seekAudio = () => { if (synced()) audio.currentTime = st.info().T; };
+  $('prev').onclick = () => { st.goto(st.info().shot - 1); seekAudio(); buildShot(); };
+  $('next').onclick = () => { st.goto(st.info().shot + 1); seekAudio(); buildShot(); };
+  $('knobBtn').onclick = () => { document.body.classList.toggle('knobs'); $('knobBtn').classList.toggle('on'); buildPanel(); };
+  $('galBtn').onclick = () => toggleGallery(true);
+  $('closeBtn').onclick = () => { document.body.classList.remove('knobs'); $('knobBtn').classList.remove('on'); wake(); };
+  if (store.get('gen.nohelp') === '1') { document.body.classList.add('nohelp'); $('helpBtn').classList.remove('on'); }
+  $('helpBtn').onclick = () => { const off = document.body.classList.toggle('nohelp'); $('helpBtn').classList.toggle('on', !off); store.set('gen.nohelp', off ? '1' : '0'); };
+  $('fsBtn').onclick = () => { const d = document; if (d.fullscreenElement) d.exitFullscreen(); else if (d.documentElement.requestFullscreen) d.documentElement.requestFullscreen().catch(() => {}); };
+  addEventListener('keydown', (e) => {
+    if (/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
+    const k = e.key.toLowerCase();
+    if (k === ' ') { e.preventDefault(); $('play').click(); }
+    else if (k === 'arrowleft') $('prev').click();
+    else if (k === 'arrowright') $('next').click();
+    else if (k === 'k') $('knobBtn').click();
+    else if (k === 'g') toggleGallery(!document.body.classList.contains('gallery'));
+    else if (k === 'f') $('fsBtn').click();
+    else if ((k === '[' || k === ']') && synced()) audio.currentTime = Math.max(0, audio.currentTime + (k === ']' ? 5 : -5));
+    else if ((k === 't' || k === 'enter') && tap) { e.preventDefault(); tapHit(); }
+    else if (k === 'escape' && tap) tapEnd();
+    else if (k === 'escape' && document.body.classList.contains('knobs')) $('closeBtn').click();
+    else if (k === 'escape' && document.body.classList.contains('gallery')) toggleGallery(false);
+    else if (k === 'h') { raw.hud = raw.hud && raw.hud.on === false ? {} : Object.assign({}, raw.hud, { on: false }); st.setCart(raw, true); }
+  });
+
+  // ---------- knob panel ----------
+  // raw = the authored cartridge (sparse). Every edit changes raw, then the stage reloads it, keeping time.
+  let pend = 0;
+  function apply() { if (pend) return; pend = requestAnimationFrame(() => { pend = 0; st.setCart(raw, true); if (paused || manual) st.renderAt(st.info().T); }); }
+  function row(parent, label, el, val, help) {
+    const r = document.createElement('div'); r.className = 'row';
+    const l = document.createElement('label'); l.textContent = label; l.title = help || label; r.appendChild(l); r.appendChild(el);
+    if (val) r.appendChild(val); parent.appendChild(r);
+    if (help) { const t = document.createElement('div'); t.className = 'tip'; t.textContent = help; parent.appendChild(t); }
+    return r;
+  }
+  function toggle(parent, label, spec, get, set, help) {          // knobs that are only 0 or 1
+    const el = document.createElement('input'); el.type = 'checkbox'; el.checked = !!(get() ?? spec[0]);
+    el.onchange = () => { set(el.checked ? 1 : 0); apply(); };
+    const out = document.createElement('span'); out.className = 'val'; out.textContent = '';
+    row(parent, label, el, out, help);
+  }
+  function slider(parent, label, spec, get, set, help) {
+    const [def, min, max, step] = spec, el = document.createElement('input'), out = document.createElement('span');
+    el.type = 'range'; el.min = min; el.max = max; el.step = step; el.value = get() ?? def; out.className = 'val';
+    const show = () => { out.textContent = (+el.value).toFixed(step < 0.01 ? 4 : step < 1 ? 2 : 0); };
+    show(); el.oninput = () => { show(); set(+el.value); apply(); };
+    el.ondblclick = () => { el.value = def; show(); set(undefined); apply(); };   // double-click = default
+    row(parent, label, el, out, help);
+  }
+  function textIn(parent, label, get, set, help) {
+    const el = document.createElement('input'); el.type = 'text'; el.value = get() ?? ''; el.onchange = () => { set(el.value); apply(); buildPanel(); };
+    row(parent, label, el, null, help);
+  }
+  function select(parent, label, opts, get, set, help) {
+    const el = document.createElement('select');
+    for (const o of opts) { const op = document.createElement('option'); op.value = op.textContent = o; el.appendChild(op); }
+    el.value = get(); el.onchange = () => { set(el.value); apply(); buildPanel(); }; row(parent, label, el, null, help);
+  }
+  function jsonIn(parent, label, get, set, help) {
+    const el = document.createElement('textarea'); el.value = JSON.stringify(get(), null, 1); el.spellcheck = false;
+    el.onchange = () => { try { set(JSON.parse(el.value)); apply(); buildShot(); } catch (e) { msg(label + ': not valid JSON'); } };
+    const h = document.createElement('div'); h.className = 'help'; h.textContent = label + ' (JSON; applies when you click away)' + (help ? '. ' + help : '');
+    parent.appendChild(h); parent.appendChild(el);
+  }
+
+  // ---------- kinetic type: script editor, Whisper import, tap timing ----------
+  const TS = GEN.typeScript;
+  function scriptHost(s) {                     // the params object that holds the script (type, or a type inside a stack)
+    if (!s) return null;
+    s.params = s.params || {};
+    if (s.layer === 'type') return s.params;
+    if (s.layer === 'stack') {
+      if (!s.params.layers) s.params.layers = clone(GEN.layers.stack.knobs.layers);
+      const k = s.params.layers.find((q) => q.layer === 'type');
+      if (k) { k.params = k.params || {}; return k.params; }
+    }
+    return null;
+  }
+  let scriptBox = null;
+  function scriptEditor(parent, s) {
+    const host = scriptHost(s); scriptBox = null;
+    if (!host || !TS) return;
+    const h = document.createElement('h3'); h.textContent = 'SCRIPT'; parent.appendChild(h);
+    const help = document.createElement('div'); help.className = 'help';
+    help.textContent = 'One cue per line:  @seconds TEXT | directions.  Directions: an effect or delivery word (shout, whisper, drawn, fast, tremble, melt, sing, flip, burst, phrase ...), a color (#hex or red, ochre ...), bg=color or bg=none, size=1.4, pos=x,y.  "/" breaks lines in stack.';
+    parent.appendChild(help);
+    const ta = document.createElement('textarea'); ta.className = 'script'; ta.spellcheck = false;
+    ta.value = TS.format(Array.isArray(host.script) ? host.script : []); parent.appendChild(ta); scriptBox = ta;
+    const b = document.createElement('div'); b.className = 'btns';
+    const mk = (label, fn) => { const x = document.createElement('button'); x.textContent = label; x.onclick = fn; b.appendChild(x); return x; };
+    mk('APPLY SCRIPT', () => { host.script = TS.parse(ta.value); apply(); msg(host.script.length + ' cues'); });
+    mk('TAP TIMING', () => { host.script = TS.parse(ta.value); tapStart(s, host); });
+    const mode = document.createElement('select'); for (const o of ['phrases', 'words']) { const op = document.createElement('option'); op.value = op.textContent = o; mode.appendChild(op); }
+    const file = document.createElement('input'); file.type = 'file'; file.accept = '.json,application/json'; file.style.display = 'none';
+    file.onchange = () => { const f = file.files[0]; if (f) f.text().then((t) => importWhisper(JSON.parse(t), host, mode.value)).catch(() => msg('Could not read that JSON')); file.value = ''; };
+    mk('WHISPER JSON', () => file.click());
+    b.appendChild(mode); b.appendChild(file);
+    parent.appendChild(b);
+  }
+  function importWhisper(json, host, mode) {
+    const cues = TS.fromWhisper(json, { mode: mode || 'phrases' });
+    if (!cues.length) { msg('No words with timestamps in that JSON'); return; }
+    host.script = cues; apply(); buildShot(); msg('Imported ' + cues.length + ' cues from Whisper');
+  }
+  const isWhisper = (j) => j && (Array.isArray(j.segments) || Array.isArray(j.word_segments) || (Array.isArray(j) && j.length && (j[0].word != null || j[0].start != null)));
+
+  // tap timing: play from the shot's start; each tap stamps the next cue's time (shot-local seconds)
+  let tap = null;
+  function tapStart(s, host) {
+    if (!host.script.length) { msg('Write some cues first'); return; }
+    const idx = raw.shots.indexOf(s);
+    st.goto(idx); if (synced()) { audio.currentTime = st.info().T; audio.play(); } paused = false;
+    tap = { host, i: 0 }; $('tapbox').classList.add('show'); document.body.classList.remove('knobs'); $('knobBtn').classList.remove('on'); tapShow();
+  }
+  function tapShow() { const c = tap.host.script[tap.i]; $('tapinfo').innerHTML = 'TAP <b>' + (tap.i + 1) + '/' + tap.host.script.length + '</b> &middot; next: <b>' + (c ? String(c.text).replace(/</g, '&lt;') : 'done') + '</b> &middot; ' + st.info().local.toFixed(2) + ' s'; }
+  function tapHit() {
+    const c = tap.host.script[tap.i]; if (!c) return tapEnd();
+    c.t = +st.info().local.toFixed(2); delete c.dur;
+    tap.i++; apply(); if (tap.i >= tap.host.script.length) tapEnd();
+  }
+  function tapEnd() {
+    if (!tap) return;
+    msg('Timed ' + tap.i + ' of ' + tap.host.script.length + ' cues. COPY JSON to keep them.');
+    tap = null; $('tapbox').classList.remove('show'); apply();
+    document.body.classList.add('knobs'); $('knobBtn').classList.add('on'); buildPanel();
+  }
+  $('tapBtn').onclick = () => tap && tapHit();
+
+  function color(parent, label, get, set, help) {
+    const el = document.createElement('input'); el.type = 'color'; el.value = get(); el.oninput = () => { set(el.value); apply(); }; row(parent, label, el, null, help);
+  }
+  const PAL_HELP = { bg: 'Background color.', ink: 'Main color for lines, dots and words.', accent: 'Highlight color (accent dots, floods, index lines ...).', dim: 'Faint, secondary color.' };
+  function buildPanel() {
+    if (!document.body.classList.contains('knobs')) return;
+    const c = $('cartRows'); c.innerHTML = '';
+    const N = GEN.normalize(raw);
+    textIn(c, 'title', () => raw.title, (v) => { raw.title = v; }, 'Bold text in the top-left corner.');
+    textIn(c, 'subtitle', () => raw.subtitle, (v) => { raw.subtitle = v; }, 'Fainter text next to the title.');
+    slider(c, 'seed', [1, 0, 9999, 1], () => raw.seed, (v) => { raw.seed = v ?? 1; }, 'Reshuffles every random choice in the whole cartridge. Same seed = same result.');
+    slider(c, 'bpm', [120, 40, 200, 0.5], () => raw.bpm, (v) => { raw.bpm = v ?? 120; }, 'Beat speed: the beat counter (bottom right) and anything that pulses follow it.');
+    raw.transition = raw.transition || {};
+    select(c, 'transition', ['fade', 'wipe', 'iris', 'cut'], () => N.transition.type, (v) => { raw.transition.type = v; }, 'How one shot changes into the next: fade, wipe (sliding edge), iris (growing circle) or cut.');
+    slider(c, 'trans. secs', [1.2, 0, 6, 0.1], () => N.transition.dur, (v) => { raw.transition.dur = v ?? 1.2; }, 'How long that change takes.');
+    raw.palette = raw.palette || {};
+    for (const k of ['bg', 'ink', 'accent', 'dim']) color(c, 'color ' + k, () => N.palette[k], (v) => { raw.palette[k] = v; }, PAL_HELP[k]);
+    buildShot();
+  }
+  function buildShot() {
+    if (!document.body.classList.contains('knobs')) return;
+    const cur = st.info().shot, list = $('shotList'); list.innerHTML = '';
+    (raw.shots || []).forEach((s, i) => {
+      const b = document.createElement('button'); b.textContent = C.pad(i + 1, 2) + ' ' + (s.label || s.layer);
+      if (i === cur) b.className = 'on'; b.onclick = () => { st.goto(i); buildShot(); }; list.appendChild(b);
+    });
+    const s = raw.shots[cur], L = GEN.layers[s.layer], c = $('shotRows'); c.innerHTML = '';
+    $('shotHead').textContent = 'SHOT ' + C.pad(cur + 1, 2) + ' · ' + s.layer.toUpperCase();
+    $('about').textContent = L.about || '';
+    textIn(c, 'label', () => s.label, (v) => { s.label = v; }, 'Name shown in the top-right corner.');
+    select(c, 'layer', Object.keys(GEN.layers), () => s.layer, (v) => { s.layer = v; s.params = {}; }, 'What this shot draws. Changing it resets this shot\'s knobs.');
+    slider(c, 'seconds', [12, 2, 180, 1], () => s.dur, (v) => { s.dur = v ?? 12; }, 'How long this shot lasts before the next one.');
+    s.params = s.params || {};
+    const setp = (k) => (v) => { if (v === undefined) delete s.params[k]; else s.params[k] = v; };
+    for (const k in (L.knobs || {})) {
+      const spec = L.knobs[k], help = GEN.helpFor(L, k);
+      if (Array.isArray(spec) && typeof spec[0] === 'number' && spec[1] === 0 && spec[2] === 1 && spec[3] === 1) toggle(c, k, spec, () => s.params[k], setp(k), help);
+      else if (Array.isArray(spec) && typeof spec[0] === 'number') slider(c, k, spec, () => s.params[k], setp(k), help);
+      else if (k === 'script') continue;                                   // has its own editor below
+      else if (Array.isArray(spec) && spec.every((x) => typeof x === 'string')) textIn(c, k, () => (s.params[k] || spec).join(', '), (v) => { s.params[k] = v.split(/[\s,]+/).filter(Boolean); }, help);
+      else if (spec && spec.options) select(c, k, spec.options, () => s.params[k] ?? spec.value, (v) => { s.params[k] = v; }, help);
+      else if (typeof spec === 'string') textIn(c, k, () => s.params[k] ?? spec, (v) => { s.params[k] = v; }, help);
+      else if (spec && typeof spec === 'object') jsonIn(c, k, () => s.params[k] ?? spec, (v) => { s.params[k] = v; }, help);
+    }
+    scriptEditor(c, s);
+    if (s.palette) for (const k of ['bg', 'ink', 'accent', 'dim']) color(c, 'shot ' + k, () => s.palette[k] || GEN.normalize(raw).palette[k], (v) => { s.palette[k] = v; }, 'This shot\'s own ' + PAL_HELP[k].toLowerCase());
+  }
+  // keep the shot list in step with playback
+  setInterval(() => { const i = st.info().shot; if (i !== buildShot.last) { buildShot.last = i; buildShot(); } }, 400);
+
+  // export: only knobs that differ from the layer defaults, so cartridges stay tiny
+  function exportJSON() {
+    const out = clone(raw);
+    for (const s of out.shots || []) {
+      const d = GEN.knobDefaults(GEN.layers[s.layer] || {});
+      for (const k in (s.params || {})) if (JSON.stringify(s.params[k]) === JSON.stringify(d[k])) delete s.params[k];
+      if (s.params && !Object.keys(s.params).length) delete s.params;
+    }
+    return JSON.stringify(out, null, 1) + '\n';
+  }
+  $('copyBtn').onclick = () => {
+    const t = exportJSON();
+    (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => msg('Cartridge JSON copied'), () => {
+      const a = $('paste'); a.style.display = 'block'; a.value = t; a.select(); msg('Copy the text in the box');
+    });
+  };
+  $('dlBtn').onclick = () => {
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([exportJSON()], { type: 'application/json' }));
+    a.download = (raw.name || 'cart') + '.json'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  };
+  $('pasteBtn').onclick = () => {
+    const a = $('paste');
+    if (a.style.display !== 'block' || !a.value.trim()) { a.style.display = 'block'; a.value = ''; a.focus(); return; }
+    try { loadCart(JSON.parse(a.value)); a.style.display = 'none'; msg('Cartridge loaded'); } catch (e) { msg('That is not valid JSON'); }
+  };
+  $('resetBtn').onclick = () => { const n = $('cartSel').value; loadCart(clone(BUNDLE[n])); msg('Reset to ' + n); };
+  addEventListener('dragover', (e) => e.preventDefault());
+  addEventListener('drop', (e) => {
+    e.preventDefault(); const f = e.dataTransfer.files[0]; if (!f) return;
+    if (/^audio\//.test(f.type) || /\.(mp3|m4a|wav|ogg|flac|aac)$/i.test(f.name)) {
+      if (raw.audio && raw.audio !== f.name) msg('Using "' + f.name + '" for this cartridge\'s track "' + raw.audio + '"');
+      raw.audio = raw.audio || f.name;                 // a cartridge without a track adopts the dropped file
+      dropped[raw.audio] = URL.createObjectURL(f);
+      setupAudio(); return;
+    }
+    f.text().then((t) => {
+      let j; try { j = JSON.parse(t); } catch (er) { msg('Not a JSON file'); return; }
+      if (isWhisper(j)) { const host = scriptHost(raw.shots[st.info().shot]); if (host) importWhisper(j, host, 'phrases'); else msg('Pick a shot with a type layer first'); return; }
+      loadCart(j); msg('Loaded ' + f.name);
+    });
+  });
+
+  // ---------- gallery ----------
+  let gal = [];
+  function toggleGallery(on) {
+    document.body.classList.toggle('gallery', on);
+    const grid = $('grid');
+    if (!on) { gal = []; grid.innerHTML = ''; return; }
+    for (const n of names) {
+      const fig = document.createElement('figure'), cv = document.createElement('canvas'), cap = document.createElement('figcaption');
+      cv.width = 640; cv.height = 360;
+      const c = clone(BUNDLE[n]); c.hud = Object.assign({}, c.hud, { timecode: false, beat: false, progress: false });
+      const s = GEN.stage(cv, c, { reduced });
+      cap.innerHTML = '<b>' + n + '</b><span>' + c.shots.length + ' shot' + (c.shots.length > 1 ? 's' : '') + '</span>';
+      fig.appendChild(cv); fig.appendChild(cap); grid.appendChild(fig);
+      fig.onclick = () => { $('cartSel').value = n; store.set('gen.cart', n); loadCart(clone(BUNDLE[n])); toggleGallery(false); };
+      gal.push({ s, cv });
+    }
+    let lt = 0;
+    const loop = (now) => {
+      if (!document.body.classList.contains('gallery')) return;
+      const dt = lt ? Math.min(0.1, (now - lt) / 1000) : 1 / 30; lt = now;
+      for (const g of gal) { const r = g.cv.getBoundingClientRect(); if (r.bottom > 0 && r.top < innerHeight) g.s.advance(dt); }
+      requestAnimationFrame(loop);
+    };
+    requestAnimationFrame(loop);
+  }
+  if (Q.has('gallery')) toggleGallery(true);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+{
+ "id": "late-library",
+ "title": "Late Library",
+ "notes": "Second cartridge, untested by ear. Soft piano motif over Rhodes, slower (60 BPM), D major: Dmaj9 \u00b7 Bm9 \u00b7 Gmaj9 \u00b7 A9sus4.",
+ "style": "comp4",
+ "bpm": 60,
+ "bars": 8,
+ "tail": 6,
+ "master_db": 0.6,
+ "progressions": [
+  [
+   [
+    38,
+    [
+     54,
+     57,
+     61,
+     64
+    ]
+   ],
+   [
+    35,
+    [
+     50,
+     54,
+     57,
+     61
+    ]
+   ],
+   [
+    43,
+    [
+     54,
+     57,
+     59,
+     62
+    ]
+   ],
+   [
+    33,
+    [
+     55,
+     59,
+     62,
+     66
+    ]
+   ]
+  ],
+  [
+   [
+    43,
+    [
+     54,
+     57,
+     59,
+     62
+    ]
+   ],
+   [
+    42,
+    [
+     52,
+     57,
+     61,
+     64
+    ]
+   ],
+   [
+    40,
+    [
+     55,
+     59,
+     62,
+     66
+    ]
+   ],
+   [
+    33,
+    [
+     52,
+     55,
+     59,
+     62
+    ]
+   ]
+  ],
+  [
+   [
+    38,
+    [
+     54,
+     57,
+     61,
+     64
+    ]
+   ],
+   [
+    43,
+    [
+     54,
+     57,
+     59,
+     62
+    ]
+   ],
+   [
+    35,
+    [
+     50,
+     54,
+     57,
+     61
+    ]
+   ],
+   [
+    33,
+    [
+     55,
+     59,
+     62,
+     66
+    ]
+   ]
+  ]
+ ],
+ "pad": {
+  "cut": 600,
+  "gain": 0.06,
+  "send": 0.5
+ },
+ "bass": {
+  "gain": 0.15,
+  "gain2": 0.11,
+  "send": 0.08
+ },
+ "comp": {
+  "inst": "rhodes",
+  "gain": 0.12,
+  "stabGain": 0.09,
+  "send": 0.4,
+  "prob": [
+   0.2,
+   0.4
+  ]
+ },
+ "melody": {
+  "root": 62,
+  "scale": [
+   0,
+   2,
+   4,
+   7,
+   9
+  ],
+  "start": 3,
+  "range": [
+   2,
+   8
+  ],
+  "lead": "piano",
+  "gain": 0.22,
+  "send": 0.45,
+  "alt": "vibes",
+  "altGain": 0.22,
+  "altSend": 0.5,
+  "themeEvery": 3,
+  "altEvery": 3,
+  "restEvery": 4
+ },
+ "reverb": {
+  "size": 0.88,
+  "wet": 1.5
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "name": "julia-drift",
+ "title": "GEN",
+ "subtitle": "JULIA",
+ "seed": 9,
+ "bpm": 100,
+ "palette": {
+  "bg": "#120f1d",
+  "ink": "#ece6ff",
+  "accent": "#ff4fa3",
+  "dim": "#4c4470"
+ },
+ "shots": [
+  {
+   "layer": "julia",
+   "dur": 90,
+   "label": "JULIA",
+   "params": {
+    "res": 300,
+    "iter": 64,
+    "speed": 0.05,
+    "bands": 4
+   }
+  }
+ ]
+}

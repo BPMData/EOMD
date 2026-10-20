@@ -1,0 +1,92 @@
+{
+ "name": "kinetic-over-tunnel",
+ "title": "GEN",
+ "subtitle": "TYPE OVER TUNNEL",
+ "seed": 8,
+ "bpm": 120,
+ "palette": {
+  "bg": "#07070c",
+  "ink": "#dfe6ff",
+  "accent": "#ff3d7f",
+  "dim": "#2b2f4a"
+ },
+ "shots": [
+  {
+   "layer": "stack",
+   "dur": 13,
+   "label": "DIVE",
+   "params": {
+    "layers": [
+     {
+      "layer": "tunnel",
+      "params": {
+       "style": "checker",
+       "sides": 16,
+       "fill": 0.35,
+       "speed": 4.5,
+       "lines": 0.4
+      }
+     },
+     {
+      "layer": "type",
+      "params": {
+       "backdrop": 0,
+       "script": [
+        {
+         "t": 0.5,
+         "text": "FASTER",
+         "fx": "zoom"
+        },
+        {
+         "t": 1.6,
+         "text": "than",
+         "fx": "line"
+        },
+        {
+         "t": 2.2,
+         "text": "LIGHT",
+         "fx": "slam"
+        },
+        {
+         "t": 3.6,
+         "text": "into/the/tunnel",
+         "fx": "stack"
+        },
+        {
+         "t": 6.4,
+         "text": "don't",
+         "fx": "shake"
+        },
+        {
+         "t": 7.4,
+         "text": "blink",
+         "fx": "whisper"
+        },
+        {
+         "t": 9,
+         "text": "HERE",
+         "fx": "slam",
+         "x": 0,
+         "y": -0.4
+        },
+        {
+         "t": 10,
+         "text": "WE",
+         "fx": "slam",
+         "x": 0,
+         "y": 0
+        },
+        {
+         "t": 11,
+         "text": "GO",
+         "fx": "zoom",
+         "size": 1.5
+        }
+       ]
+      }
+     }
+    ]
+   }
+  }
+ ]
+}

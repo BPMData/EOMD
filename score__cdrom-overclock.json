@@ -1,0 +1,16 @@
+{
+ "id": "cdrom-overclock",
+ "title": "CD-ROM · Overclock (Track 2, all five chips)",
+ "notes": "Track 2 'Stage 1 · Overclock' (notes in proj__cdrom__track2-r2.js). The player picks the chip per channel and the tempo/transpose (defaults below; ?bpm= ?tr= and the menu). master_db per chip measured at 142.5 BPM, -3 st: -23 LUFS over two A+B loops. Clear sampler on the snes chip. vary 1 = passes with variations + energy (audio__style-overclock.js FORM); 0 = the plain A+B loop (the player's ?plain).",
+ "style": "overclock",
+ "bpm": 142.5,
+ "tr": -3,
+ "bpms": [116, 120, 124, 128, 132, 134.5, 140, 142.5, 144, 158, 160, 164, 168],
+ "bars": 8,
+ "tail": 1.5,
+ "lead": "strings",
+ "vary": 1,
+ "clear": ["snes"],
+ "master_db": {"fm": -15.38, "tia": -9.29, "beep": -17.87, "snes": -11.9, "arcade": -13.11},
+ "seed": 116
+}

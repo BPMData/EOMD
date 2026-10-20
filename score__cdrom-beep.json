@@ -1,0 +1,12 @@
+{
+ "id": "cdrom-beep",
+ "title": "CD-ROM · DOS Prompt (PC beeper)",
+ "notes": "Era-chip backing for one screensaver channel; style chip, shared 116 BPM grid.",
+ "style": "chip",
+ "chip": "beep",
+ "bpm": 116,
+ "bars": 8,
+ "tail": 1.5,
+ "master_db": -18.19,
+ "seed": 116
+}

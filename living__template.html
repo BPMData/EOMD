@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mr. Murphy’s Sustained Silent Reading</title>
+<style>
+/* Bagel Fat One and EB Garamond: SIL Open Font License 1.1. Subset to Latin-1. */
+@font-face{font-family:"Bagel Fat One";src:url(data:font/woff2;base64,__BAGEL__) format("woff2");font-display:block}
+@font-face{font-family:"EB Garamond";src:url(data:font/woff2;base64,__EBG__) format("woff2");font-weight:400 800;font-style:normal;font-display:block}
+@font-face{font-family:"EB Garamond";src:url(data:font/woff2;base64,__EBGI__) format("woff2");font-weight:400 800;font-style:italic;font-display:block}
+:root{--bg:#000;--chip:#262626;--chipfg:#F4E8CC;--chipline:#6b6455;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#000;--chip:#262626;--chipfg:#F4E8CC}}
+:root[data-theme="dark"]{--bg:#000;--chip:#262626;--chipfg:#F4E8CC}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{height:100%;margin:0;background:var(--bg);overflow:hidden}
+body.idle{cursor:none}
+#cv{display:block;width:100%;height:100%;object-fit:contain}
+#ui{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);display:flex;flex-wrap:wrap;justify-content:center;gap:10px;padding:10px;border-radius:14px;background:var(--chip);opacity:0;transition:opacity .6s;pointer-events:none;max-width:calc(100vw - 24px)}
+#ui.show{opacity:1;pointer-events:auto}
+#ui button{font:600 19px/1 "EB Garamond",Georgia,serif;color:var(--chipfg);background:transparent;border:1.5px solid var(--chipline);border-radius:10px;padding:12px 18px;min-height:44px;cursor:pointer}
+#ui .vol{display:flex;align-items:center;gap:8px;color:var(--chipfg);font:600 19px/1 "EB Garamond",Georgia,serif;padding:0 6px}
+#ui select{font:600 18px/1 "EB Garamond",Georgia,serif;color:var(--chipfg);background:transparent;border:1.5px solid var(--chipline);border-radius:8px;padding:8px;min-height:44px}
+#ui select option{color:#000}
+#ui input[type=range]{width:140px;accent-color:#E3A92B}
+#ui button:focus-visible,#ui select:focus-visible,#ui input:focus-visible{outline:2px solid var(--chipfg);outline-offset:2px}
+#fps{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));left:8px;font:600 14px/1 monospace;color:#F4E8CC;background:#262626;padding:4px 6px;border-radius:6px}
+@media (prefers-reduced-motion: reduce){#ui{transition:none}}
+</style>
+</head>
+<body>
+<canvas id="cv" role="img" aria-label="Mr. Murphy’s Sustained Silent Reading: a slowly growing, living poster"></canvas>
+<div id="ui"><button id="snd" type="button">Start sound</button><label class="vol"><span>Volume</span><input id="vol" type="range" min="0" max="100" value="70"></label><button id="tmr" type="button">Start timer</button><label class="vol"><span>Minutes</span><select id="tmin"><option>10</option><option>15</option><option selected>20</option><option>25</option><option>30</option></select></label><button id="pp" type="button">Pause</button><button id="fs" type="button">Fullscreen</button></div>
+<div id="fps" hidden></div>
+<script id="audiolib">
+__AUDIOLIB__
+</script>
+<script>
+'use strict';
+const Q=new URLSearchParams(location.search);
+/* ================= constants ================= */
+const W=1920,H=1080,LW=W+256,TAU=Math.PI*2;
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const C={mustard:'#E3A92B',tomato:'#E0533A',teal:'#17837F',green:'#5DA83A',violet:'#6E4E9E',cream:'#F4E8CC',charcoal:'#262626'};
+const SUBC='#EAD69F',RUST='#A8351B',SLATE='#34404A';
+const DISP='"Bagel Fat One","Arial Black",sans-serif',SERIF='"EB Garamond",Georgia,serif';
+const DRIFT=RM?3:7,SPEED=RM?.5:1;          // whole growth drifts left like a slow stream (px/s)
+const GAP=4,LAG=44,CELL=20,WSPEED=110,WW=9; // spacing between vines, self-mark lag, grid cell, cursive speed/width
+const HW=__WORDS__;                         // Hershey Script Simplex strokes, one per word in living__words.json (public domain)
+let WB=[],WLAST='',VFONTS=[],TRIO=null;      // VFONTS/TRIO: set by a variant (e.g. living__variant-cs.js)                          // word bag: shuffled once per pass, so no word repeats until all have played
+/* ================= helpers ================= */
+const rgb=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));
+const mixc=(a,b,t)=>{const A=rgb(a),B=rgb(b);return`rgb(${A.map((v,i)=>Math.round(v+(B[i]-v)*t)).join(',')})`};
+function mulberry(a){return()=>{a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const ease=x=>x<=0?0:x>=1?1:x*x*(3-2*x),eout=x=>x<=0?0:x>=1?1:1-Math.pow(1-x,3);
+const pick=(r,a)=>a[Math.floor(r()*a.length)%a.length];
+function angDiff(a,b){let d=a-b;while(d>Math.PI)d-=TAU;while(d<-Math.PI)d+=TAU;return d}
+function lens(c,L,w){c.beginPath();c.moveTo(0,0);c.quadraticCurveTo(L*.5,-w,L,0);c.quadraticCurveTo(L*.5,w,0,0);c.closePath()}
+function circ(c,x,y,r){c.beginPath();c.arc(x,y,r,0,TAU)}
+// curl noise: curl of a seeded sum of sine waves (divergence-free, smooth, cheap)
+function makeField(r){const T=[];for(let i=0;i<4;i++){const a=r()*TAU,k=TAU/(380+r()*620);T.push({kx:Math.cos(a)*k,ky:Math.sin(a)*k,w:(r()-.5)*.08,p:r()*TAU,A:1/(i+1)})}
+ return(x,y,t)=>{let vx=0,vy=0;for(const o of T){const c=o.A*Math.cos(o.kx*x+o.ky*y+o.w*t+o.p);vx+=c*o.ky;vy-=c*o.kx}const m=Math.hypot(vx,vy)||1;return[vx/m,vy/m]}}
+/* ================= Kells look ================= */
+const K={vine:{cols:[C.mustard,C.cream,C.green,C.tomato],w:[6,12],ow:5,oc:C.charcoal,sp:52,cap:18,rate:1.4,branch:.007,leaf:.012,L:[320,780]},inner:.55,
+ leafKinds:['leaf','trefoil','bud'],leafCols:[C.mustard,C.green,C.tomato,C.cream],leafS:[26,46],fcol:C.mustard,discRate:.06,discCols:[C.cream,C.tomato,C.mustard]};
+const KIND={
+ leaf(c,p){lens(c,p.s,p.s*.32);c.fillStyle=p.col;c.fill();c.lineWidth=4;c.strokeStyle=C.charcoal;c.stroke()},
+ trefoil(c,p){for(const a of[-.65,0,.65]){c.save();c.rotate(a);KIND.leaf(c,{...p,s:p.s*(a?.75:1)});c.restore()}},
+ bud(c,p){circ(c,p.s*.45,0,p.s*.42);c.fillStyle=p.col;c.fill();c.lineWidth=4;c.strokeStyle=C.charcoal;c.stroke();circ(c,p.s*.45,0,p.s*.15);c.fillStyle=C.charcoal;c.fill()},
+ disc(c,p){const R0=p.s;circ(c,0,0,R0);c.fillStyle=C.charcoal;c.fill();c.lineWidth=10;c.strokeStyle=C.mustard;circ(c,0,0,R0-16);c.stroke();
+  c.strokeStyle=p.col;c.lineWidth=12;c.lineCap='round';c.beginPath();for(let i=0;i<=140;i++){const th=i/140*3*TAU,r=(R0-42)*i/140,x=r*Math.cos(th),y=r*Math.sin(th);i?c.lineTo(x,y):c.moveTo(x,y)}c.stroke()}};
+/* ================= text clusters (copy word for word) ================= */
+const ROLE={mr:{size:64,it:1},title:{size:100,disp:1,lh:1.02},accent:{size:66,disp:1},kicker:{size:46,disp:1},body:{size:52},sub:{size:38,it:1},item:{size:48,wt:600},small:{size:44,it:1},tl:{size:44,disp:1}};
+const VAR=[{fill:C.cream,edge:C.charcoal,mr:C.charcoal,title:C.charcoal,accent:RUST,kicker:RUST,body:C.charcoal,sub:SLATE,item:C.charcoal,small:C.charcoal,tl:C.charcoal,line:RUST},
+           {fill:C.charcoal,edge:C.mustard,mr:C.cream,title:C.cream,accent:C.mustard,kicker:C.mustard,body:C.cream,sub:SUBC,item:C.cream,small:C.cream,tl:C.cream,line:C.mustard}];
+let MSGS=[
+ [{r:'mr',t:'Mr. Murphy’s'},{r:'title',t:'Sustained Silent Reading',gap:6},{r:'accent',t:'15–20 MIN',gap:14},{r:'kicker',t:'READING RULES!',gap:6},{r:'small',t:'Lectura silentium quotidianum · the daily silent reader',gap:16}],
+ [{r:'kicker',t:'THOUGHT CATCHER 01'},{r:'title',t:'The Sticky Note',gap:4},{r:'body',t:'place ONE note inside the book while reading',gap:16},{r:'sub',t:'Pon UNA nota dentro del libro mientras lees.',gap:6},{r:'sub',t:'Coloque UMA nota dentro do livro enquanto você lê.'},{r:'item',t:'Record —',gap:18},{r:'item',t:'A key takeaway'},{r:'item',t:'A line you had to re-read'},{r:'item',t:'An unfamiliar word'}],
+ [{r:'kicker',t:'THOUGHT CATCHER 02'},{r:'title',t:'The Exit Ticket',gap:4},{r:'body',t:'hand in a slip of paper with ONE sentence —',gap:16},{r:'sub',t:'Entrega un papel con UNA oración.',gap:6},{r:'sub',t:'Entregue um papel com UMA frase.'},{r:'item',t:'A summary of what you read',gap:18},{r:'small',t:'OR'},{r:'item',t:'A connection you made'},{r:'small',t:'psst — one sentence means ONE sentence!',gap:16}],
+ [{r:'kicker',t:'THE 15–20 MIN READ · MONDAY THROUGH FRIDAY',size:40},{r:'title',t:'SILENT READING and THOUGHT CATCHING!',size:92,gap:10},{r:'sub',t:'¡Lectura en silencio y captura de ideas!',size:42,gap:14},{r:'sub',t:'Leitura silenciosa e captura de ideias!',size:42}],
+ [{r:'tl'},{r:'title',t:'TICKET OUT AT THE BELL',gap:16},{r:'sub',t:'Entrega tu tarjeta de salida al sonar el timbre.',size:42,gap:14},{r:'sub',t:'Entregue seu bilhete quando o sinal tocar.',size:42}],
+ [{r:'kicker',t:'DID YOU KNOW?',size:54},{r:'body',t:'The last reading day of each week becomes',size:58,gap:12},{r:'title',t:'DISCUSSION DAY!',size:112,gap:4},{r:'sub',t:'¡El último día de lectura de cada semana es el Día de Discusión!',gap:14},{r:'sub',t:'O último dia de leitura de cada semana vira o Dia de Discussão!'}]];
+let TICKET=[{r:'title',t:'TICKET OUT',size:200},{r:'sub',t:'Entrega tu tarjeta de salida al sonar el timbre.',size:48,gap:20},{r:'sub',t:'Entregue seu bilhete quando o sinal tocar.',size:48}];
+/*__VARIANT__*/
+function blobPath(c,bw,bh){c.beginPath();for(let i=0;i<=120;i++){const th=i/120*TAU,co=Math.cos(th),si=Math.sin(th),x=bw/2+(bw/2+22)*Math.sign(co)*Math.pow(Math.abs(co),.4)*(1+.012*Math.sin(5*th)),y=bh/2+(bh/2+22)*Math.sign(si)*Math.pow(Math.abs(si),.4)*(1+.02*Math.sin(4*th+1));i?c.lineTo(x,y):c.moveTo(x,y)}c.closePath()}
+function buildCluster(lines,vi,maxW=980){const V=VAR[vi],m=document.createElement('canvas').getContext('2d'),rows=[];let cw=0,ch=0;
+ const fnt=(R0,size)=>(R0.it?'italic ':'')+(R0.wt||(R0.disp?400:500))+' '+size+'px '+(R0.disp?DISP:SERIF);
+ for(const L of lines){const R0=ROLE[L.r],size=L.size||R0.size,f=fnt(R0,size);m.font=f;ch+=L.gap||0;
+  if(L.r==='tl'){const a='0 MIN',b='~15–20 MIN',wa=m.measureText(a).width,wb=m.measureText(b).width,rw=Math.min(maxW,wa+wb+360);cw=Math.max(cw,rw);rows.push({tl:1,f,a,b,wa,wb,rw,y:ch+size*.86,col:V.tl,line:V.line});ch+=size*1.25;continue}
+  const out=[];let line='';for(const w of L.t.split(' ')){const t=line?line+' '+w:w;if(line&&m.measureText(t).width>maxW){out.push(line);line=w}else line=t}out.push(line);
+  for(const s of out){cw=Math.max(cw,m.measureText(s).width);rows.push({s,f,col:V[L.r],y:ch+size*.86});ch+=size*(R0.lh||1.12)}}
+ const px=84,py=62,bw=cw+px*2,bh=ch+py*2,MG=60,cv=document.createElement('canvas');cv.width=Math.ceil((bw+MG*2)*S);cv.height=Math.ceil((bh+MG*2)*S);
+ const c=cv.getContext('2d');c.scale(S,S);c.translate(MG,MG);
+ blobPath(c,bw,bh);
+ c.fillStyle=V.fill;c.fill();c.lineWidth=9;c.strokeStyle=V.edge;c.stroke();
+ c.textBaseline='alphabetic';
+ for(const r of rows){c.font=r.f;c.fillStyle=r.col;
+  if(r.tl){const x0=bw/2-r.rw/2,x1=bw/2+r.rw/2,ly=py+r.y-15;c.textAlign='left';c.fillText(r.a,x0,py+r.y);c.textAlign='right';c.fillText(r.b,x1,py+r.y);
+   const la=x0+r.wa+28,lb=x1-r.wb-34;c.strokeStyle=r.line;c.fillStyle=r.line;c.lineWidth=8;c.lineCap='round';c.beginPath();c.moveTo(la,ly);c.lineTo(lb,ly);c.stroke();circ(c,lb,ly,11);c.fill()}
+  else{c.textAlign='center';c.fillText(r.s,bw/2,py+r.y)}}
+ return{cv,cw:bw+MG*2,ch:bh+MG*2,vw:bw,vh:bh}}
+/* ================= state ================= */
+const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+let LWB=null,S=1,R,field,T=0,SH=0,acc=0,G=1,vines=[],pops=[],FS=[],CLS=[],WD=null,nextF=Infinity,nextW=Infinity,msgI=0,wordI=0,WARM=false,L1,L2,gl,grid,gLeft=0,cache={},TK=null,VID=1,SEED=1;
+const tm={on:false,start:0,dur:1200,done:false,doneAt:0};
+/* ================= occupancy grid (world coords, ring buffer that scrolls with the growth) ================= */
+const GY0=-200,NR=Math.ceil((H+400)/CELL),NC=Math.ceil((LW+700)/CELL);
+function cells(wx,y,r,fn,pad=0){const x0=Math.floor((wx-r)/CELL),x1=Math.floor((wx+r)/CELL),y0=Math.max(0,Math.floor((y-r-GY0)/CELL)),y1=Math.min(NR-1,Math.floor((y+r-GY0)/CELL)),rr=(r+pad)**2;
+ for(let cx=x0;cx<=x1;cx++){const col=((cx%NC)+NC)%NC*NR,dx=(cx+.5)*CELL-wx;for(let cy=y0;cy<=y1;cy++){const dy=(cy+.5)*CELL+GY0-y;if(dx*dx+dy*dy<=rr&&fn(col+cy))return true}}return false}
+const markW=(wx,y,r,id=1)=>{cells(wx,y,r,i=>{grid[i]=id},CELL*.5)};
+const markL=(x,y,r,id=1)=>markW(x+SH,y,r,id);
+const freeL=(x,y,r,ign=0)=>!cells(x+SH,y,r,i=>grid[i]!==0&&grid[i]!==ign);
+function gridScroll(){const left=Math.floor((SH-300)/CELL);while(gLeft<left){const col=((gLeft%NC)+NC)%NC*NR;grid.fill(0,col,col+NR);gLeft++}}
+/* ================= vines ================= */
+function newVine(x,y,a,o){const V=K.vine;VID=VID%65000+2;return Object.assign({id:VID,x,y,a,len:0,L:V.L[0]+R()*(V.L[1]-V.L[0]),w0:V.w[0]+R()*(V.w[1]-V.w[0]),col:pick(R,V.cols),dir:R()<.5?-1:1,k:1/220,state:'grow',h:[[x,y]],mq:[],acc:0,depth:0,turn:1+R()*.8,free:30},o||{})}
+function vineW(v){let w=v.w0*(1-.55*Math.min(1,v.len/v.L));if(v.state==='curl')w*=Math.max(.4,1-.6*v.k/.11);return Math.max(2.5,w)}
+// interlace look: outline only the newest segment, then repaint the fill over the last ~20 px
+function drawH(h,w,col){const c=gl,V=K.vine,n=h.length;c.lineCap='round';c.lineJoin='round';
+ if(n>1){c.strokeStyle=V.oc;c.lineWidth=w+V.ow*2;c.beginPath();c.moveTo(h[n-2][0],h[n-2][1]);c.lineTo(h[n-1][0],h[n-1][1]);c.stroke()}
+ c.strokeStyle=col;c.lineWidth=w;c.beginPath();c.moveTo(h[0][0],h[0][1]);for(let i=1;i<n;i++)c.lineTo(h[i][0],h[i][1]);c.stroke()}
+function flush(v){for(const q of v.mq)markW(q[0],q[1],q[2],v.id);v.mq=[]}
+// look ahead along heading a: is there room for this vine (plus a gap) at each distance?
+function probe(x,y,a,w,ds,ign=0){const r=w/2+K.vine.ow+GAP;for(const d of ds)if(!freeL(x+Math.cos(a)*d,y+Math.sin(a)*d,r,ign))return false;return true}
+function finish(v,bud){v.state='done';flush(v);if(!bud)return;const s=K.leafS[0],bx=v.x+Math.cos(v.a)*s*.45,by=v.y+Math.sin(v.a)*s*.45;
+ if(freeL(bx,by,s*.35,v.id)){pops.push({k:'bud',x:v.x,y:v.y,a:v.a,s,col:pick(R,K.leafCols),born:T,dur:.9,seed:1});markL(bx,by,s*.5)}}
+function stepVine(v,dt){const V=K.vine;let step=V.sp*SPEED*(v.fiddle?1.9*(v.fs||1):G)*dt;const w=vineW(v);
+ if(v.state==='grow'){let ta;
+  if(v.fiddle)ta=Math.atan2(v.ty-v.y,v.tx-v.x)+.3*Math.sin(T*.8);
+  else{const f=field(v.x+SH,v.y,T);ta=Math.atan2(f[1],f[0]);if(v.y<110||v.y>H-110||v.x<0)ta=Math.atan2(H/2-v.y,W/2-v.x)}
+  const m=v.turn*dt,h0=v.a+Math.max(-m,Math.min(m,angDiff(ta,v.a)));
+  if(v.fiddle||v.len<v.free)v.a=h0;
+  else{let ok=false;for(const o of[0,.3,-.3,.6,-.6,.9,-.9,1.3,-1.3]){const hc=h0+o;if(probe(v.x,v.y,hc,w,[w+14,w+32])){const mm=(o?2.4:v.turn)*dt;v.a+=Math.max(-mm,Math.min(mm,angDiff(hc,v.a)));ok=true;break}}if(!ok)v.state='curl'}
+  if(v.fiddle&&(Math.hypot(v.tx-v.x,v.ty-v.y)<16||v.y<v.ty)){fiddleArrive(v);return}
+  if(!v.fiddle&&v.len>=v.L)v.state='curl'}
+ else{if(v.len>v.free&&!probe(v.x,v.y,v.a,w,[w+6],v.id)){finish(v,false);return}
+  step*=Math.max(.35,1-.6*v.k/.11);v.k+=.0012*step;v.a+=v.dir*v.k*step;if(v.k>=.11){finish(v,true);return}}
+ v.x+=Math.cos(v.a)*step;v.y+=Math.sin(v.a)*step;v.len+=step;v.acc+=step;
+ if(v.acc>=2.5){v.acc=0;const ww=vineW(v);v.h.push([v.x,v.y]);if(v.h.length>9)v.h.shift();drawH(v.h,ww,v.col);
+  v.mq.push([v.x+SH,v.y,ww/2+V.ow+GAP*.5,v.len]);while(v.mq.length&&v.len-v.mq[0][3]>LAG){const q=v.mq.shift();markW(q[0],q[1],q[2],v.id)}}
+ if(v.state==='grow'&&!v.fiddle){
+  if(v.depth<2&&vines.length<V.cap+8&&R()<V.branch*step){const hb=v.a+v.dir*(.5+R()*.5);if(probe(v.x,v.y,hb,w*.8,[30,55,80]))vines.push(newVine(v.x,v.y,hb,{depth:v.depth+1,w0:w*.8,L:v.L*.55,dir:-v.dir,free:26}))}
+  if(R()<V.leaf*step){const s=K.leafS[0]+R()*(K.leafS[1]-K.leafS[0]),la=v.a+(R()<.5?-1:1)*(.8+R()*.6),cx=v.x+Math.cos(la)*s*.55,cy=v.y+Math.sin(la)*s*.55;
+   if(freeL(cx,cy,s*.45)){pops.push({k:pick(R,K.leafKinds),x:v.x,y:v.y,a:la,s,col:pick(R,K.leafCols),born:T,dur:.9,seed:(R()*1e9)|0});markL(cx,cy,s*.55)}}}
+ if(v.x<-150||v.y<-200||v.y>H+200)finish(v,false)}
+function spawnRoot(){for(let k=0;k<6;k++){const q=R();let x,y,a;
+ if(q<K.inner){x=220+R()*(W-320);y=160+R()*(H-320);a=R()*TAU}else if(q<K.inner+.3){x=W+30+R()*150;y=120+R()*(H-240);a=Math.PI+(R()-.5)*1.2}else if(q<K.inner+.42){x=R()*W;y=H+30;a=-Math.PI/2+(R()-.5)}else{x=R()*W;y=-30;a=Math.PI/2+(R()-.5)}
+ if(freeL(x,y,40)&&freeL(x+Math.cos(a)*70,y+Math.sin(a)*70,40)){vines.push(newVine(x,y,a));return}}}
+function spawnDisc(){const s=110+R()*80,x=W*.35+R()*W*.65,y=s+60+R()*(H-2*s-120);if(freeL(x,y,s+14)){pops.push({k:'disc',x,y,a:R()*TAU,s,col:pick(R,K.discCols),born:T,dur:2.5,seed:1});markL(x,y,s+10)}}
+function drawPop(c,p,k){c.save();c.translate(p.x,p.y);c.rotate(p.a);const s=Math.max(.001,k);c.scale(s,s);KIND[p.k](c,p);c.restore()}
+/* ================= fiddlehead → text cluster ================= */
+function startFiddle(){if(TRIO)return startTrio();let best=null;const cl=cache[msgI]||(cache[msgI]=buildCluster(MSGS[msgI],msgI%2));
+ for(const fx of[.2,.28,.36,.44,.52]){const tx=W*fx,ty=H*.72;let occ=R()*.5;for(let y=ty;y<H;y+=CELL)if(!freeL(tx-30,y,8))occ++;
+  if(LWB){// keep the coming text cluster off the most recent cursive word
+   const cx=Math.max(cl.vw/2+60,Math.min(W-cl.vw/2-60,tx+cl.vw/2-80)),cy=Math.max(cl.vh/2+40,Math.min(H-cl.vh/2-40,ty-cl.vh/2+40)),wx=LWB.x-SH-70;
+   const ox=Math.max(0,Math.min(cx+cl.vw/2,wx+LWB.w)-Math.max(cx-cl.vw/2,wx)),oy=Math.max(0,Math.min(cy+cl.vh/2,LWB.y+LWB.h)-Math.max(cy-cl.vh/2,LWB.y));occ+=100*ox*oy/(LWB.w*LWB.h)}if(!best||occ<best.occ)best={tx,ty,occ}}
+ const v=newVine(best.tx-60+R()*30,H+40,-Math.PI/2,{fiddle:true,tx:best.tx,ty:best.ty,w0:K.vine.w[1]+3,L:1e9,col:K.fcol,turn:1.6});vines.push(v);FS.push(v.F={phase:'stem',v,msg:msgI});msgI=(msgI+1)%MSGS.length}
+function fiddleArrive(v){v.state='done';flush(v);Object.assign(v.F,{phase:'curl',t0:T,ax:v.x,ay:v.y,a0:v.a,w:vineW(v),dir:R()<.5?-1:1,Lf:0,c:1})}
+// clothoid tip: curvature grows with arc length, so it curls tightly at the end like a fern
+function tipPts(F){const N=56,ds=Math.max(.01,F.Lf)/N,p=[[F.ax,F.ay]];let x=F.ax,y=F.ay,a=F.a0;for(let i=1;i<=N;i++){a+=F.dir*F.c*.11*Math.pow(i*ds/220,1.6)*ds;x+=Math.cos(a)*ds;y+=Math.sin(a)*ds;p.push([x,y])}return p}
+function drawTip(c,pts,F){const V=K.vine,n=pts.length-1,wAt=i=>Math.max(2.5,F.w*(1-.78*(i/n)*(F.Lf/220)));c.lineCap='round';c.lineJoin='round';
+ for(let i=1;i<=n;i++){c.lineWidth=wAt(i)+V.ow*2;c.strokeStyle=V.oc;c.beginPath();c.moveTo(pts[i-1][0],pts[i-1][1]);c.lineTo(pts[i][0],pts[i][1]);c.stroke()}
+ c.strokeStyle=F.v.col;c.lineWidth=F.w;c.beginPath();c.moveTo(F.ax-Math.cos(F.a0)*16,F.ay-Math.sin(F.a0)*16);c.lineTo(F.ax,F.ay);c.stroke();
+ for(let i=1;i<=n;i++){c.lineWidth=wAt(i);c.beginPath();c.moveTo(pts[i-1][0],pts[i-1][1]);c.lineTo(pts[i][0],pts[i][1]);c.stroke()}}
+function stepFiddle(){for(let i=FS.length-1;i>=0;i--){const F=FS[i];if(F.phase==='stem')continue;const e=T-F.t0;
+ if(F.phase==='curl'){F.Lf=220*eout(e/2.6);if(e>=2.6){F.phase='hold';F.t0=T}}
+ else if(F.phase==='hold'){if(e>=1.2){F.phase='unfurl';F.t0=T}}
+ else if(F.phase==='unfurl'){F.c=1-.85*ease(e/2.2);if(e>=2.2){const pts=tipPts(F);drawTip(gl,pts,F);for(let i=0;i<pts.length;i+=3)markL(pts[i][0],pts[i][1],F.w/2+K.vine.ow+GAP*.5);const q=pts[pts.length-1];startCluster(q[0]-acc,q[1],F);FS.splice(i,1)}}}}
+function startCluster(ax,ay,F){let cl,fx,fy;if(F.card){cl=F.card;fx=Math.max(cl.vw/2+30,Math.min(W-cl.vw/2-30,F.sx-acc));fy=F.sy}
+ else{const mi=F.msg;cl=cache[mi]||(cache[mi]=buildCluster(MSGS[mi],mi%2));fx=Math.max(cl.vw/2+60,Math.min(W-cl.vw/2-60,ax+cl.vw/2-80));fy=Math.max(cl.vh/2+40,Math.min(H-cl.vh/2-40,ay-cl.vh/2+40))}CLS.push({cl,ax,ay,fx,fy,t0:T,start:T,phase:'in'})}
+function stepCluster(dt){const d=DRIFT*dt;for(let i=CLS.length-1;i>=0;i--){const CL=CLS[i];CL.ax-=d;CL.fx-=d;const e=T-CL.t0;
+ if(CL.phase==='in'&&e>=2.6){CL.phase='hold';CL.t0=T}else if(CL.phase==='hold'&&e>=13){CL.phase='out';CL.t0=T}else if(CL.phase==='out'&&e>=2.6){CLS.splice(i,1);if(!CLS.length)nextF=T+3.5}}}
+// grows out of the fiddlehead tip, floats like a leaf (drift 7 px/s, bob ±4 px, tilt ≤2°), then sinks back into it
+function drawCluster(c){for(const CL of CLS){const e=T-CL.t0,s=CL.phase==='in'?eout(e/2.6):CL.phase==='out'?1-ease(e/2.6):1,tau=T-CL.start;
+ const cx=CL.ax+(CL.fx-CL.ax)*s,cy=CL.ay+(CL.fy-CL.ay)*s+(RM?0:4*Math.sin(TAU*.18*tau)),rot=RM?0:.035*Math.sin(TAU*.06*tau),k=Math.max(.001,s);
+ c.setTransform(S,0,0,S,0,0);c.translate(cx,cy);c.rotate(rot);c.scale(k,k);c.drawImage(CL.cl.cv,-CL.cl.cw/2,-CL.cl.ch/2,CL.cl.cw,CL.cl.ch)}}
+/* ================= a vine that writes a word (real single-stroke Hershey Script, drawn in stroke order) ================= */
+function buildWord(d,x0,y0,s){const bx=d.bbox[0],by=d.bbox[1],P=[],dots=[],X=u=>x0+(u-bx)*s+SH,Y=u=>y0+(u-by)*s;
+ const go=(x,y,pen)=>{const l=P[P.length-1];if(pen&&l){const dx=x-l.x,dy=y-l.y,n=Math.max(1,Math.ceil(Math.hypot(dx,dy)/3));for(let i=1;i<=n;i++)P.push({x:l.x+dx*i/n,y:l.y+dy*i/n,pen:1})}else P.push({x,y,pen:0})};
+ const p0=d.paths[0][0],fx=X(p0[0]),fy=Y(p0[1]);
+ for(let i=0;i<=16;i++){const u=i/16;go(fx-150*(1-u),fy+70*(1-u)*(1-u)-26*Math.sin(u*Math.PI),i>0)} // lead-in tendril
+ d.paths.forEach((p,k)=>{if(k){const q=d.paths[k-1][d.paths[k-1].length-1];go(X(p[0][0]),Y(p[0][1]),Math.hypot(p[0][0]-q[0],p[0][1]-q[1])<=10)}for(let i=1;i<p.length;i++)go(X(p[i][0]),Y(p[i][1]),1)});
+ const e1=P[P.length-1],e0=P[P.length-5]||e1,end={x:e1.x,y:e1.y,a:Math.atan2(e1.y-e0.y,e1.x-e0.x)};
+ for(const l of d.lifts){const xs=l.map(q=>q[0]),ys=l.map(q=>q[1]),ax=Math.min(...xs),bx2=Math.max(...xs),ay=Math.min(...ys),by2=Math.max(...ys);
+  if(bx2-ax<=2&&by2-ay<=2){dots.push({x:X((ax+bx2)/2),y:Y((ay+by2)/2)});continue}go(X(l[0][0]),Y(l[0][1]),0);for(let i=1;i<l.length;i++)go(X(l[i][0]),Y(l[i][1]),1)}
+ return{P,dots,end,i:0,acc:0,h:[],col:pick(R,[C.cream,C.mustard])}}
+function startWord(){if(!WB.length){WB=Object.keys(HW);for(let i=WB.length-1;i>0;i--){const j=Math.floor(R()*(i+1));[WB[i],WB[j]]=[WB[j],WB[i]]}
+  if(WB.length>1&&WB[WB.length-1]===WLAST)[WB[0],WB[WB.length-1]]=[WB[WB.length-1],WB[0]]}
+ const name=WB[WB.length-1],d=HW[name],s=9,bw=(d.bbox[2]-d.bbox[0])*s+190,bh=(d.bbox[3]-d.bbox[1])*s+60;let best=null;
+ for(let k=0;k<16;k++){const x=200+R()*(W-bw-260),y=110+R()*(H-bh-200);
+  if(CLS.some(CL=>Math.abs(x+bw/2-CL.fx)<(bw+CL.cl.vw)/2&&Math.abs(y+bh/2-CL.fy)<(bh+CL.cl.vh)/2))continue;
+  let n=0,tot=0;for(let cx=x;cx<x+bw;cx+=CELL)for(let cy=y;cy<y+bh;cy+=CELL){tot++;if(!freeL(cx,cy,1))n++}const fr=n/tot;if(!best||fr<best.fr)best={x,y,fr}}
+ if(!best||best.fr>.12){nextW=T+8;return} // wait for the stream to clear some room
+ wordI++;WLAST=WB.pop();LWB={x:best.x+SH,y:best.y,w:bw,h:bh};for(let cx=best.x;cx<best.x+bw;cx+=CELL)for(let cy=best.y;cy<best.y+bh;cy+=CELL)markL(cx,cy,CELL*.6); // reserve the space
+ WD=buildWord(d,best.x+160,best.y+30,s)}
+function stepWord(dt){if(!WD)return;WD.acc+=WSPEED*SPEED*dt;
+ while(WD.acc>=3&&WD.i<WD.P.length){WD.acc-=3;const p=WD.P[WD.i++],lx=p.x-SH;if(!p.pen){WD.h=[[lx,p.y]];continue}WD.h.push([lx,p.y]);if(WD.h.length>9)WD.h.shift();drawH(WD.h,WW,WD.col)}
+ if(WD.i>=WD.P.length){const s=24;for(const q of WD.dots)pops.push({k:'bud',x:q.x-SH-s*.45,y:q.y,a:0,s,col:WD.col,born:T,dur:.9,seed:1});
+  vines.push(newVine(WD.end.x-SH,WD.end.y,WD.end.a,{L:40,free:400,w0:WW,col:WD.col,depth:2}));WD=null;nextW=T+35+R()*15}} // next word 35-50 s after this one finishes (about 1 a minute)
+/* ================= session timer (bottom edge) + TICKET OUT card ================= */
+function drawTimer(c){if(!tm.on)return;const now=Date.now(),f=Math.min(1,(now-tm.start)/1000/tm.dur),x0=200,x1=1720,y=1038,mins=tm.dur/60,xe=x0+(x1-x0)*f;
+ c.setTransform(S,0,0,S,0,0);c.fillStyle=C.cream;for(let i=0;i<=mins;i++){circ(c,x0+(x1-x0)*i/mins,y,i%5?3:5);c.fill()}
+ c.lineCap='round';c.strokeStyle=C.charcoal;c.lineWidth=20;c.beginPath();c.moveTo(x0,y);c.lineTo(Math.max(x0+1,xe),y);c.stroke();c.strokeStyle=C.mustard;c.lineWidth=10;c.stroke();
+ circ(c,xe,y,13);c.fillStyle=C.cream;c.fill();c.lineWidth=4;c.strokeStyle=C.charcoal;c.stroke();circ(c,xe,y,5);c.fillStyle=C.charcoal;c.fill();
+ if(f>=1&&!tm.done){tm.done=true;tm.doneAt=now;chime()}}
+function drawTicket(c){if(!(tm.on&&tm.done&&TICKET))return;if(!TK)TK=buildCluster(TICKET,0,1200);const k=Math.max(.001,eout((Date.now()-tm.doneAt)/2000));
+ c.setTransform(S,0,0,S,0,0);c.translate(W/2,H/2-20);c.scale(k,k);c.drawImage(TK.cv,-TK.cw/2,-TK.ch/2,TK.cw,TK.ch)}
+/* ================= time-left readout (top-right): yellow Bagel Fat One, updates in 10-second steps (Bryan, Oct 9) ================= */
+// Shows while the session timer runs, on top of everything. The time is rounded UP to the step: a 20-min timer shows 20:00 for 10 s, then 19:50, 19:40 ...
+// so students see roughly how long is left without watching seconds tick. Knobs: CLOCK.step (seconds per update), size, ink, edge, right/top margins. ?noclock hides it.
+const CLOCK={step:10,size:92,ink:'#FFD100',edge:'#262626',edgeW:14,right:56,top:40};
+const clockText=()=>{const rem=tm.done?0:Math.max(0,tm.dur-(Date.now()-tm.start)/1000),q=Math.ceil(rem/CLOCK.step-1e-9)*CLOCK.step;return Math.floor(q/60)+':'+String(q%60).padStart(2,'0')};
+function drawClock(c){if(!tm.on||Q.has('noclock'))return;const s=clockText();c.save();c.setTransform(S,0,0,S,0,0);c.font='400 '+CLOCK.size+'px '+DISP;c.textAlign='right';c.textBaseline='alphabetic';c.lineJoin='round';
+ const x=W-CLOCK.right,y=CLOCK.top+CLOCK.size*.82;c.lineWidth=CLOCK.edgeW;c.strokeStyle=CLOCK.edge;c.strokeText(s,x,y);c.fillStyle=CLOCK.ink;c.fillText(s,x,y);c.restore()}
+/* ================= growth layer: drawn incrementally, scrolled by whole device pixels ================= */
+function mkLayer(){const b=document.createElement('canvas');b.width=Math.ceil(LW*S);b.height=Math.ceil(H*S);return b}
+function shift(dpx){const o=L2.getContext('2d');o.setTransform(1,0,0,1,0,0);o.clearRect(0,0,L2.width,L2.height);o.drawImage(L1,-dpx,0);[L1,L2]=[L2,L1];gl=L1.getContext('2d');gl.setTransform(S,0,0,S,0,0);
+ const w=dpx/S;acc-=w;SH+=w;for(const v of vines){v.x-=w;for(const q of v.h)q[0]-=w;if(v.fiddle)v.tx-=w}for(const p of pops)p.x-=w;for(const F of FS){if(F.ax!==undefined)F.ax-=w;if(F.sx!==undefined)F.sx-=w}if(WD)for(const q of WD.h)q[0]-=w}
+/* ================= simulation ================= */
+function step(dt){T+=dt;G+=((CLS.length?.35:1)-G)*Math.min(1,dt*.7); // growth slows while text is up
+ acc+=DRIFT*dt;const dpx=Math.floor(acc*S);if(dpx>=1)shift(dpx);gridScroll();
+ const roots=vines.filter(v=>!v.depth&&!v.fiddle).length;if(roots<K.vine.cap&&R()<K.vine.rate*G*dt)spawnRoot();
+ if(R()<K.discRate*G*dt)spawnDisc();
+ if(!WARM&&!FS.length&&!CLS.length&&T>=nextF){startFiddle();nextF=Infinity}
+ if(!WARM&&!WD&&T>=nextW&&(CLS.some(c=>c.phase==='hold')||(TRIO&&!CLS.length)))startWord(); // write words while a cluster is open, beside it (a trio fills too much, so CS also writes between blooms; the next trio steers clear)
+ for(let i=0;i<vines.length;i++)if(vines[i].state!=='done')stepVine(vines[i],dt);
+ vines=vines.filter(v=>v.state!=='done');
+ for(let i=pops.length-1;i>=0;i--){const p=pops[i];if(WARM||T-p.born>=p.dur){drawPop(gl,p,1);pops.splice(i,1)}}
+ stepFiddle();stepCluster(dt);stepWord(dt)}
+function draw(){const c=ctx;c.setTransform(S,0,0,S,0,0);c.fillStyle=mixc('#17504D','#2A2E57',.5+.5*Math.sin(TAU*T/90));c.fillRect(0,0,W,H);
+ c.setTransform(1,0,0,1,0,0);c.drawImage(L1,-acc*S,0);
+ c.setTransform(S,0,0,S,-acc*S,0);for(const p of pops)drawPop(c,p,eout((T-p.born)/p.dur));for(const F of FS)if(F.phase!=='stem')drawTip(c,tipPts(F),F);
+ drawTimer(c);if(!(tm.on&&tm.done&&TICKET))drawCluster(c);drawTicket(c);drawClock(c)}
+function size(){const dpr=Math.min(devicePixelRatio||1,2),bw=Math.max(480,Math.min(W,Math.round(Math.min(innerWidth,innerHeight*16/9)*dpr)));if(bw===cv.width)return false;cv.width=bw;cv.height=Math.round(bw*9/16);S=bw/W;return true}
+function init(seed){SEED=seed;R=mulberry(seed);field=makeField(mulberry(seed*7+1));T=0;SH=0;acc=0;G=1;vines=[];pops=[];FS=[];CLS=[];WD=null;cache={};TK=null;msgI=0;wordI=Math.floor(R()*4);
+ grid=new Uint16Array(NC*NR);gLeft=Math.floor(-300/CELL);L1=mkLayer();L2=mkLayer();gl=L1.getContext('2d');gl.setTransform(S,0,0,S,0,0);
+ WARM=true;for(let i=0;i<750;i++)step(1/30);WARM=false;nextF=T+.5;nextW=T+40} // pre-grow 25 s so it never starts empty
+/* ================= controls: hidden until mouse move or tap, fade after 3 s ================= */
+const ui=document.getElementById('ui'),pp=document.getElementById('pp'),fs=document.getElementById('fs');let hideT=0,paused=false;
+function poke(){ui.classList.add('show');document.body.classList.remove('idle');clearTimeout(hideT);hideT=setTimeout(()=>{ui.classList.remove('show');document.body.classList.add('idle')},3000)}
+function togglePause(){paused=!paused;pp.textContent=paused?'Play':'Pause'}
+const de=document.documentElement,canFS=!!(de.requestFullscreen||de.webkitRequestFullscreen);
+function toggleFS(){if(document.fullscreenElement||document.webkitFullscreenElement)(document.exitFullscreen||document.webkitExitFullscreen).call(document);else(de.requestFullscreen||de.webkitRequestFullscreen).call(de)}
+if(!canFS)fs.hidden=true;
+pp.onclick=togglePause;fs.onclick=toggleFS;
+addEventListener('mousemove',poke);addEventListener('pointerdown',poke);
+addEventListener('keydown',e=>{poke();if(e.key===' '){togglePause();e.preventDefault()}else if((e.key==='f'||e.key==='F')&&canFS)toggleFS()});
+document.body.classList.add('idle');
+// resize / fullscreen in or out: keep everything (growth, cards on screen, words, timer) and only re-scale the canvases.
+// Was init(SEED), which restarted the whole poster (Bryan, Oct 9). The growth layer is redrawn at the new scale; card art re-renders sharp on its next bloom.
+function rescale(){const n1=mkLayer(),c=n1.getContext('2d');c.imageSmoothingQuality='high';c.drawImage(L1,0,0,n1.width,n1.height);
+ L1=n1;L2=mkLayer();gl=L1.getContext('2d');gl.setTransform(S,0,0,S,0,0);for(const k in cache)delete cache[k];TK=null;draw()}
+addEventListener('resize',()=>{if(size()&&L1)rescale()});
+/* ================= main loop (uncapped; time-based, so frame rate never changes speed) ================= */
+const fpsEl=document.getElementById('fps');if(Q.has('fps'))fpsEl.hidden=false;
+let last=0,lastDraw=0,fc=0,fw=0,cost=0;
+function frame(now){requestAnimationFrame(frame);if(!last)last=now;const dt=Math.min(.05,(now-last)/1000);last=now;
+ if(paused){if(now-lastDraw>=250){lastDraw=now;draw()}return}
+ const t0=performance.now();step(dt);draw();lastDraw=now;
+ if(!fpsEl.hidden){cost+=performance.now()-t0;fc++;fw+=dt;if(fw>=1){fpsEl.textContent=`${Math.round(fc/fw)} fps · ${(cost/fc).toFixed(1)} ms`;fc=0;fw=0;cost=0}}}
+// capture hooks: ?manual stops the loop; advance(seconds) steps at 60 Hz then draws one frame
+window.advance=(sec,hz=60)=>{const n=Math.round(sec*hz);for(let i=0;i<n;i++)step(1/hz);draw()};
+window.LIVING={ov:()=>{const CL=CLS[0];if(!LWB||!CL)return 0;const c=CL.cl,wx=LWB.x-SH,ox=Math.max(0,Math.min(CL.fx+c.vw/2,wx+LWB.w)-Math.max(CL.fx-c.vw/2,wx)),oy=Math.max(0,Math.min(CL.fy+c.vh/2,LWB.y+LWB.h)-Math.max(CL.fy-c.vh/2,LWB.y));return wx+LWB.w<0?0:ox*oy/(LWB.w*LWB.h)},dbg:()=>{const CL=CLS[0],F=FS[0];return{T:+T.toFixed(1),cl:CL&&CL.phase,clt0:CL&&+CL.t0.toFixed(1),clfx:CL&&Math.round(CL.fx),F:F&&F.phase,nextF:+(+nextF).toFixed(1),vines:vines.length,msgI,cards:CLS.length}},state:()=>({T,vines:vines.length,pops:pops.length,fiddle:FS[0]&&FS[0].phase,cluster:CLS[0]&&CLS[0].phase,word:!!WD,msgI})};
+size();
+window.ready=Promise.race([Promise.all(['400 100px "Bagel Fat One"','500 48px "EB Garamond"','600 48px "EB Garamond"','italic 400 48px "EB Garamond"',...VFONTS].map(f=>document.fonts.load(f))),new Promise(r=>setTimeout(r,3000))])
+ .then(()=>{init(+Q.get('vseed')||((Date.now()%1e9)|0));if(!Q.has('manual'))requestAnimationFrame(frame);else draw()});
+/*__SOUND_TIMER_WAKE__*/
+</script>
+</body>
+</html>

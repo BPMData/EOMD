@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Dust Type</title>
+<!--
+  DUST TYPE · stage 1 sketch r2 (Oct 15, 2026: more mixing, faster dust). Study of the packed-powder letter drop (title cards in the
+  ALT VFX / Semi-Permanent style). One physics sim per letter is baked once at load:
+  impact -> fracture chunks -> radial burst on the floor + splash toward the camera (top-down view),
+  drag, gravity on height, curl-noise turbulence. Played FORWARD = letters to dust,
+  BACKWARD = dust to letters (the reversed-footage trick, so the coalesce is physically consistent).
+  URL: ?word=DUST ?mode=both|explode|assemble ?n=7000 ?seed=7 ?speed=1 ?manual (renderAt(t)/advance(dt))
+  Keys: Space play/pause · 1 both · 2 letters->dust · 3 dust->letters · R reseed
+  Font: Montserrat Bold (SIL Open Font License 1.1, embedded).
+-->
+<style>
+@font-face{font-family:'DustSans';src:url(data:font/ttf;base64,/*__FONT__*/) format('truetype');font-weight:700;font-style:normal}
+html,body{margin:0;height:100%;background:#000;overflow:hidden}
+canvas{display:block;width:100vw;height:100vh}
+#ui{position:fixed;left:50%;bottom:max(16px,env(safe-area-inset-bottom));transform:translateX(-50%);display:flex;gap:8px;align-items:center;
+  padding:10px 14px;background:rgba(8,16,18,.86);border:1px solid #1d3236;border-radius:12px;font:14px/1.2 system-ui,-apple-system,sans-serif;
+  color:#cfe7e4;transition:opacity .4s;flex-wrap:wrap;justify-content:center;max-width:calc(100vw - 32px);box-sizing:border-box}
+#ui.hide{opacity:0;pointer-events:none}
+button,select,input{font:inherit;color:#dff3f0;background:#14262a;border:1px solid #2a464b;border-radius:8px;padding:6px 10px}
+button{cursor:pointer}
+button.on{background:#2fb59a;color:#03140f;border-color:#2fb59a}
+input[type=range]{width:200px;padding:0;accent-color:#5cc8e8}
+#iWord{width:7em;text-transform:uppercase}
+#msg{opacity:.8;min-width:4em}
+</style></head><body>
+<canvas id="c" aria-label="Letters bursting into coloured dust and re-forming"></canvas>
+<div id="ui">
+  <button id="bPlay" title="Space">❚❚</button>
+  <button data-m="both" title="1">Both</button>
+  <button data-m="explode" title="2">Letters → Dust</button>
+  <button data-m="assemble" title="3">Dust → Letters</button>
+  <input id="scrub" type="range" min="0" max="1000" value="0" aria-label="Scrub">
+  <select id="sSpeed" aria-label="Speed"><option value="0.25">0.25×</option><option value="0.5">0.5×</option><option value="1">1×</option></select>
+  <select id="sN" aria-label="Dust particles"><option value="1500">1.5k dust</option><option value="3000">3k dust</option><option value="5000">5k dust</option></select>
+  <input id="iWord" maxlength="10" aria-label="Word (Enter)">
+  <button id="bSeed" title="R">Reseed</button>
+  <span id="msg"></span>
+</div>
+<script>
+(()=>{'use strict';
+// ===================== KNOBS =====================
+const K={
+  N:3000,            // dust particles (UI / ?n=)
+  SIZE:340,          // font size in design px (1920x1080); shrinks to fit long words
+  WEIGHT:700, TRACK:0.03,   // letter spacing (em)
+  PALETTE:['#5cc8e8','#3e9cc9','#2fb59a','#e9efee'],   // cyan, blue, teal, chalk white
+  BG:'#05090b',
+  HOLD:1.8,          // s of crisp letters at each end of the loop
+  CRACK:0.45,        // s for cracks to spread before a letter bursts (and to heal after)
+  STAG:0.16,         // s between letters, left to right, both directions
+  BURST:3.8,         // s of simulated burst
+  ASM_SLOW:1.35,     // dust->letters leg = BURST x this (slow-motion feel)
+  CHUNKS:13,         // fracture chunks per letter
+  IMPULSE:330,       // px/s outward kick on the floor
+  FAN:1.3,           // radians of random spread in each chunk's direction (chunks cross = colours mix)
+  SPREAD:1.3,        // chunks expand internally (1/s): how fast a chunk loses its shape
+  JIT:80,            // per-grain random velocity at impact, px/s
+  DIFF:110,          // ongoing random jostle per grain (Brownian), px/s per sqrt(s): dissolves blob edges
+  SPLASH:520,        // kick toward the camera, px/s
+  GRAV:900, DRAG:1.15, FLOOR:0.45,         // gravity on height; air drag; extra drag sliding on the floor
+  TURB:230, TURB_SCALE:0.0045, TURB_SPEED:0.45,  // curl-noise billow: speed px/s, spatial freq, evolution
+  WIND:[30,-12],     // slow drift of the whole cloud, px/s
+  GROW:8, GROW_RATE:1.1,                    // puff radius growth (x grain spacing), how fast
+  MIX_A:0.38,        // puff opacity once fully spread (lower = puffs melt into one cloud)
+  PERSP:0.0009,      // parallax/scale per px of height (camera looks straight down)
+  GRIT:0.03,         // share of grains that are fast bright specks
+  STAGES:6,          // crack growth steps
+  BOKEH:7, LETTERBOX:true, DUST_RES:0.5, SEED:7   // DUST_RES: dust buffer = 1920x1080 x this, on every screen
+};
+// =================================================
+const Q=new URLSearchParams(location.search);
+const clean=s=>(s||'').toUpperCase().replace(/[^A-Z0-9\-!?&]/g,'').slice(0,10);
+let WORD=clean(Q.get('word'))||'DUST';
+let N=+Q.get('n')||K.N, SEED=+Q.get('seed')||K.SEED;
+let MODE=['both','explode','assemble'].includes(Q.get('mode'))?Q.get('mode'):'both';
+let SPEED=+Q.get('speed')||1;
+const MANUAL=Q.has('manual');
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const DW=1920, DH=1080;
+
+const cv=document.getElementById('c'), ctx=cv.getContext('2d');
+const dcv=document.createElement('canvas'), dctx=dcv.getContext('2d');
+let W=1,H=1,DPR=1,FS=1,OX=0,OY=0;
+
+const rng=seed=>{let a=seed>>>0;return()=>{a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}};
+const hex2=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));
+const clamp=(x,a,b)=>x<a?a:x>b?b:x;
+const sm=(a,b,x)=>{x=clamp((x-a)/(b-a),0,1);return x*x*(3-2*x)};
+const mk=(w,h)=>{const c=document.createElement('canvas');c.width=Math.max(1,w);c.height=Math.max(1,h);return c};
+
+// ---------- sprites ----------
+const SHADES=[0.42,0.58,0.72,0.86,1.0,1.12], NSOFT=5, NSH=SHADES.length;
+let SPR=[], SHADOW, BOKSPR;   // SPR[(colour*NSOFT+soft)*NSH+shade]: soft 0 = packed powder ball, 4 = loose smoke
+function makeSprites(){
+  const S=64;SPR=[];
+  K.PALETTE.forEach(h=>{const c=hex2(h);for(let q=0;q<NSOFT;q++){const m=q/(NSOFT-1);SHADES.forEach(s0=>{
+    const s=s0+(0.8-s0)*0.45*m;   // looser dust = flatter light
+    const cn=mk(S,S), g=cn.getContext('2d');
+    const col=(k,a)=>`rgba(${c.map(v=>Math.round(clamp(v*k,0,255))).join(',')},${a})`;
+    const hx=S*(0.4+0.1*m),gr=g.createRadialGradient(hx,hx,0,S/2,S/2,S/2);
+    gr.addColorStop(0,col(s*(1.12-0.1*m),1));gr.addColorStop(0.45-0.15*m,col(s,0.92-0.2*m));
+    gr.addColorStop(0.75-0.1*m,col(s*(0.82+0.1*m),0.45-0.15*m));gr.addColorStop(1,col(s*0.75,0));
+    g.fillStyle=gr;g.fillRect(0,0,S,S);SPR.push(cn);});}});
+  SHADOW=mk(S,S);{const g=SHADOW.getContext('2d'),gr=g.createRadialGradient(S/2,S/2,0,S/2,S/2,S/2);
+    gr.addColorStop(0,'rgba(1,6,8,0.75)');gr.addColorStop(0.6,'rgba(1,6,8,0.35)');gr.addColorStop(1,'rgba(1,6,8,0)');g.fillStyle=gr;g.fillRect(0,0,S,S);}
+  BOKSPR=mk(128,128);{const g=BOKSPR.getContext('2d'),gr=g.createRadialGradient(64,64,0,64,64,64);
+    gr.addColorStop(0,'rgba(70,150,150,0.55)');gr.addColorStop(0.82,'rgba(80,165,165,0.7)');gr.addColorStop(0.93,'rgba(90,175,175,0.45)');gr.addColorStop(1,'rgba(90,175,175,0)');
+    g.fillStyle=gr;g.fillRect(0,0,128,128);}
+}
+
+// ---------- layout, fracture, grains ----------
+let LET=[], M=0, F=0, sp=4, BX,BY,BZ, HX,HY,CI,SH,RR,GR,CH, BOK=[];
+const fontOf=s=>`${K.WEIGHT} ${s}px DustSans, sans-serif`;
+function colorAt(L,x,y){const t=L.orient?(y-L.y0)/L.h:(x-L.x0)/L.w;return t<L.split?L.cA:L.cB}
+
+function layout(){
+  const R=rng(SEED*31+5);
+  const m=mk(DW,DH), g=m.getContext('2d',{willReadFrequently:true});
+  const chars=[...WORD]; let size=K.SIZE, ws, total;
+  const measure=()=>{g.font=fontOf(size);ws=chars.map(c=>g.measureText(c).width);total=ws.reduce((a,b)=>a+b,0)+K.TRACK*size*(chars.length-1)};
+  measure(); if(total>DW*0.86){size*=DW*0.86/total;measure();}
+  const capH=g.measureText('H').actualBoundingBoxAscent||size*0.7, base=DH/2+capH/2;
+  let x=DW/2-total/2;
+  LET=chars.map((c,i)=>{const L={c,i,x,adv:ws[i],base,size};x+=ws[i]+K.TRACK*size;return L});
+  g.fillStyle='#fff';g.textBaseline='alphabetic';g.font=fontOf(size);
+  LET.forEach(L=>g.fillText(L.c,L.x,L.base));
+  const im=g.getImageData(0,0,DW,DH).data;
+  const mask=new Uint8Array(DW*DH), own=new Int8Array(DW*DH).fill(-1), chunk=new Int8Array(DW*DH).fill(-1);
+  const colOwn=new Int8Array(DW);
+  for(let px=0;px<DW;px++){let o=0;for(let i=0;i<LET.length-1;i++){const b=(LET[i].x+LET[i].adv+LET[i+1].x)/2;if(px>b)o=i+1;}colOwn[px]=o;}
+  LET.forEach(L=>{L.x0=1e9;L.y0=1e9;L.x1=-1;L.y1=-1;});
+  for(let y=0;y<DH;y++)for(let x=0;x<DW;x++){const k=y*DW+x;if(im[k*4+3]>127){mask[k]=1;const o=colOwn[x];own[k]=o;const L=LET[o];
+    if(x<L.x0)L.x0=x;if(x>L.x1)L.x1=x;if(y<L.y0)L.y0=y;if(y>L.y1)L.y1=y;}}
+  LET=LET.filter(L=>L.x1>=0); LET.forEach((L,i)=>{L.oi=L.i;L.i=i;});   // drop blank glyphs (e.g. spaces)
+  // remap owner ids after filtering
+  const remap=new Int8Array(chars.length).fill(-1); LET.forEach(L=>remap[L.oi]=L.i);
+  for(let k=0;k<DW*DH;k++)if(own[k]>=0)own[k]=remap[own[k]];
+  let area=0;
+  LET.forEach(L=>{
+    L.w=L.x1-L.x0+1;L.h=L.y1-L.y0+1;
+    L.orient=R()<0.55?1:0;L.split=0.3+0.4*R();
+    L.cA=Math.floor(R()*4);do{L.cB=Math.floor(R()*4)}while(L.cB===L.cA);
+    // fracture seeds + warped Voronoi chunks (jagged cracks)
+    const seeds=[];let guard=0;
+    while(seeds.length<K.CHUNKS&&guard++<20000){const x=L.x0+Math.floor(R()*L.w),y=L.y0+Math.floor(R()*L.h),k=y*DW+x;if(mask[k]&&own[k]===L.i)seeds.push([x,y]);}
+    const p1=R()*6.28,p2=R()*6.28,p3=R()*6.28,p4=R()*6.28;
+    for(let y=L.y0;y<=L.y1;y++)for(let x=L.x0;x<=L.x1;x++){const k=y*DW+x;if(!mask[k]||own[k]!==L.i)continue;area++;
+      const wx=x+7*Math.sin(y*0.11+p1)+3*Math.sin(y*0.37+p2), wy=y+7*Math.sin(x*0.1+p3)+3*Math.sin(x*0.41+p4);
+      let best=0,bd=1e18;for(let s=0;s<seeds.length;s++){const dx=wx-seeds[s][0],dy=wy-seeds[s][1],d=dx*dx+dy*dy;if(d<bd){bd=d;best=s;}}
+      chunk[k]=best;}
+  });
+  // grains on a jittered grid, grouped by letter
+  sp=Math.sqrt(area/N);
+  const hx=[],hy=[],ci=[],sh=[],rr=[],gr=[],ch=[];
+  LET.forEach(L=>{L.p0=hx.length;
+    for(let gy=L.y0;gy<=L.y1;gy+=sp)for(let gx=L.x0;gx<=L.x1;gx+=sp){
+      const x=gx+(R()-0.5)*sp*0.9,y=gy+(R()-0.5)*sp*0.9,xi=Math.round(x),yi=Math.round(y);
+      if(xi<0||yi<0||xi>=DW||yi>=DH)continue;const k=yi*DW+xi;if(!mask[k]||own[k]!==L.i)continue;
+      hx.push(x);hy.push(y);ci.push(colorAt(L,x,y));sh.push(R());rr.push(R());gr.push(R()<K.GRIT?1:0);ch.push(L.i*K.CHUNKS+chunk[k]);}
+    L.p1=hx.length;
+    let sx=0,sy=0;for(let i=L.p0;i<L.p1;i++){sx+=hx[i];sy+=hy[i];}const n=Math.max(1,L.p1-L.p0);L.cx=sx/n;L.cy=sy/n;
+    let r=1;for(let i=L.p0;i<L.p1;i++)r=Math.max(r,Math.hypot(hx[i]-L.cx,hy[i]-L.cy));L.R=r;
+  });
+  M=hx.length;HX=Float32Array.from(hx);HY=Float32Array.from(hy);CI=Uint8Array.from(ci);SH=Float32Array.from(sh);RR=Float32Array.from(rr);GR=Uint8Array.from(gr);CH=Int16Array.from(ch);
+  // crack overlays: chunk borders, revealed outward from the impact point in STAGES steps
+  LET.forEach(L=>{
+    const pts=[];
+    for(let y=L.y0;y<=L.y1;y++)for(let x=L.x0;x<=L.x1;x++){const k=y*DW+x;if(!mask[k]||own[k]!==L.i)continue;const c=chunk[k];
+      const r=(x+1<DW&&mask[k+1]&&own[k+1]===L.i&&chunk[k+1]!==c), d=(y+1<DH&&mask[k+DW]&&own[k+DW]===L.i&&chunk[k+DW]!==c);
+      if(r||d){const h=Math.sin(x*12.9898+y*78.233)*43758.5453;pts.push(x-L.x0,y-L.y0,Math.hypot(x-L.cx,y-L.cy)/L.R*(0.85+0.3*(h-Math.floor(h))));}}
+    L.cracks=[];
+    for(let s=0;s<K.STAGES;s++){const c=mk(L.w,L.h),g2=c.getContext('2d'),id=g2.createImageData(L.w,L.h),D=id.data,lim=(s+1)/K.STAGES*1.05;
+      for(let j=0;j<pts.length;j+=3){if(pts[j+2]>lim)continue;const x=pts[j],y=pts[j+1];
+        const o=(y*L.w+x)*4;D[o]=3;D[o+1]=9;D[o+2]=11;D[o+3]=235;
+        if(x>0&&y>0){const o2=((y-1)*L.w+x-1)*4;if(D[o2+3]===0){D[o2]=255;D[o2+1]=255;D[o2+2]=255;D[o2+3]=60;}}}
+      g2.putImageData(id,0,0);L.cracks.push(c);}
+  });
+  const RB=rng(SEED*7+3);
+  BOK=Array.from({length:K.BOKEH},()=>({x:RB()*DW,y:RB()*DH,r:50+RB()*100,a:0.05+RB()*0.08,ax:20+RB()*40,ay:10+RB()*25,w:0.05+RB()*0.08,ph:RB()*6.28}));
+}
+
+// ---------- the sim (baked) ----------
+function bake(){
+  const R=rng(SEED*977+13), FPS=30, SUB=2, dt=1/(FPS*SUB);
+  F=Math.ceil(K.BURST*FPS)+1;
+  BX=new Float32Array(F*M);BY=new Float32Array(F*M);BZ=new Float32Array(F*M);
+  const nC=LET.length*K.CHUNKS, CX=new Float32Array(nC),CY=new Float32Array(nC),CN=new Float32Array(nC),VX=new Float32Array(nC),VY=new Float32Array(nC),VZ=new Float32Array(nC);
+  for(let i=0;i<M;i++){const c=CH[i];CX[c]+=HX[i];CY[c]+=HY[i];CN[c]++;}
+  LET.forEach(L=>{for(let k=0;k<K.CHUNKS;k++){const c=L.i*K.CHUNKS+k;if(!CN[c])continue;CX[c]/=CN[c];CY[c]/=CN[c];
+    const dx=CX[c]-L.cx,dy=CY[c]-L.cy,d=Math.hypot(dx,dy),a=d<1?R()*6.283:Math.atan2(dy,dx)+(R()-0.5)*K.FAN;
+    const mag=K.IMPULSE*(0.5+0.9*R())*(0.55+0.9*d/L.R);
+    VX[c]=Math.cos(a)*mag;VY[c]=Math.sin(a)*mag;VZ[c]=K.SPLASH*(0.35+0.65*R())*(1-0.6*clamp(d/L.R,0,1));}});
+  // curl noise from a sum of plane waves: divergence-free, analytic, cheap
+  const FR=[1,1.7,2.9,4.6,7.4],WT=[1,0.85,0.7,0.55,0.45],ws=WT.reduce((a,b)=>a+b,0)*0.6;   // more small-scale energy = blobs shear apart
+  const T=FR.map((f,k)=>{const th=R()*6.283;return[Math.cos(th),Math.sin(th),K.TURB_SCALE*f,WT[k]/ws,R()*6.283,K.TURB_SPEED*(0.6+0.8*R())*(k+1)*2]});
+  const gauss=()=>(R()+R()+R()-1.5)*1.4;
+  for(let i=0;i<M;i++){
+    const c=CH[i],g=GR[i];let x=HX[i],y=HY[i],z=0;
+    let vx=VX[c]+(x-CX[c])*K.SPREAD+gauss()*K.JIT, vy=VY[c]+(y-CY[c])*K.SPREAD+gauss()*K.JIT, vz=VZ[c]*(0.85+0.3*R());
+    if(g){vx=vx*2.4+(R()-0.5)*300;vy=vy*2.4+(R()-0.5)*300;vz*=0.6;}
+    const drag=g?0.7:K.DRAG, tu=g?0.3:1, dk=K.DIFF*Math.sqrt(dt)*(g?0:1);
+    for(let f=0;f<F;f++){
+      const o=f*M+i;BX[o]=x;BY[o]=y;BZ[o]=z;
+      for(let s=0;s<SUB;s++){
+        const tau=(f*SUB+s)*dt, rw=sm(0.04,0.6,tau), ramp=rw*K.TURB*tu;
+        let ux=0,uy=0;for(let k=0;k<5;k++){const t=T[k],cw=t[3]*Math.cos(t[2]*(t[0]*x+t[1]*y)+t[5]*tau+t[4]);ux+=cw*t[1];uy-=cw*t[0];}
+        vx+=gauss()*dk*rw;vy+=gauss()*dk*rw;
+        x+=(vx+ux*ramp+K.WIND[0]*rw)*dt;y+=(vy+uy*ramp+K.WIND[1]*rw)*dt;
+        z+=vz*dt;vz-=K.GRAV*dt;if(z<0){z=0;vz=0;}
+        const dd=Math.exp(-(drag+(z<=0?K.FLOOR:0))*dt);vx*=dd;vy*=dd;
+      }
+    }
+  }
+}
+
+// ---------- crisp letters at screen resolution ----------
+function buildArt(){
+  const A=FS;
+  LET.forEach(L=>{
+    const pad=2,c=mk(Math.ceil(L.w*A)+pad*2,Math.ceil(L.h*A)+pad*2),g=c.getContext('2d');
+    g.translate(pad,pad);g.scale(A,A);g.translate(-L.x0,-L.y0);
+    const P=K.PALETTE;
+    if(L.orient){const yS=L.y0+L.h*L.split;g.fillStyle=P[L.cA];g.fillRect(L.x0-4,L.y0-4,L.w+8,yS-L.y0+4);g.fillStyle=P[L.cB];g.fillRect(L.x0-4,yS,L.w+8,L.y1-yS+5);}
+    else{const xS=L.x0+L.w*L.split;g.fillStyle=P[L.cA];g.fillRect(L.x0-4,L.y0-4,xS-L.x0+4,L.h+8);g.fillStyle=P[L.cB];g.fillRect(xS,L.y0-4,L.x1-xS+5,L.h+8);}
+    g.globalCompositeOperation='destination-in';g.fillStyle='#fff';g.font=fontOf(L.size);g.textBaseline='alphabetic';g.fillText(L.c,L.x,L.base);
+    L.art=c;L.artPad=pad/A;
+  });
+}
+
+// ---------- timeline (pure function of time) ----------
+const HA=0.8, hk=u=>u<HA?u:HA+(u-HA)-(u-HA)*(u-HA)/(2*(1-HA)), HPK=hk(1);
+const fwd=u=>hk(clamp(u,0,1))/HPK, rev=u=>hk(1-clamp(u,0,1))/HPK;
+function period(){const span=(LET.length-1)*K.STAG;
+  if(MODE==='both')return K.HOLD+K.CRACK+span+K.BURST*(1+K.ASM_SLOW)+K.CRACK+K.HOLD;
+  if(MODE==='explode')return K.HOLD+K.CRACK+span+K.BURST+0.5+2.4+K.HOLD*0.5;
+  return 0.2+span+K.BURST*K.ASM_SLOW+K.CRACK+K.HOLD+1.2;}
+function timeline(T){
+  const P=period(),t=((T%P)+P)%P,span=(LET.length-1)*K.STAG,out={t,P,L:[],dustA:1,artA:1};
+  const E=K.HOLD+K.CRACK+span+K.BURST+0.5, Z=0.2+span+K.BURST*K.ASM_SLOW+K.CRACK+K.HOLD;
+  if(MODE==='explode'){out.dustA=1-sm(E,E+1.2,t);if(t>E)out.artA=sm(E+1.6,E+2.4,t);}
+  if(MODE==='assemble'){out.dustA=sm(0,0.6,t);out.artA=1-sm(Z,Z+0.8,t);}
+  LET.forEach((L,i)=>{let p=0,crack=0;const o=i*K.STAG;
+    if(MODE==='both'){const b=K.HOLD+K.CRACK+o,tp=b+K.BURST,te=tp+K.BURST*K.ASM_SLOW;crack=sm(b-K.CRACK,b,t);
+      if(t>=b){if(t<tp)p=fwd((t-b)/K.BURST);else{p=rev((t-tp)/(K.BURST*K.ASM_SLOW));if(t>=te)crack=1-sm(te,te+K.CRACK,t);}}}
+    else if(MODE==='explode'){const b=K.HOLD+K.CRACK+o;crack=sm(b-K.CRACK,b,t);if(t>=b)p=fwd((t-b)/K.BURST);if(t>E+1.2){p=0;crack=0;}}
+    else{const a=0.2+o,e=a+K.BURST*K.ASM_SLOW;p=rev((t-a)/(K.BURST*K.ASM_SLOW));crack=t<e?1:1-sm(e,e+K.CRACK,t);}
+    out.L.push({p,crack});});
+  return out;
+}
+
+// ---------- drawing ----------
+let KX=new Float32Array(0),KY,KR,KA,KH,KB,KS,IDX;
+const NB=16, BCNT=new Uint32Array(NB+1);
+function ensure(n){if(KX.length>=n)return;KX=new Float32Array(n);KY=new Float32Array(n);KR=new Float32Array(n);KA=new Float32Array(n);KH=new Float32Array(n);KB=new Uint8Array(n);KS=new Uint8Array(n);IDX=new Uint32Array(n);}
+function drawDust(st){
+  dctx.setTransform(1,0,0,1,0,0);dctx.clearRect(0,0,dcv.width,dcv.height);
+  ensure(M);let n=0;BCNT.fill(0);
+  LET.forEach((L,li)=>{const p=st.L[li].p;if(p<=0)return;
+    const fp=p*(F-1),f0=Math.floor(fp),f1=Math.min(f0+1,F-1),fr=fp-f0,tau=p*K.BURST,gw=1-Math.exp(-tau*K.GROW_RATE),pa=sm(0,0.02,p);
+    const softF=Math.pow(gw,0.8)*(NSOFT-1),sha=pa*0.55*(1-sm(0,0.35,gw));
+    for(let i=L.p0;i<L.p1;i++){
+      const o0=f0*M+i,o1=f1*M+i,x=BX[o0]+(BX[o1]-BX[o0])*fr,y=BY[o0]+(BY[o1]-BY[o0])*fr,z=BZ[o0]+(BZ[o1]-BZ[o0])*fr,ps=1+z*K.PERSP;
+      KX[n]=DW/2+(x-DW/2)*ps;KY[n]=DH/2+(y-DH/2)*ps;const b=Math.min(NB-1,(z*0.06)|0);KB[n]=b;BCNT[b+1]++;
+      if(GR[i]){KR[n]=2.2*ps;KA[n]=pa*0.9*(1-sm(0.3,1,p));KS[n]=(3*NSOFT)*NSH+NSH-1;KH[n]=0;}
+      else{KR[n]=sp*(1.05+K.GROW*gw*(0.5+RR[i]))*ps;KA[n]=pa*(0.95-(0.95-K.MIX_A)*gw);
+        const l=clamp(0.45+0.4*SH[i]+z*0.002-0.12*gw*(1-SH[i]),0,0.999);const soft=clamp(Math.floor(softF+RR[i]),0,NSOFT-1);KS[n]=(CI[i]*NSOFT+soft)*NSH+Math.floor(l*NSH);KH[n]=sha;}
+      n++;}
+  });
+  if(!n)return false;
+  for(let b=1;b<=NB;b++)BCNT[b]+=BCNT[b-1];          // bucket sort by height: low dust first, nearest last
+  for(let k=0;k<n;k++)IDX[BCNT[KB[k]]++]=k;
+  const s=dcv.width/DW;
+  for(let j=0;j<n;j++){const k=IDX[j],r=KR[k]*s,X=KX[k]*s,Y=KY[k]*s;
+    if(KH[k]>0.01){dctx.globalAlpha=KH[k];const rs=r*1.05;dctx.drawImage(SHADOW,X-rs+r*0.22,Y-rs+r*0.28,rs*2,rs*2);}
+    dctx.globalAlpha=KA[k];dctx.drawImage(SPR[KS[k]],X-r,Y-r,r*2,r*2);}
+  dctx.globalAlpha=1;return true;
+}
+function render(T){
+  const st=timeline(T);
+  ctx.setTransform(1,0,0,1,0,0);ctx.globalAlpha=1;ctx.fillStyle=K.BG;ctx.fillRect(0,0,W,H);
+  ctx.setTransform(FS,0,0,FS,OX,OY);
+  const sx=DW*0.46,sy=DH*0.47,gr=ctx.createRadialGradient(sx,sy,0,sx,sy,DW*0.55);
+  gr.addColorStop(0,'rgba(70,92,94,0.24)');gr.addColorStop(1,'rgba(70,92,94,0)');ctx.fillStyle=gr;ctx.fillRect(-OX/FS,-OY/FS,W/FS,H/FS);
+  const bt=MANUAL?T:st.t;
+  BOK.forEach(b=>{const x=b.x+Math.sin(bt*b.w+b.ph)*b.ax,y=b.y+Math.cos(bt*b.w*0.8+b.ph)*b.ay;
+    ctx.globalAlpha=b.a*(0.75+0.25*Math.sin(bt*0.3+b.ph));ctx.drawImage(BOKSPR,x-b.r,y-b.r,b.r*2,b.r*2);});
+  LET.forEach((L,i)=>{const s=st.L[i],a=(1-sm(0,0.06,s.p))*st.artA;if(a<=0.001)return;
+    ctx.globalAlpha=a;const pd=L.artPad;ctx.drawImage(L.art,L.x0-pd,L.y0-pd,L.art.width/FS,L.art.height/FS);
+    if(s.crack>0){const v=s.crack*K.STAGES,s0=Math.floor(v),fr=v-s0;
+      if(s0>=1)ctx.drawImage(L.cracks[Math.min(s0-1,K.STAGES-1)],L.x0,L.y0);
+      if(s0<K.STAGES&&fr>0){ctx.globalAlpha=a*fr;ctx.drawImage(L.cracks[s0],L.x0,L.y0);}}});
+  ctx.globalAlpha=1;
+  if(st.dustA>0.001&&drawDust(st)){ctx.setTransform(1,0,0,1,0,0);ctx.globalAlpha=st.dustA;ctx.drawImage(dcv,OX,OY,DW*FS,DH*FS);ctx.globalAlpha=1;}
+  ctx.setTransform(1,0,0,1,0,0);
+  const vg=ctx.createRadialGradient(W/2,H/2,Math.min(W,H)*0.35,W/2,H/2,Math.max(W,H)*0.75);
+  vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,0.6)');ctx.fillStyle=vg;ctx.fillRect(0,0,W,H);
+  if(K.LETTERBOX){const bh=OY+(DH-DW/2.39)/2*FS;ctx.fillStyle='#000';ctx.fillRect(0,0,W,bh);ctx.fillRect(0,H-bh,W,bh);}
+  return st;
+}
+
+// ---------- app ----------
+let t=0,playing=!RM,ready=false,last=0,dragging=false;
+const $=id=>document.getElementById(id),ui=$('ui'),msg=$('msg'),scrub=$('scrub');
+function resize(){DPR=Math.min(devicePixelRatio||1,2);W=Math.round(innerWidth*DPR);H=Math.round(innerHeight*DPR);cv.width=W;cv.height=H;
+  FS=Math.min(W/DW,H/DH);OX=(W-DW*FS)/2;OY=(H-DH*FS)/2;dcv.width=Math.round(DW*K.DUST_RES);dcv.height=Math.round(DH*K.DUST_RES);
+  if(ready){buildArt();render(t);}}
+async function build(){
+  ready=false;msg.textContent='Baking…';await new Promise(r=>setTimeout(r,30));
+  try{await document.fonts.load(fontOf(100),WORD);}catch(e){}
+  const t0=performance.now();layout();bake();buildArt();ready=true;
+  msg.textContent=RM?'Reduced motion: paused':'';console.log(`Dust Type: ${M} grains, ${F} frames, ${(performance.now()-t0)|0} ms`);
+  render(t);syncUI();
+}
+function syncUI(){document.querySelectorAll('[data-m]').forEach(b=>b.classList.toggle('on',b.dataset.m===MODE));
+  $('bPlay').textContent=playing?'❚❚':'▶';$('sSpeed').value=String(SPEED);$('sN').value=String(N);$('iWord').value=WORD;}
+function loop(now){const dt=Math.min(0.1,(now-last)/1000||0);last=now;
+  if(ready){if(playing&&!dragging)t+=dt*SPEED;const st=render(t);if(!dragging)scrub.value=Math.round(st.t/st.P*1000);}
+  requestAnimationFrame(loop);}
+const setMode=m=>{MODE=m;t=0;syncUI();if(ready)render(t);};
+document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>setMode(b.dataset.m));
+$('bPlay').onclick=()=>{playing=!playing;syncUI();};
+$('sSpeed').onchange=e=>{SPEED=+e.target.value;};
+$('sN').onchange=e=>{N=+e.target.value;build();};
+$('bSeed').onclick=()=>{SEED=(SEED*48271+11)%2147483647||1;build();};
+$('iWord').onkeydown=e=>{if(e.key==='Enter'){const w=clean(e.target.value);if(w){WORD=w;t=0;build();}e.target.blur();}e.stopPropagation();};
+scrub.oninput=()=>{dragging=true;t=scrub.value/1000*period();if(ready)render(t);};
+scrub.onchange=()=>{dragging=false;};
+addEventListener('keydown',e=>{if(e.key===' '){playing=!playing;syncUI();e.preventDefault();}else if(e.key==='1')setMode('both');else if(e.key==='2')setMode('explode');
+  else if(e.key==='3')setMode('assemble');else if(e.key==='r'||e.key==='R')$('bSeed').click();});
+let hideT=0;const poke=()=>{ui.classList.remove('hide');clearTimeout(hideT);hideT=setTimeout(()=>ui.classList.add('hide'),3000);};
+['mousemove','pointerdown','touchstart','keydown'].forEach(ev=>addEventListener(ev,poke,{passive:true}));
+addEventListener('resize',resize);
+makeSprites();resize();poke();
+if(MANUAL){ui.style.display='none';playing=false;window.renderAt=x=>{t=x;return ready&&render(t);};window.advance=d=>{t+=d;return ready&&render(t);};}
+window.dustReady=build();
+if(!MANUAL)requestAnimationFrame(loop);
+})();
+</script>
+</body></html>

@@ -1,0 +1,12 @@
+{
+ "id": "cdrom-tia",
+ "title": "CD-ROM · ASCII World (2600-style)",
+ "notes": "Era-chip backing for one screensaver channel; style chip, shared 116 BPM grid.",
+ "style": "chip",
+ "chip": "tia",
+ "bpm": 116,
+ "bars": 8,
+ "tail": 1.5,
+ "master_db": -8.58,
+ "seed": 116
+}

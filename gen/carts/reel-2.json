@@ -1,0 +1,106 @@
+{
+ "name": "reel-2",
+ "title": "GEN",
+ "subtitle": "MOTION REEL II",
+ "seed": 21,
+ "bpm": 120,
+ "palette": {
+  "bg": "#0d0d0f",
+  "ink": "#f2efe6",
+  "accent": "#ff4f3a",
+  "dim": "#55535c"
+ },
+ "transition": {
+  "type": "iris",
+  "dur": 1.6
+ },
+ "shots": [
+  {
+   "layer": "tunnel",
+   "dur": 14,
+   "label": "TUNNEL",
+   "params": {
+    "style": "checker",
+    "sides": 12,
+    "fill": 0.45
+   }
+  },
+  {
+   "layer": "reaction",
+   "dur": 18,
+   "label": "REACTION",
+   "transition": {
+    "type": "fade",
+    "dur": 2
+   }
+  },
+  {
+   "layer": "harmonograph",
+   "dur": 18,
+   "label": "PENDULUM",
+   "params": {
+    "period": 17
+   }
+  },
+  {
+   "layer": "halftone",
+   "dur": 14,
+   "label": "HALFTONE",
+   "palette": {
+    "bg": "#f4efe4",
+    "ink": "#1d3fbb",
+    "accent": "#ff4f6d",
+    "dim": "#b9b2a4"
+   },
+   "transition": {
+    "type": "wipe",
+    "dur": 1.8
+   }
+  },
+  {
+   "layer": "type",
+   "dur": 14,
+   "label": "TYPE",
+   "params": {
+    "script": [
+     {
+      "t": 0.6,
+      "text": "MOTION",
+      "fx": "slam"
+     },
+     {
+      "t": 2,
+      "text": "from",
+      "fx": "line"
+     },
+     {
+      "t": 2.8,
+      "text": "TINY/JSON/FILES",
+      "fx": "stack"
+     },
+     {
+      "t": 6,
+      "text": "no",
+      "fx": "shake"
+     },
+     {
+      "t": 6.8,
+      "text": "after",
+      "fx": "type"
+     },
+     {
+      "t": 8.4,
+      "text": "EFFECTS",
+      "fx": "scatter",
+      "bg": "#ff7a1a"
+     },
+     {
+      "t": 10.6,
+      "text": "needed",
+      "fx": "whisper"
+     }
+    ]
+   }
+  }
+ ]
+}

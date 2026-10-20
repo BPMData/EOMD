@@ -1,0 +1,55 @@
+{
+ "name": "fractal-tree",
+ "title": "GEN",
+ "subtitle": "BRANCHING",
+ "seed": 5,
+ "bpm": 84,
+ "palette": {
+  "bg": "#101012",
+  "ink": "#efece4",
+  "accent": "#ff6b4a",
+  "dim": "#5a5a62"
+ },
+ "transition": {
+  "type": "fade",
+  "dur": 3
+ },
+ "shots": [
+  {
+   "layer": "tree",
+   "dur": 40,
+   "label": "TREE",
+   "params": {
+    "depth": 11,
+    "spread": 22,
+    "ratio": 0.77,
+    "length": 0.23,
+    "grow": 9,
+    "sway": 6
+   }
+  },
+  {
+   "layer": "tree",
+   "dur": 40,
+   "label": "MANDALA",
+   "palette": {
+    "bg": "#120f1d",
+    "ink": "#ece6ff",
+    "accent": "#ff4fa3",
+    "dim": "#4c4470"
+   },
+   "params": {
+    "depth": 8,
+    "arms": 8,
+    "spread": 30,
+    "ratio": 0.72,
+    "length": 0.3,
+    "grow": 8,
+    "spin": 4,
+    "width": 4,
+    "leaves": 0.8,
+    "trail": 0.5
+   }
+  }
+ ]
+}

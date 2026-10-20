@@ -1,0 +1,19 @@
+{
+ "id": "ssr-tv-science",
+ "title": "TV Science Segment",
+ "notes": "SSR reading music (direction A). Rhodes comping, vibes motif, warm pad, soft bass. F major, 66 BPM. Calibrated to -23 LUFS.",
+ "style": "comp4",
+ "bpm": 66, "bars": 8, "tail": 6, "master_db": -0.23,
+ "progressions": [
+  [[41,[57,60,64,67]],[38,[53,57,60,64]],[46,[57,60,62,65]],[36,[58,62,65,69]]],
+  [[46,[57,60,62,65]],[45,[55,60,64,67]],[43,[58,62,65,69]],[36,[55,58,62,65]]],
+  [[41,[57,60,64,67]],[46,[57,60,62,65]],[38,[53,57,60,64]],[36,[58,62,65,69]]]
+ ],
+ "pad":  {"cut": 650, "gain": 0.06, "send": 0.5},
+ "bass": {"gain": 0.16, "gain2": 0.12, "send": 0.08},
+ "comp": {"inst": "rhodes", "gain": 0.13, "stabGain": 0.10, "send": 0.35, "prob": [0.3, 0.5]},
+ "melody": {"root": 53, "scale": [0,2,4,7,9], "start": 5, "range": [4,10],
+            "lead": "vibes", "gain": 0.26, "send": 0.5, "alt": "rhodes", "altGain": 0.20, "altSend": 0.45,
+            "themeEvery": 3, "altEvery": 4, "restEvery": 5},
+ "reverb": {"size": 0.84, "wet": 1.3}
+}

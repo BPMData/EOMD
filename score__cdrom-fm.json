@@ -1,0 +1,12 @@
+{
+ "id": "cdrom-fm",
+ "title": "CD-ROM · Lab Maze (FM card)",
+ "notes": "Era-chip backing for one screensaver channel; style chip, shared 116 BPM grid.",
+ "style": "chip",
+ "chip": "fm",
+ "bpm": 116,
+ "bars": 8,
+ "tail": 1.5,
+ "master_db": -14.52,
+ "seed": 116
+}

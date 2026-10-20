@@ -1,0 +1,52 @@
+{
+ "name": "flow-field",
+ "title": "GEN",
+ "subtitle": "FLOW FIELD",
+ "seed": 11,
+ "bpm": 90,
+ "palette": {
+  "bg": "#101012",
+  "ink": "#efece4",
+  "accent": "#ff6b4a",
+  "dim": "#5a5a62"
+ },
+ "transition": {
+  "type": "iris",
+  "dur": 2.5
+ },
+ "shots": [
+  {
+   "layer": "field",
+   "dur": 45,
+   "label": "DRIFT",
+   "params": {
+    "count": 1600,
+    "speed": 80,
+    "scale": 2.0,
+    "swirl": 2.2,
+    "trail": 0.95
+   }
+  },
+  {
+   "layer": "field",
+   "dur": 45,
+   "label": "CURRENT",
+   "palette": {
+    "bg": "#050b07",
+    "ink": "#b8ffd0",
+    "accent": "#3bff8a",
+    "dim": "#1f5a35"
+   },
+   "params": {
+    "count": 2600,
+    "speed": 140,
+    "scale": 3.5,
+    "swirl": 3.4,
+    "width": 1,
+    "alpha": 0.45,
+    "trail": 0.92,
+    "accent": 0.12
+   }
+  }
+ ]
+}

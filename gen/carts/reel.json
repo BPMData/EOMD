@@ -1,0 +1,77 @@
+{
+ "name": "reel",
+ "title": "GEN",
+ "subtitle": "MOTION REEL",
+ "seed": 42,
+ "bpm": 128,
+ "palette": {
+  "bg": "#101012",
+  "ink": "#efece4",
+  "accent": "#ff6b4a",
+  "dim": "#5a5a62"
+ },
+ "transition": {
+  "type": "wipe",
+  "dur": 1.8
+ },
+ "shots": [
+  {
+   "layer": "truchet",
+   "dur": 16,
+   "label": "TILES"
+  },
+  {
+   "layer": "depth",
+   "dur": 24,
+   "label": "DEPTH",
+   "transition": {
+    "type": "iris",
+    "dur": 1.6
+   },
+   "params": {
+    "shapes": [
+     "vase",
+     "sheet",
+     "torus"
+    ],
+    "hold": 5,
+    "morph": 2.5
+   }
+  },
+  {
+   "layer": "contour",
+   "dur": 16,
+   "label": "CONTOUR",
+   "transition": {
+    "type": "fade",
+    "dur": 2
+   }
+  },
+  {
+   "layer": "tree",
+   "dur": 18,
+   "label": "BRANCH",
+   "params": {
+    "grow": 6
+   }
+  },
+  {
+   "layer": "field",
+   "dur": 16,
+   "label": "FIELD",
+   "transition": {
+    "type": "iris",
+    "dur": 1.6
+   }
+  },
+  {
+   "layer": "julia",
+   "dur": 16,
+   "label": "JULIA",
+   "transition": {
+    "type": "fade",
+    "dur": 2
+   }
+  }
+ ]
+}

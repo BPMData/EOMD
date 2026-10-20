@@ -1,0 +1,32 @@
+{
+ "name": "depth-morph",
+ "title": "GEN",
+ "subtitle": "DEPTH STUDY",
+ "seed": 7,
+ "bpm": 128,
+ "palette": {
+  "bg": "#101012",
+  "ink": "#efece4",
+  "accent": "#ff6b4a",
+  "dim": "#5a5a62"
+ },
+ "shots": [
+  {
+   "layer": "depth",
+   "dur": 75,
+   "label": "DEPTH",
+   "params": {
+    "shapes": [
+     "vase",
+     "sheet",
+     "torus",
+     "sphere",
+     "knot",
+     "cylinder"
+    ],
+    "hold": 7,
+    "morph": 3
+   }
+  }
+ ]
+}

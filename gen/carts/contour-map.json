@@ -1,0 +1,26 @@
+{
+ "name": "contour-map",
+ "title": "GEN",
+ "subtitle": "SURVEY",
+ "seed": 21,
+ "bpm": 100,
+ "palette": {
+  "bg": "#0c2340",
+  "ink": "#e6f0ff",
+  "accent": "#ffd100",
+  "dim": "#3d5d85"
+ },
+ "shots": [
+  {
+   "layer": "contour",
+   "dur": 90,
+   "label": "CONTOUR",
+   "params": {
+    "levels": 18,
+    "scale": 2.2,
+    "speed": 0.04,
+    "drift": 0.025
+   }
+  }
+ ]
+}

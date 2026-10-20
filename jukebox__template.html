@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jukebox</title>
+<style>
+/* Bagel Fat One and EB Garamond: SIL Open Font License 1.1 */
+@font-face{font-family:"Bagel Fat One";src:url(data:font/woff2;base64,__BAGEL__) format("woff2");font-display:block}
+@font-face{font-family:"EB Garamond";src:url(data:font/woff2;base64,__EBG__) format("woff2");font-weight:400 800;font-style:normal;font-display:block}
+@font-face{font-family:"EB Garamond";src:url(data:font/woff2;base64,__EBGI__) format("woff2");font-weight:400 800;font-style:italic;font-display:block}
+:root{--bg:#17504D;--card:#F4E8CC;--ink:#262626;--fg:#F4E8CC;--accent:#E3A92B;--muted:#cfc3a6;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#17504D;--card:#F4E8CC;--ink:#262626;--fg:#F4E8CC}}
+:root[data-theme="dark"]{--bg:#17504D;--card:#F4E8CC;--ink:#262626;--fg:#F4E8CC}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--fg);font:500 19px/1.45 "EB Garamond",Georgia,serif}
+main{max-width:900px;margin:0 auto;padding:28px max(18px,env(safe-area-inset-left)) 60px}
+h1{font:400 64px/1 "Bagel Fat One","Arial Black",sans-serif;margin:8px 0 6px;color:var(--accent)}
+.lede{margin:0 0 22px;color:var(--muted);max-width:60ch}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:2;display:flex;flex-wrap:wrap;gap:12px;align-items:center;background:#262626;padding:12px 14px;border-radius:14px;margin-bottom:22px}
+.bar label{display:flex;align-items:center;gap:8px}
+.bar input[type=number]{width:120px;font:inherit;background:transparent;color:var(--fg);border:1.5px solid #6b6455;border-radius:8px;padding:6px 8px}
+input[type=range]{accent-color:#E3A92B;width:140px}
+button{font:600 18px/1 "EB Garamond",Georgia,serif;color:inherit;background:transparent;border:1.5px solid #6b6455;border-radius:10px;padding:11px 16px;min-height:44px;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
+#now{flex:1 1 220px;min-width:0}
+ul{list-style:none;margin:0;padding:0;display:grid;gap:16px}
+li{background:var(--card);color:var(--ink);border:4px solid var(--ink);border-radius:26px;padding:18px 20px;display:flex;gap:16px;align-items:flex-start}
+li.on{border-color:var(--accent);box-shadow:0 0 0 4px var(--ink)}
+li h2{font:400 30px/1.1 "Bagel Fat One","Arial Black",sans-serif;margin:0 0 4px}
+li p{margin:0}
+li .meta{font-style:italic;color:#4a4436;margin-top:6px}
+li button{border-color:var(--ink);background:var(--ink);color:var(--card);flex:0 0 auto}
+</style>
+</head>
+<body>
+<main>
+<h1>Jukebox</h1>
+<p class="lede">Each cartridge is a tiny score file that plays forever without repeating. The same seed always gives the same music. A new seed gives a new performance of the same piece.</p>
+<div class="bar"><button id="stop" type="button">Stop</button><label>Volume <input id="vol" type="range" min="0" max="100" value="70"></label><label>Seed <input id="seed" type="number" min="1" step="1"></label><button id="reseed" type="button">New seed</button><span id="now" aria-live="polite">Nothing playing</span></div>
+<ul id="list"></ul>
+</main>
+<script id="audiolib">
+__AUDIOLIB__
+</script>
+<script>
+'use strict';
+const SCORES=__SCORES__;
+const $=id=>document.getElementById(id),Q=new URLSearchParams(location.search);
+const J={ctx:null,gain:null,score:null,seed:+Q.get('seed')||((Date.now()/1000)|0),gen:0,next:0,nextT:0,starts:[],srcs:[],ready:new Map(),pending:new Set(),mode:'none',worker:null,mq:[],job:null,pumping:false,vol:.7};
+$('seed').value=J.seed;
+/* ---------- rendering: Web Worker, or ~6 ms main-thread slices if workers are blocked ---------- */
+function setup(){if(J.mode!=='none'||J.worker)return;
+ if(!Q.has('noworker'))try{
+  const src=$('audiolib').textContent+'\nself.SCORES='+JSON.stringify(SCORES)+';self.onmessage=e=>{const d=e.data,s=MUSIC.run(SCORES.find(x=>x.id===d.id),d);self.postMessage({gen:d.gen,index:d.index,L:s.L,R:s.R},[s.L.buffer,s.R.buffer])};self.postMessage({hello:1});';
+  const w=new Worker(URL.createObjectURL(new Blob([src],{type:'text/javascript'})));J.worker=w;
+  w.onmessage=e=>{if(e.data.hello){J.mode='worker';for(const i of J.pending)post(i);return}got(e.data)};
+  w.onerror=()=>{if(J.mode!=='worker')useMain()};setTimeout(()=>{if(J.mode==='none')useMain()},3000);return}catch(e){}
+ useMain()}
+function post(i){J.worker.postMessage({gen:J.gen,id:J.score.id,seed:J.seed,index:i,sr:48000})}
+function useMain(){if(J.mode==='main')return;J.mode='main';if(J.worker){J.worker.terminate();J.worker=null}for(const i of J.pending)J.mq.push(i);pump()}
+function request(i){if(J.ready.has(i)||J.pending.has(i))return;J.pending.add(i);if(J.mode==='worker')post(i);else if(J.mode==='main'){J.mq.push(i);pump()}}
+function pump(){if(J.pumping)return;J.pumping=true;const step=()=>{
+ if(!J.job&&J.mq.length){const i=J.mq.shift();J.job={gen:J.gen,i,g:MUSIC.section(J.score,{sr:48000,seed:J.seed,index:i})}}
+ if(!J.job){J.pumping=false;return}
+ const end=performance.now()+6;while(performance.now()<end){const x=J.job.g.next();if(x.done){got({gen:J.job.gen,index:J.job.i,L:x.value.L,R:x.value.R});J.job=null;break}}
+ setTimeout(step,10)};step()}
+function got(d){if(d.gen!==J.gen)return;J.pending.delete(d.index);J.ready.set(d.index,d);schedule()}
+/* ---------- playback: sections overlap by their tails ---------- */
+function schedule(){if(!J.score)return;const c=J.ctx,len=MUSIC.sectionLen(J.score);
+ while(J.ready.has(J.next)&&J.nextT<c.currentTime+40){const d=J.ready.get(J.next);J.ready.delete(J.next);
+  const b=c.createBuffer(2,d.L.length,48000);b.getChannelData(0).set(d.L);b.getChannelData(1).set(d.R);
+  const s=c.createBufferSource();s.buffer=b;s.connect(J.gain);const at=Math.max(J.nextT,c.currentTime+.05);s.start(at);J.srcs.push(s);
+  if(!J.starts.length){const g=J.gain.gain;g.setValueAtTime(0,at);g.linearRampToValueAtTime(J.vol*J.vol,at+3)}
+  J.starts.push(at);J.nextT=at+len;J.next++}
+ for(let k=J.next;k<J.next+2;k++)request(k)}
+function stop(fade=1){if(!J.ctx||!J.gain)return;const g=J.gain,t=J.ctx.currentTime;g.gain.cancelScheduledValues(t);g.gain.setValueAtTime(g.gain.value,t);g.gain.linearRampToValueAtTime(0,t+fade);
+ const old=J.srcs;setTimeout(()=>{for(const s of old)try{s.stop()}catch(e){}g.disconnect()},fade*1000+100);
+ J.gen++;J.score=null;J.srcs=[];J.starts=[];J.ready.clear();J.pending.clear();J.mq=[];J.job=null;render()}
+async function play(sc){const AC=window.AudioContext||window.webkitAudioContext;if(!AC){$('now').textContent='No Web Audio in this browser';return}
+ if(!J.ctx)J.ctx=new AC();try{await J.ctx.resume()}catch(e){}
+ stop(1.2);J.score=sc;J.gain=J.ctx.createGain();J.gain.gain.value=0;J.gain.connect(J.ctx.destination);
+ J.next=0;J.nextT=J.ctx.currentTime+.15;setup();request(0);request(1);render()}
+function render(){document.querySelectorAll('#list li').forEach(li=>li.classList.toggle('on',!!J.score&&li.dataset.id===J.score.id))}
+setInterval(()=>{schedule();if(!J.score){$('now').textContent='Nothing playing';return}
+ if(!J.starts.length){$('now').textContent='Preparing '+J.score.title+'…';return}
+ const t=J.ctx.currentTime,k=J.starts.filter(s=>s<=t).length;$('now').textContent=`${J.score.title} · section ${Math.max(1,k)} · seed ${J.seed}`},1000);
+/* ---------- UI ---------- */
+const keyName=sc=>{const n=['C','D♭','D','E♭','E','F','G♭','G','A♭','A','B♭','B'];return n[(sc.progressions?sc.progressions[0][0][0]:sc.tonic)%12]};
+for(const sc of SCORES){const li=document.createElement('li');li.dataset.id=sc.id;
+ li.innerHTML=`<button type="button">Play</button><div><h2></h2><p class="notes"></p><p class="meta"></p></div>`;
+ li.querySelector('h2').textContent=sc.title;li.querySelector('.notes').textContent=sc.notes||'';
+ li.querySelector('.meta').textContent=`${sc.bpm} BPM · starts on ${keyName(sc)} · ${Math.round(MUSIC.sectionLen(sc))} s sections · ${sc.id}`;
+ li.querySelector('button').onclick=()=>play(sc);$('list').appendChild(li)}
+$('stop').onclick=()=>stop(1);
+$('vol').oninput=()=>{J.vol=$('vol').value/100;if(J.gain&&J.starts.length){const g=J.gain.gain,t=J.ctx.currentTime;g.cancelScheduledValues(t);g.setTargetAtTime(J.vol*J.vol,t,.12)}};
+$('seed').onchange=()=>{J.seed=Math.max(1,+$('seed').value|0);if(J.score)play(J.score)};
+$('reseed').onclick=()=>{J.seed=(Math.random()*1e9)|0;$('seed').value=J.seed;if(J.score)play(J.score)};
+window.JB=J;
+</script>
+</body>
+</html>

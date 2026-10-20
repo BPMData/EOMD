@@ -1,0 +1,65 @@
+{
+ "name": "grid-flyover",
+ "title": "GEN",
+ "subtitle": "FLYOVER",
+ "seed": 3,
+ "bpm": 110,
+ "palette": {
+  "bg": "#101012",
+  "ink": "#efece4",
+  "accent": "#ff6b4a",
+  "dim": "#5a5a62"
+ },
+ "transition": {
+  "type": "fade",
+  "dur": 3
+ },
+ "shots": [
+  {
+   "layer": "depth",
+   "dur": 36,
+   "label": "FLOOR",
+   "params": {
+    "shapes": [
+     "plane"
+    ],
+    "nu": 44,
+    "nv": 44,
+    "size": 0.62,
+    "focal": 700,
+    "camZ": 2.3,
+    "camY": 0.85,
+    "tiltX": 6,
+    "wobble": 1.5,
+    "spinY": 0,
+    "lift": -0.12,
+    "fly": 0.9,
+    "dot": 3.4,
+    "lines": 0.12,
+    "fog": 0.95,
+    "trail": 0.3,
+    "accent": 0.08
+   }
+  },
+  {
+   "layer": "depth",
+   "dur": 36,
+   "label": "CLOTH",
+   "params": {
+    "shapes": [
+     "sheet",
+     "curl",
+     "plane"
+    ],
+    "nu": 30,
+    "nv": 30,
+    "size": 0.38,
+    "tiltX": -38,
+    "spinY": -6,
+    "hold": 8,
+    "morph": 4,
+    "trail": 0.5
+   }
+  }
+ ]
+}

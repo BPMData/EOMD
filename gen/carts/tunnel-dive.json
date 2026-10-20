@@ -1,0 +1,57 @@
+{
+ "name": "tunnel-dive",
+ "title": "GEN",
+ "subtitle": "WORMHOLE",
+ "seed": 4,
+ "bpm": 128,
+ "palette": {
+  "bg": "#0d0d0f",
+  "ink": "#f2efe6",
+  "accent": "#ff4f3a",
+  "dim": "#55535c"
+ },
+ "transition": {
+  "type": "iris",
+  "dur": 2
+ },
+ "shots": [
+  {
+   "layer": "tunnel",
+   "dur": 30,
+   "label": "WIRE"
+  },
+  {
+   "layer": "tunnel",
+   "dur": 30,
+   "label": "CHECKER",
+   "palette": {
+    "bg": "#07070c",
+    "ink": "#dfe6ff",
+    "accent": "#ff3d7f",
+    "dim": "#2b2f4a"
+   },
+   "params": {
+    "style": "checker",
+    "sides": 12,
+    "twist": 0.25,
+    "speed": 3.5,
+    "fill": 0.55
+   }
+  },
+  {
+   "layer": "tunnel",
+   "dur": 30,
+   "label": "SPIRAL",
+   "params": {
+    "style": "dots",
+    "sides": 18,
+    "rings": 90,
+    "spacing": 0.22,
+    "twist": 0.17,
+    "dot": 3,
+    "bend": 1.4,
+    "speed": 2.6
+   }
+  }
+ ]
+}
