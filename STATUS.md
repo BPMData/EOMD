@@ -224,3 +224,4 @@ Chips music (the plain `chip` style): Bryan Oct 9, "it's so bad lol"; kept as a 
 - Overclock set shape: always end on the lifted B, or sometimes skip the lift? (`FORM`, one line.)
 - Ambient stamp: look, size and placement once seen (knobs at the top of `tools__cdrom_ambient.py`).
 - Jukebox: 10 CD-ROM cartridges may be a lot; trim `JUKEBOX_CHIPS` (e.g. Overclock on all five, Lounge (Chipped) on two)?
+- **Jukebox look (Bryan, Oct 20: "I hate the way the Jukebox looks now that we have so many tracks"; pinned for later):** 15 cartridges in one long list of cards. Redesign the layout in `jukebox__template.html` (e.g. grouped by family, compact rows), then rebuild and copy into `players/`.
