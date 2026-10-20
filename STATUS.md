@@ -3,6 +3,16 @@
 _Last updated: Oct 20, 2026 (moved to Claude Code: git repo, spent patchers and Track 2 auditions deleted, CLAUDE.md + this file; gen dust layer wired in; `tools__html_to_mp4.py`. Earlier: Oct 15 Dust Type study; 9e Overclock long form; 9f airship parts; 9g PATCHES folded into the player source; 9h ambient screensaver + CD-ROM music in the jukebox (not yet run); living posters' time-left readout; Academies film heroes, icons and word blocks)_
 
 ## Status
+- **PLTW CSE promo (NEW Oct 20, UNSEEN by Bryan): gen cartridge `gen/carts/pltw-cse.json`, 60 s, 5 shots** (dust PLTW assemble →
+  checker tunnel + "Computer Science Essentials / blocks to text" → flyover floor + VEXcode VR / VEXcode EXP / self-driving vehicles /
+  SDVs → truchet + MIT App Inventor / Python / `print("Hello, World!")` → depth morph + end title). Colors from PLTW's brand page
+  (pltw.org/about/brand-assets): Dark Blue `#0e0318` bg, Cream `#f7f4f1` ink, PLTW Blue `#3e34d9` accent, Deep Blue `#141e8a`, CS Purple
+  `#461c5d`; text-accent shots use a lighter tint `#6f68e6` because PLTW Blue on Dark Blue is only ~2.3:1. Course name is PLTW's
+  official "Computer Science Essentials" (Bryan said "Essentials of Computer Science"); "MIT App Inventor" is the real name
+  ("AppDesigner" isn't). Music: one 60-s section of `score__academies-hallway.json` (96 BPM, 24 bars) rendered at −16 LUFS, −1.5 dB,
+  2.5-s fade, saved as `gen/audio/pltw-cse.mp3` (git-ignores *.mp3, so it lives only inside the built player; re-render with
+  `tools__calibrate.py` settings SECTIONS 1, TARGET −16, WRITE_BACK False). Checked by headless frame grabs only.
+  MP4: `tools__html_to_mp4.py` on `players/gen-player.html`, URL options `cart=pltw-cse&nohud` (optional), 60 s, with music.
 - **Public on GitHub (Oct 20): https://github.com/BPMData/EOMD** (Efficient Offline Motion Designer), MIT license (Bryan Patrick Murphy), `README.md` for visitors. Commits use the noreply address `123925276+BPMData@users.noreply.github.com`.
 - **Prebuilt players in `players/` (Oct 20):** every build made fresh from the current sources (jukebox, CD-ROM + ambient, the three
   living posters, gen) and copied in. Each one was loaded headless: no script errors, sound starts, frames render. That means the 9h
