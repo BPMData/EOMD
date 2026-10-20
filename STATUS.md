@@ -3,6 +3,7 @@
 _Last updated: Oct 20, 2026 (moved to Claude Code: git repo, spent patchers and Track 2 auditions deleted, CLAUDE.md + this file; gen dust layer wired in; `tools__html_to_mp4.py`. Earlier: Oct 15 Dust Type study; 9e Overclock long form; 9f airship parts; 9g PATCHES folded into the player source; 9h ambient screensaver + CD-ROM music in the jukebox (not yet run); living posters' time-left readout; Academies film heroes, icons and word blocks)_
 
 ## Status
+- **Public on GitHub (Oct 20): https://github.com/BPMData/EOMD** (Efficient Offline Motion Designer), MIT license (Bryan Patrick Murphy), `README.md` for visitors. Commits use the noreply address `123925276+BPMData@users.noreply.github.com`.
 - **Moved to Claude Code (Oct 20, DONE).** This folder (`MotionDesign`) is the single source of truth, in git. Deleted: the spent patchers and one-off tools (`tools__patch_*.py`, `tools__fold_cdrom.py`, `tools__strip_player.py`, `tools__rebuild_living.py`, `tools__sync_check.py`, `tools__check_files.py`), the Track 2 audition files (`proj__cdrom__track2-audition.html`, `-r2-audition.html`, `-r3.js`, `-sketches.js`, `tools__build_track2.py`) and `academies-film/danbury-academies-player_ORIGINAL.html`. `motif.txt` → `proj__cdrom__intro-motif.md`. `00_CLAUDE.md` → `CLAUDE.md`, `00_HANDOFF.md` → this file.
 - **Video export (NEW Oct 20): `tools__html_to_mp4.py`** (Tk GUI). Bryan ran it on the Academies master: "Worked perfectly". Also tested on the CD-ROM build (20 s with music), Dust Type and the gen player. Not tested: CANCEL, portrait, a living poster (none built in `dist/` at the time).
 - **Dust Type (Oct 15, study piece; stage 1 r2 seen and approved: "looks sick now"):** letters burst into coloured powder and
@@ -213,6 +214,7 @@ Chips music (the plain `chip` style): Bryan Oct 9, "it's so bad lol"; kept as a 
    a Web Worker (no load hitch), a per-letter colour palette from a brand file, a small `tools__build_dust.py` for the standalone
    (subset + embed the font, see the brief).
 10. Optional, later: turn the `__` names into real folders (the build scripts already accept both); one commit, rebuild, diff.
+11. **Community cartridges (Bryan, Oct 20):** a way for people to submit their own gen cartridges and music scores (`score__*.json`) to the public repo. For now the README says: open a pull request or an issue. Ideas: an issue template, a `community/` folder, a CI check that runs `gen/build.py` + `gen/tests/smoke.js` on each pull request.
 
 ## Open taste questions
 - Clear sampler for the Chips music on Their Finest Duds too (Chips is approved music: Bryan's call).
