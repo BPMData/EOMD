@@ -72,11 +72,11 @@ looping) stream. `score__FORMAT.md` explains every field. To make one: copy a sc
 Run **`tools__html_to_mp4.py`** (a small window: pick a player `.html`, pick where to save, press RENDER).
 
 - **Films** (like the Academies loop) render frame-exact, with the music synthesized offline in sync.
-- **Everything else** (gen cartridges, living posters, Dust Type, the screensaver) is stepped one frame at a time, so
+- **Everything else** (gen cartridges, living posters, the screensaver) is stepped one frame at a time, so
   nothing drops, at any length. Their music is recorded from a second, real-time play of the page, so it isn't locked to
   the picture (fine for most things; it means a 10-minute clip takes about 10 minutes for the music plus the frames).
-- **URL options** pick what plays: `cart=dust-type&nohud` for one gen cartridge without the corner text,
-  `word=HELLO&mode=explode` for Dust Type, `vseed=7` for a living poster.
+- **URL options** pick what plays: `cart=dust-type&nohud` for one gen cartridge without the corner text (add
+  `&shot=2` to start on its second shot), `vseed=7` for a living poster.
 - Size presets: 1080p landscape, 1080×1920 portrait, 4K, 720p.
 
 It needs **ffmpeg** (macOS: `brew install ffmpeg`; the tool finds it, or press BROWSE) and **Playwright** with Chromium:

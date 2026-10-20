@@ -4,7 +4,7 @@
 # Two kinds of player, found automatically:
 #   FILM     the Academies film (DHS.film): every frame rendered exactly at its time, music synthesized offline,
 #            length = the film's own loop. Frame-perfect A/V.
-#   STEPPED  anything with the ?manual capture hook (window.advance): CD-ROM screensaver, living posters, Dust Type,
+#   STEPPED  anything with the ?manual capture hook (window.advance): CD-ROM screensaver, living posters,
 #            the gen player (one cartridge: URL option cart=<name>). Video is stepped frame by frame (any length, never drops a frame);
 #            the music is recorded from a second, real-time run of the page (it streams live), so it takes the
 #            clip's length in real time and is not locked to the picture (fine for posters; CD-ROM channel switches
@@ -26,7 +26,7 @@ SIZES         = {'Landscape 1920×1080': (1920, 1080), 'Portrait 1080×1920': (1
 DEFAULT_SIZE  = 'Landscape 1920×1080'
 SECONDS       = 60            # clip length for STEPPED players (FILM players use their own length × LOOPS)
 LOOPS         = 1             # FILM players: how many times through the loop
-URL_OPTIONS   = ''            # extra query options, e.g. 'cart=dust-type&nohud' (gen), 'vseed=7' (living), 'word=HELLO&mode=explode' (Dust Type)
+URL_OPTIONS   = ''            # extra query options, e.g. 'cart=dust-type&nohud&shot=2' (gen), 'vseed=7' (living)
 WITH_AUDIO    = True
 AUDIO_LEAD_S  = 1.5           # STEPPED audio run: seconds to let the page load before pressing Start sound
 JPEG_QUALITY  = 92            # frames travel to ffmpeg as JPEG
@@ -357,7 +357,7 @@ class App:
         r = self._row(s); self._label(r, 'Seconds (stepped players)').pack(side='left'); self._entry(r, self.seconds, 7).pack(side='left', padx=4)
         self._label(r, '  Loops (film)').pack(side='left'); self._entry(r, self.loops, 4).pack(side='left', padx=4)
         r = self._row(s); self._label(r, 'URL options').pack(side='left'); self._entry(r, self.query).pack(side='left', fill='x', expand=True, padx=4)
-        self._label(s, 'e.g. cart=dust-type&nohud (gen), vseed=7 (living), word=HELLO&mode=explode (Dust Type), noboot (CD-ROM)').pack(anchor='w', padx=5)
+        self._label(s, 'e.g. cart=dust-type&nohud&shot=2 (gen), vseed=7 (living), noboot (CD-ROM)').pack(anchor='w', padx=5)
 
         r = tk.Frame(self.root, bg=COLOR_BG); r.pack(fill='x', padx=10, pady=(6, 0))
         self._btn(r, '[ RENDER ]', self.render).pack(side='left')

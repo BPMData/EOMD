@@ -8,19 +8,16 @@ _Last updated: Oct 20, 2026 (moved to Claude Code: git repo, spent patchers and 
   living posters, gen) and copied in. Each one was loaded headless: no script errors, sound starts, frames render. That means the 9h
   scripts (jukebox CD-ROM cartridges, ambient version) have now run; their levels and the AMBIENT_VER stamp are still unheard/unseen by Bryan.
 - **Moved to Claude Code (Oct 20, DONE).** This folder (`MotionDesign`) is the single source of truth, in git. Deleted: the spent patchers and one-off tools (`tools__patch_*.py`, `tools__fold_cdrom.py`, `tools__strip_player.py`, `tools__rebuild_living.py`, `tools__sync_check.py`, `tools__check_files.py`), the Track 2 audition files (`proj__cdrom__track2-audition.html`, `-r2-audition.html`, `-r3.js`, `-sketches.js`, `tools__build_track2.py`) and `academies-film/danbury-academies-player_ORIGINAL.html`. `motif.txt` → `proj__cdrom__intro-motif.md`. `00_CLAUDE.md` → `CLAUDE.md`, `00_HANDOFF.md` → this file.
-- **Video export (NEW Oct 20): `tools__html_to_mp4.py`** (Tk GUI). Bryan ran it on the Academies master: "Worked perfectly". Also tested on the CD-ROM build (20 s with music), Dust Type and the gen player. Not tested: CANCEL, portrait, a living poster (none built in `dist/` at the time).
-- **Dust Type (Oct 15, study piece; stage 1 r2 seen and approved: "looks sick now"):** letters burst into coloured powder and
-  dust coalesces back into crisp letters (the ALT VFX / Semi-Permanent packed-powder trick; one baked physics sim played forward and
-  backward). Files: `proj__dust__brief.md` (what it is, how it works, knobs, build steps), `proj__dust__player-src.html`
-  (source, `/*__FONT__*/` placeholder), `fonts__OFL-Montserrat.txt`. The built standalone `dust-type.html` (~40 KB, subset Montserrat
-  Bold) was a download and isn't in the folder. 3k grains default, 5k OK on Bryan's machine.
-  - **Gen cartridge (wired in Oct 20; Bryan: "works fine, looks good"):** `gen/layers/dust.js` (layer `dust`: the same sim and
-    renderer as the standalone, 39 knobs each with a help line; modes both / explode / assemble), `gen/carts/dust-type.json` (3 shots:
-    DUST both ways 27.8 s = 2 loops, GEN burst 10.2 s, TYPE coalesce 9.3 s), `gen/fonts/Montserrat-Bold.ttf` + OFL, now
-    `DISPLAY_FONT` in `gen/build.py` (so the `type` and `halftone` layers use Montserrat Bold too). `gen/tests/smoke.js`'s stub canvas
-    now returns gradients (dust is the first layer to use them); all 17 cartridges pass. **Palette fix (Oct 20):** the cartridge no
-    longer pins a `colors` list, so `color ink/accent/dim` change the dust live (fallback = dim-ink blend, dim, accent, ink, in the old
-    list's slot order). Not yet checked: every knob on every setting.
+- **Video export (NEW Oct 20): `tools__html_to_mp4.py`** (Tk GUI). Bryan ran it on the Academies master: "Worked perfectly". Also tested on the CD-ROM build (20 s with music), the old Dust Type standalone and the gen player. Not tested: CANCEL, portrait, a living poster (none built in `dist/` at the time).
+- **Dust Type = the gen `dust` layer + cartridge `dust-type` (a cartridge only; the Oct 15 standalone player was dropped Oct 20,
+  Bryan: "it was never meant to be a standalone anything").** Letters burst into coloured powder and dust coalesces back into crisp
+  letters (the ALT VFX / Semi-Permanent packed-powder trick; one baked physics sim played forward and backward). Look approved Oct 15
+  ("looks sick now"); in gen Oct 20: "works fine, looks good". `gen/layers/dust.js` (39 knobs, each with a help line; modes both /
+  explode / assemble; how it works and the r1 look lesson are in its header), `gen/carts/dust-type.json` (3 shots: DUST both ways
+  27.8 s = 2 loops, GEN burst 10.2 s, TYPE coalesce 9.3 s), `gen/fonts/Montserrat-Bold.ttf` + OFL, which is `DISPLAY_FONT` in
+  `gen/build.py` (so the `type` and `halftone` layers use Montserrat Bold too). `gen/tests/smoke.js`'s stub canvas returns gradients
+  (dust is the first layer to use them). **Palette fix (Oct 20):** the cartridge no longer pins a `colors` list, so `color
+  ink/accent/dim` change the dust live (fallback = dim-ink blend, dim, accent, ink). Not yet checked: every knob on every setting.
 - **CS Lab Screensaver ("CD-ROM"): Stage 4 runs on Bryan's Mac; extras through 9f built.** Brief: `proj__cdrom__brief.md` v3.1
   (covers the music modes, Overclock, the timer readout, the word structures; does NOT yet describe the 9c passes or the 9e long form).
   - **Seen/heard and approved:** Overclock as the default mode (Oct 9: "soooo much better than chips"), clear sampler on Their Finest
@@ -187,7 +184,7 @@ Chips music (the plain `chip` style): Bryan Oct 9, "it's so bad lol"; kept as a 
 - Jukebox: the Overclock cartridges play at the score's 142.5 BPM / −3 st (no tempo/key menu there); no Contour intro; the key label
   reads "D♭" for C♯ minor (the template's flat-only note names).
 - Dust Type: above ~5k grains it drops frames on Bryan's machine (fill rate + per-grain bake memory); the bake runs on the main
-  thread at load and on every word/seed/count change (in gen: every knob change re-bakes, ~0.1–0.4 s).
+  thread, and every knob change re-bakes (~0.1–0.4 s).
 - `tools__html_to_mp4.py`: for STEPPED players the music is recorded from a separate real-time run, so it takes the clip's length in
   real time and isn't locked to the picture; CD-ROM channel switches in `?manual` follow their own clock, not the music's bar lines.
   A stepped render takes roughly the clip's length (music) plus about the same again (frames).
@@ -212,10 +209,9 @@ Chips music (the plain `chip` style): Bryan Oct 9, "it's so bad lol"; kept as a 
       **Card-bloom vines** (`startFiddle` / `startTrio`) may enter from any direction. Check the leftward drift (7 px/s, `DRIFT`):
       a left-side start leaves the screen sooner, so give word starts room; `startWord` and `buildWord`'s lead-in tendril are the places.
    d. Rebuild the CS and SSR players to pick up the time-left readout (and CS's copy change + card 12).
-9. **Dust Type:** check the gen knobs across their ranges. Then Bryan's call: use it in a real piece (title or end card in a film, a
-   gen-library cartridge), a brand palette, impact/whoosh sound, or video via `tools__html_to_mp4.py`. Ideas not yet tried: a bake in
-   a Web Worker (no load hitch), a per-letter colour palette from a brand file, a small `tools__build_dust.py` for the standalone
-   (subset + embed the font, see the brief).
+9. **Dust Type:** check the gen knobs across their ranges. Then Bryan's call: use it in a real piece (a title or end-card shot in
+   another cartridge), a brand palette, impact/whoosh sound. Ideas not yet tried: a bake in a Web Worker (no hitch on knob changes),
+   a per-letter colour palette from a brand file.
 10. Optional, later: turn the `__` names into real folders (the build scripts already accept both); one commit, rebuild, diff.
 11. **Community cartridges (Bryan, Oct 20):** a way for people to submit their own gen cartridges and music scores (`score__*.json`) to the public repo. For now the README says: open a pull request or an issue. Ideas: an issue template, a `community/` folder, a CI check that runs `gen/build.py` + `gen/tests/smoke.js` on each pull request.
 

@@ -2047,7 +2047,9 @@ body.gallery canvas#view, body.gallery #bar { display: none; }
    splash toward the camera, drag, gravity on height, Brownian jostle, curl-noise swirl, wind.
    Playback is a pure function of t (forward = burst, backward = coalesce), so seeking is free.
    Cost: init bakes grains x 30 fps x burst seconds (about 0.1-0.3 s at 3000 grains); every knob change re-bakes.
-   Font: the `font` knob (default GenDisplay = build.py's DISPLAY_FONT, e.g. Montserrat Bold). */
+   Font: the `font` knob (default GenDisplay = build.py's DISPLAY_FONT, e.g. Montserrat Bold).
+   Look lesson (r1 -> r2, Oct 15): puffs read as coherent, separate balls until more fan, shear, Brownian jostle and
+   bigger, softer puffs went in. 3000 grains is the default; ~5000 is the most Bryan's machine plays smoothly. */
 (function (G) {
   'use strict';
   const C = G.core;
