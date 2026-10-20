@@ -180,7 +180,7 @@ li button{border-color:var(--ink);background:var(--ink);color:var(--card);flex:0
     return { bus: out, maxGR: P.todb(1 - maxGR), hits };
   };
 })(globalThis);
-/* audio__instruments.js: shared instrument library on DHS.dsp (engine__src__audio__dsp.js).
+/* audio/instruments.js: shared instrument library on DHS.dsp (engine/src/audio/dsp.js).
    Every instrument is a generator: (sr, midi, durSeconds, velocity, ...) → yields every 8k samples, returns Float32Array
    (pad returns [L, R]). Use with `yield*` inside a generator, or INSTR.now(gen) to run one to completion.
    Soft attacks and dark tops throughout: these were tuned for silent-reading rooms.
@@ -272,12 +272,12 @@ I.whistle=function*(sr,m,dur,v=1,seed=5){const f=P.mtof(m),n=Math.round((dur+0.2
  return yield* arr(n,i=>{const t=i/sr;const vib=1+0.006*Math.sin(TAU*5.5*t)*Math.min(1,t/0.25);ph=(ph+f*vib/sr)%1;
   return v*e[i]*(Math.sin(TAU*ph)+0.08*bp(r(),f,4,sr,'bp'))})};
 })(globalThis);
-/* audio__instruments-film.js: the "film" voices, ported 1:1 from the Academies hallway film (load right after audio__instruments.js).
-   Adds to INSTR: drums + leads + filmBass/filmPad/filmChime. Same generator contract as audio__instruments.js.
+/* audio/instruments-film.js: the "film" voices, ported 1:1 from the Academies hallway film (load right after audio/instruments.js).
+   Adds to INSTR: drums + leads + filmBass/filmPad/filmChime. Same generator contract as audio/instruments.js.
    Drums take (sr, v[, seed]) with no pitch; filmPad takes (sr, midi, dur, t0, v) where t0 = absolute seconds (drives the filter breathing). */
 (function(G){'use strict';
 const P=G.DHS.dsp,TAU=Math.PI*2,I=G.INSTR;
-const arr=function*(n,fn){const b=new Float32Array(n);for(let i=0;i<n;i++){b[i]=fn(i);if((i&8191)===8191)yield}return b};   // same helper as audio__instruments.js
+const arr=function*(n,fn){const b=new Float32Array(n);for(let i=0;i<n;i++){b[i]=fn(i);if((i&8191)===8191)yield}return b};   // same helper as audio/instruments.js
 /* ---- film voices (Academies hallway film, 96 BPM). Same maths as the film's music.js; the generator wrapper only adds yields. ---- */
 const fm=function*(sr,f,n,ratio,idx0,idx1,idxDec,amp){let pc=0,pm=0;return yield* arr(n,i=>{const t=i/sr;pm=(pm+f*ratio/sr)%1;const ix=idx1+(idx0-idx1)*Math.exp(-t/idxDec);pc=(pc+f/sr)%1;return Math.sin(TAU*pc+ix*Math.sin(TAU*pm))*amp[i]})};
 // drums (no pitch): kick (sr,v), snap (sr,v), shaker (sr,v,seed), woodblock (sr,v)
@@ -324,8 +324,8 @@ I.whistle=function*(sr,m,dur,v=1,seed=5){const f=P.mtof(m),n=Math.round((dur+0.2
  return yield* arr(n,i=>{const t=i/sr;const vib=1+0.006*Math.sin(TAU*5.5*t)*Math.min(1,t/0.25);ph=(ph+f*vib/sr)%1;
   return v*e[i]*(Math.sin(TAU*ph)+0.08*bp(r(),f,4,sr,'bp'))})};
 })(globalThis);
-/* audio__instruments-cdrom.js: CD-ROM screensaver voices added to INSTR (Encyclopedia Lounge + Stage 3 auditions).
-   Load after audio__instruments.js + audio__instruments-film.js. Same generator contract (yield every 8k samples).
+/* audio/instruments-cdrom.js: CD-ROM screensaver voices added to INSTR (Encyclopedia Lounge + Stage 3 auditions).
+   Load after audio/instruments.js + audio/instruments-film.js. Same generator contract (yield every 8k samples).
    Adds only new names, so loading it never changes an existing score's sound (regress-safe).
    Pitched: fmEP, slap(…,pop), brass, bleep(…,pw), fmBell, fretless(…,fromMidi), lyricon, triBass, loungeVibes.
    Unpitched (sr, v, …): hat(open,seed), snare, clap, rim, chipKick, chipNoise(dec,rate,seed). */
@@ -388,7 +388,7 @@ I.chipKick=function*(sr,v=1){const n=Math.round(0.18*sr);let ph=0;
 I.chipNoise=function*(sr,v=1,dec=0.04,rate=16000,seed=9){const n=Math.round(dec*5*sr),r=P.rng(seed);let h=0,acc=1;
  return yield* arr(n,i=>{acc+=rate/sr;if(acc>=1){acc-=1;h=r()>0?1:-1}return v*h*Math.exp(-i/(dec*sr))*0.5})};
 })(globalThis);
-/* audio__chips.js: era sound-chip renderers for the CD-ROM screensaver (load after engine__src__audio__dsp.js).
+/* audio/chips.js: era sound-chip renderers for the CD-ROM screensaver (load after engine/src/audio/dsp.js).
    CHIPS.<chip>.render(events, N, sr, bpm) is a generator (yields while working) → mono Float32Array of N samples.
    Event: {t (s from section start), part, m (midi), d (s), v (0–1)}; parts: lead, lead2, bass, arp, pad, speech,
    kick, snare, hat, tom, crash. Each chip plays only what its hardware could:
@@ -626,8 +626,8 @@ C.arcade={range:{lead:[67,86],bass:[31,45],arp:[62,81]},post:{hp:40,lp:10500},
       out[i]+=s*0.085;if((i&65535)===65535)yield}
     return out}};
 })(globalThis);
-/* audio__arranger.js: CORE. Turns a score (score__*.json) into audio sections; the music itself lives in one file per style.
-   Load order: engine__src__audio__dsp.js, audio__instruments.js, this file, then the style files (audio__style-*.js) in any order.
+/* audio/arranger.js: CORE. Turns a score (score/*.json) into audio sections; the music itself lives in one file per style.
+   Load order: engine/src/audio/dsp.js, audio/instruments.js, this file, then the style files (audio/style-*.js) in any order.
    Each style file registers itself: MUSIC.styles.<name> = generator (sc,o) → {index,sr,len,L,R}; optional .loopSections(sc) = sections per loop.
    Styles: comp4 (endless, generative; also the default for unknown styles), film24 (fixed seamless loop), rounds (20-min study loop).
    API: MUSIC.section(score,{sr,seed,index}) generator; MUSIC.run(...) runs it; MUSIC.sectionLen(score); MUSIC.loopSections(score); MUSIC.bind(score). */
@@ -636,14 +636,14 @@ const I=G.INSTR,M=(G.MUSIC={});
 M.styles={};
 M.sectionLen=sc=>sc.bars*4*60/sc.bpm;
 M.section=function*(sc,o){return yield* (M.styles[sc.style]||M.styles.comp4)(sc,o||{})};
-// Sections in one full loop for fixed-form styles (film24, rounds); null for open-ended comp4. Used by tools__porter.py.
+// Sections in one full loop for fixed-form styles (film24, rounds); null for open-ended comp4. Used by tools/porter.py.
 M.loopSections=sc=>{const f=M.styles[sc.style];return f&&f.loopSections?f.loopSections(sc):null};
 M.run=(sc,o)=>I.now(M.section(sc,o));
-// Compatibility for players written against the old single-song API (living__sound-timer.js uses SSRM)
+// Compatibility for players written against the old single-song API (living/sound-timer.js uses SSRM)
 M.bind=sc=>({section:o=>M.section(sc,o),run:o=>M.run(sc,o),sectionLen:()=>M.sectionLen(sc)});
 })(globalThis);
  
-/* audio__style-comp4.js: style "comp4" (load after audio__arranger.js).
+/* audio/style-comp4.js: style "comp4" (load after audio/arranger.js).
    Every 2 bars one chord. Pad (3 notes), bass (root + fifth),
    4-note comping stab with an optional answering stab, and a pentatonic lead motif in theme-and-variations form.
    Each section = score.bars bars + score.tail seconds of ring-out; play section k at k*sectionLen and let tails overlap.
@@ -684,10 +684,10 @@ const comp4=function*(sc,o){const sr=o.sr||48000,seed=o.seed||1,i=o.index||0,bea
  return{index:i,sr,len,L,R}};
 M.styles.comp4=comp4;
 })(globalThis);
-/* audio__style-film24.js: style "film24" (load after audio__arranger.js).
+/* audio/style-film24.js: style "film24" (load after audio/arranger.js).
    Style "film24": a fixed, seamless loop (score.bars bars, tail 0) played on circular buffers, ported from the Academies hallway film.
    Constant bed (kick/snap/shaker/bass/pad) + one lead per section, each level-matched, then echo + reverb. Fully deterministic: seed is ignored,
-   every section is the same loop, and consecutive sections join with no gap or overlap. Score fields: see score__academies-hallway.json. */
+   every section is the same loop, and consecutive sections join with no gap or overlap. Score fields: see score/academies-hallway.json. */
 (function(G){'use strict';
 const P=G.DHS.dsp,I=G.INSTR,M=G.MUSIC;
 // ---------------------------------------------------------------- style "film24"
@@ -733,7 +733,7 @@ const film24=function*(sc,o){
 film24.loopSections=()=>1;
 M.styles.film24=film24;
 })(globalThis);
-/* audio__style-rounds.js: style "rounds" (load after audio__arranger.js). See score__corporate-calm.json. */
+/* audio/style-rounds.js: style "rounds" (load after audio/arranger.js). See score/corporate-calm.json. */
 (function(G){'use strict';
 const P=G.DHS.dsp,I=G.INSTR,M=G.MUSIC;
 // ---------------------------------------------------------------- style "rounds"
@@ -808,8 +808,8 @@ const rounds=function*(sc,o){
 rounds.loopSections=sc=>{const pl=roundsPlan(sc),l=pl[pl.length-1];return(l.bar0+l.bars)/sc.bars};
 M.styles.rounds=rounds;
 })(globalThis);
-/* audio__style-lounge.js: style "lounge" = Encyclopedia Lounge, CD-ROM edutainment bossa (load after audio__arranger.js).
-   Needs INSTR voices from audio__instruments.js (+ -film) and audio__instruments-cdrom.js (rim, bleep, loungeVibes).
+/* audio/style-lounge.js: style "lounge" = Encyclopedia Lounge, CD-ROM edutainment bossa (load after audio/arranger.js).
+   Needs INSTR voices from audio/instruments.js (+ -film) and audio/instruments-cdrom.js (rim, bleep, loungeVibes).
    One section = score.bars (8) bars + score.tail s of ring-out; play section k at k*sectionLen and let tails overlap (as comp4).
    Form (head and choruses, like a jazz tune):
    - HEAD on every headEvery-th section: the authored tune in score.head (C() in proj__cdrom__audition.js) on marimba;
@@ -894,7 +894,7 @@ const lounge=function*(sc,o){const sr=o.sr||48000,seed=o.seed||1,i=o.index||0,be
  return{index:i,sr,len,L,R}};
 M.styles.lounge=lounge;
 })(globalThis);
-/* audio__style-chip.js: style "chip" (load after audio__arranger.js and audio__chips.js).
+/* audio/style-chip.js: style "chip" (load after audio/arranger.js and audio/chips.js).
    One shared, endless, generative composer; the score's `chip` ('fm' | 'tia' | 'beep' | 'snes' | 'arcade') decides which
    era chip plays it and which registers the parts are written in. Every channel shares the grid (116 BPM, 8-bar sections),
    so channel dissolves cross on the beat. Same seed + index = same section.
@@ -991,9 +991,9 @@ M.styles.chip=function*(sc,o){const sr=o.sr||48000,seed=o.seed||sc.seed||1,i=o.i
   const f=Math.round(0.005*sr);for(let j=0;j<f;j++){L[j]*=j/f;L[N-1-j]*=j/f}   // de-click the section edges
   return{index:i,sr,len,L,R:Float32Array.from(L)}};
 })(globalThis);
-/* audio__style-loungechip.js: style "loungechip" = Encyclopedia Lounge played by an era chip ("Lounge (Chipped)").
-   Load after audio__chips.js and audio__style-lounge.js (which supplies MUSIC.loungePlan).
-   The notes are Lounge's own: MUSIC.loungeEvents mirrors audio__style-lounge.js call for call (same seed + section = same
+/* audio/style-loungechip.js: style "loungechip" = Encyclopedia Lounge played by an era chip ("Lounge (Chipped)").
+   Load after audio/chips.js and audio/style-lounge.js (which supplies MUSIC.loungePlan).
+   The notes are Lounge's own: MUSIC.loungeEvents mirrors audio/style-lounge.js call for call (same seed + section = same
    melody, vibes answers, bass, comping chords, clave, shaker and bleep pickups; only the humanize jitter is dropped, chips
    sit on the grid). MUSIC.loungeChipEvents then gives each line to a part the chip really has, in its registers:
      fm     marimba line → FM lead; vibes answers + breather arps + bleeps → glass bell; guitar comping → organ stabs;
@@ -1006,13 +1006,13 @@ M.styles.chip=function*(sc,o){const sr=o.sr||48000,seed=o.seed||sc.seed||1,i=o.i
             electric piano chords, clave → soft snare, shaker → noise hats.
    The marimba line moves by whole octaves toward the chip's lead register, then single notes fold in where the chip can't reach.
    Dud speech: o.speech = [{t, d}] is voiced by the chip from Lounge's chord tones (as the chip style does).
-   Score: the lounge score + chip, tail, master_db (+ lead for snes); tools__build_cdrom.py derives one per chip (lc_<chip>). */
+   Score: the lounge score + chip, tail, master_db (+ lead for snes); tools/build_cdrom.py derives one per chip (lc_<chip>). */
 (function(G){'use strict';
 const P=G.DHS.dsp,M=G.MUSIC,C=G.CHIPS;
 const u=r=>(r()+1)/2,pick=(r,a)=>a[Math.floor(u(r)*a.length)%a.length];
 const H=(a,b)=>((Math.imul(a^0x9e3779b9,0x85ebca6b)^Math.imul((b+0x632be5ab)|0,0xc2b2ae35))>>>0);
 const MAJ=[0,2,4,5,7,9,11],pc=n=>((n%12)+12)%12,fold=k=>{k=pc(k);return k>6?k-12:k};
-// ---- copied from audio__style-lounge.js (keep in step with it)
+// ---- copied from audio/style-lounge.js (keep in step with it)
 const walk=(p,s,set)=>{const d=Math.sign(s);let n=Math.abs(s);while(n>0){p+=d;if(set.has(pc(p)))n--}return p};
 const near=(p,set)=>{for(let k=0;k<12;k++){if(set.has(pc(p-k)))return p-k;if(set.has(pc(p+k)))return p+k}return p};
 function harmony(ch,kb){const tones=new Set([pc(ch[0]+kb),...ch[1].map(n=>pc(n+kb))]),sc=new Set(MAJ.map(x=>pc(x+7+kb)));
@@ -1093,13 +1093,13 @@ M.styles.loungechip=function*(sc,o){const sr=o.sr||48000,seed=o.seed||sc.seed||1
  return{index:i,sr,len,L,R:Float32Array.from(L)}};
 })(globalThis);
 
-/* proj__cdrom__track2-r2.js: Track 2, round 2. "Stage 1 · Overclock": an original fast action-stage theme written with late-80s
+/* proj/cdrom/track2-r2.js: Track 2, round 2. "Stage 1 · Overclock": an original fast action-stage theme written with late-80s
    arcade/console fusion techniques (line clichés, circle of fifths, secondary dominants, chromatic pivots, slap bass with octave
    pops and chromatic approaches, twin lead in 3rds/6ths with 16th runs and arpeggios, 16th hats with ghost snares). No quotes.
    Form: Intro (4 bars, plays once) + A (8, E minor) + B (8, modulates to F# minor and walks back) — A+B loop. 158–168 BPM.
    Oct 9e (option 3): bars 20–27 = C (half-time breakdown), 28–35 = D (a generated solo over A's chords, T.solo / T.setSolo).
    Piece 'overclock' still plays bars 0–19 (A+B loop, unchanged); piece 'overclock-long' plays the composed long form via `order`.
-   Load after engine__src__audio__dsp.js and audio__chips.js.
+   Load after engine/src/audio/dsp.js and audio/chips.js.
      TRACK2R2.events(bpm, mask, order)     chip-neutral notes {t, k, m, d, v}; k = mel | har | bass | kick | snare | hat | crash
      TRACK2R2.chipEvents(chip, bpm, mask)  CHIPS events {t, part, m, d, v} for one chip
    mask = {mel, har, bass, drums} (1 = on). Per chip: the melody moves by whole octaves to the chip's lead register (beeper one
@@ -1267,8 +1267,8 @@ T.barLabel=(bi,tr=0)=>{const B=BARS[bi],n=bi-BARS.findIndex(x=>x.sec===B.sec)+1;
 T.label=i=>{const o=ORDER[i];return T.barLabel(o.bi,o.tr)};   // i = position in the order (= the bar index when there is no order)
 })(globalThis);
 
-/* audio__style-overclock.js: style "overclock" = Track 2, "Stage 1 · Overclock", as an endless stream of 8-bar sections.
-   Load after audio__chips.js, audio__arranger.js and proj__cdrom__track2-r2.js (which holds the composition: TRACK2R2).
+/* audio/style-overclock.js: style "overclock" = Track 2, "Stage 1 · Overclock", as an endless stream of 8-bar sections.
+   Load after audio/chips.js, audio/arranger.js and proj/cdrom/track2-r2.js (which holds the composition: TRACK2R2).
    The notes come from TRACK2R2 (the audition page's piece); this file arranges them into an endless song and voices each bar
    on the chip through TRACK2R2.chipEvents, so the chip rules (registers, twin lead only on fm/snes/arcade, sour TIA notes) stay
    in one place.
@@ -1289,7 +1289,7 @@ T.label=i=>{const o=ORDER[i];return T.barLabel(o.bi,o.tr)};   // i = position in
      (TRACK2R2.solo(pass seed, first note of the next bar)). Variations only touch A and B (C and D are already new).
      Bass approach notes at a bar's end now aim at the bar that really follows (fixes the old 'always aims at A1').
      The 9c 'lift' pass (A B up) is no longer drawn: liftB closes every set instead.
-     Needs the Oct 9e proj__cdrom__track2-r2.js (T.solo, T.barLabel, T.approach, T.firstBass, events(…, order)).
+     Needs the Oct 9e proj/cdrom/track2-r2.js (T.solo, T.barLabel, T.approach, T.firstBass, events(…, order)).
    Score fields: style "overclock", chip, bpm, tr (semitones), bars (8), tail, lead (sampler melody sample), vary (1 = passes,
      0 = the plain A+B loop; the player's ?plain sets 0), master_db (number or {chip: dB}), clear (1 or a list of chips).
    Dud speech: o.speech = [{t, d}] is voiced by the same chip on the 32nd grid, from the chord tones of the bar it falls in.
@@ -1344,7 +1344,7 @@ function barInfo(seed,n){const pz=piece();if(n<pz.intro)return{bi:n,lv:3,lift:0,
 M.overclockPlan=(seed,n=12)=>{const PL=plan(seed);while(PL.passes.length<n)addSet(PL);return PL.passes.slice(0,n).map((x,i)=>x.type+(i&&PL.passes[i].lift?'+'+PL.passes[i].lift:''))};
 M.overclockAt=(sc,seed,n)=>{const b=barInfo(seed,n);return b.intro?{bar:n,intro:1}:{bar:n,pass:b.p,type:b.type,barInPass:b.j+1,energy:b.lv,lift:b.lift,section:T.barLabel(b.bi,b.lift)}};
 
-/* ---------- harmony helpers (copied from proj__cdrom__track2-r2.js so varied melodies get their twin) ---------- */
+/* ---------- harmony helpers (copied from proj/cdrom/track2-r2.js so varied melodies get their twin) ---------- */
 const chName=(bi,st)=>{const ch=piece().bars[bi].ch;let n=ch[0][1];for(const [s,c] of ch)if(s<=st)n=c;return n};
 const chord=s=>{const r=s.match(/^[A-G]#?/)[0];return{root:NOTE[r],tones:new Set(Q[s.slice(r.length)].map(i=>pc(NOTE[r]+i)))}};
 const scaleOf=(key,ch)=>{const sc=new Set(T.KEYS[key]);for(const t of ch.tones)if(!sc.has(t)){const a=pc(t-1),b=pc(t+1),x=sc.has(a)&&!ch.tones.has(a)?a:sc.has(b)&&!ch.tones.has(b)?b:null;if(x!==null)sc.delete(x);sc.add(t)}return sc};

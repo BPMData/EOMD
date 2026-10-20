@@ -28,7 +28,7 @@ EMBED_AUDIO  = True        # put each used track inside the built file (a 4 MB M
 # ------------------------------------------
 
 def main(only_cart=None, out_path=None):
-    """Build. only_cart / out_path override ONLY_CART / OUT_DIR+name (tools__gen_export.py calls it this way). Returns the path written."""
+    """Build. only_cart / out_path override ONLY_CART / OUT_DIR+name (tools/gen_export.py calls it this way). Returns the path written."""
     only_cart = ONLY_CART if only_cart is None else only_cart
     carts_dir = os.path.join(GEN_DIR, 'carts')
     layer_names = set()

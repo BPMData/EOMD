@@ -1,0 +1,32 @@
+name: Cartridge idea
+description: Suggest a new gen cartridge (a piece made from the existing layers) or a new layer.
+labels: [cartridge idea]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: What should it look like?
+      description: Describe the piece. Links to references or a sketch are welcome.
+    validations:
+      required: true
+  - type: input
+    id: layers
+    attributes:
+      label: Which layers might it use?
+      description: e.g. swarm, tunnel, truchet, dust, type, flow field ... (see gen/README.md), or "needs a new layer"
+  - type: input
+    id: use
+    attributes:
+      label: Where would it play?
+      description: e.g. a hallway screen, a classroom poster, a music video, a title card
+  - type: textarea
+    id: words
+    attributes:
+      label: Words or music
+      description: Any words the picture should form, and what the music should feel like. Please no commercial song lyrics here.
+  - type: checkboxes
+    id: pr
+    attributes:
+      label: Building it yourself?
+      options:
+        - label: I'd like to try making this cartridge myself (see CONTRIBUTING.md)
