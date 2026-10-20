@@ -25,9 +25,9 @@ One continuous, generative composition, not a timeline of cuts. Vines grow along
 - **Not a bug.** Six messages × ~30 s means the same card returns at the same clamped spot every ~3 min. Don't debug that as "stuck."
 - **Performance.** ~16 ms/frame in the sandbox's software renderer. Real GPUs should be faster, but verify on the target machine with `?fps`.
 
-## Cost habits (also in 00_CLAUDE.md)
+## Cost habits (see also CLAUDE.md)
 - For continuous "living" pieces, start from `living/` instead of the scene timeline. For cut-based films, use the main engine.
 - **Cost control.**
-  - Start each stage in a fresh chat, with the latest file in project knowledge and a 5-line handoff note.
-  - Patch instead of regenerating whole files.
+  - Read `STATUS.md` first; open only the files the task needs.
+  - Edit files in place instead of regenerating them whole; commit per stage.
   - Run sandbox tests and screenshots only when asked or when debugging; Bryan previews on his own devices.
