@@ -42,6 +42,48 @@ Dot + wire 3D surfaces that morph into each other; perspective projection, depth
 - `trail: 0.55` [0 to 0.97, step 0.01]  Motion streaks. 0 = every frame starts clean; higher = moving things leave fading trails.
 - `seed: 0` [0 to 999, step 1]  Reshuffles this layer's random choices (layout, timing). Same seed = same result.
 
+## dust  (`layers/dust.js`)
+Letters burst into coloured powder (top-down slow motion) and dust coalesces back into crisp letters.
+
+- `word: 'DUST'`  The word that bursts and re-forms (up to 14 characters; spaces leave gaps).
+- `mode: { options: ['both', 'explode', 'assemble'], value: 'both' }`  both = letters burst, then dust re-forms them; explode = burst only; assemble = dust re-forms only.
+- `grains: 3000` [500 to 6000, step 100]  How many dust grains. More = finer powder but slower; 3000 runs well, 6000 needs a fast machine.
+- `size: 340` [80 to 600, step 5]  Letter size in pixels at 1080p. Long words shrink to fit the screen.
+- `weight: 700` [100 to 900, step 100]  Font weight. Heavier letters hold more powder and read better as dust.
+- `track: 0.03` [-0.1 to 0.4, step 0.01]  Space between letters, as a share of the letter size.
+- `colors: ''`  Dust colours as hex codes separated by commas (2 to 6). Empty = taken from the palette.
+- `hold: 1.8` [0 to 6, step 0.1]  Seconds the clean letters stay on screen at the start and end of each loop.
+- `crack: 0.45` [0 to 2, step 0.05]  Seconds for the cracks to spread across a letter before it bursts (and to heal after it re-forms).
+- `stagger: 0.16` [0 to 1, step 0.01]  Seconds between one letter and the next, left to right, in both directions.
+- `burst: 3.8` [1 to 8, step 0.1]  Seconds of simulated burst. Longer = the cloud travels further before it turns around.
+- `slow: 1.35` [0.5 to 3, step 0.05]  How much slower the re-forming plays than the burst. 1 = same speed; higher = slow-motion coalesce.
+- `chunks: 13` [3 to 30, step 1]  How many pieces each letter cracks into. Few = big clumps; many = finer break-up.
+- `impulse: 330` [0 to 900, step 10]  How hard the pieces are thrown outward across the floor when a letter lands.
+- `fan: 1.3` [0 to 3.1, step 0.05]  How much each piece's direction is randomised. Higher = pieces cross paths and the colours mix.
+- `spread: 1.3` [0 to 4, step 0.05]  How fast each piece loses its own shape. Higher = clumps melt into haze sooner.
+- `jitter: 80` [0 to 300, step 5]  Random speed each grain gets at impact. Higher = fuzzier edges from the start.
+- `diffuse: 110` [0 to 400, step 5]  Ongoing random jostle of every grain. Higher = blob edges dissolve; 0 = clumps stay crisp.
+- `splash: 520` [0 to 1500, step 10]  How hard powder is thrown up toward the camera. Higher = bigger, closer puffs at the centre.
+- `gravity: 900` [0 to 3000, step 50]  Pulls the splashed powder back down to the floor. Lower = puffs hang in the air longer.
+- `drag: 1.15` [0.1 to 5, step 0.05]  Air drag. Lower = the cloud keeps travelling across the screen; higher = it stops close to the letter.
+- `floor: 0.45` [0 to 4, step 0.05]  Extra friction for powder sliding on the floor.
+- `swirl: 230` [0 to 800, step 10]  Strength of the swirling air that makes the dust billow. 0 = straight lines outward.
+- `swirlScale: 0.0045` [0.001 to 0.02, step 0.0005]  Size of the swirls. Lower = big lazy eddies; higher = small tight curls.
+- `swirlSpeed: 0.45` [0 to 2, step 0.05]  How fast the swirl pattern changes over time.
+- `windX: 30` [-200 to 200, step 5]  Steady sideways drift of the whole cloud (pixels per second; negative = to the left).
+- `windY: -12` [-200 to 200, step 5]  Steady up/down drift of the whole cloud (pixels per second; negative = up).
+- `grow: 8` [0 to 20, step 0.5]  How large each puff grows as it spreads. Higher = puffs merge into one soft cloud.
+- `growRate: 1.1` [0.2 to 4, step 0.05]  How quickly the puffs reach full size.
+- `mix: 0.38` [0.05 to 1, step 0.01]  Puff opacity once fully spread. Lower = puffs melt together and the colours blend.
+- `persp: 0.0009` [0 to 0.004, step 0.0001]  Depth effect: powder thrown toward the camera looks bigger and drifts outward.
+- `grit: 0.03` [0 to 0.2, step 0.005]  Share of grains that are fast, tiny bright specks flying off the cloud.
+- `res: 0.5` [0.25 to 1, step 0.05]  Resolution of the dust layer (share of the screen). Lower = faster and softer.
+- `glow: 0.24` [0 to 1, step 0.01]  Soft spotlight behind the letters.
+- `bokeh: 7` [0 to 20, step 1]  How many large out-of-focus light discs drift in the background.
+- `vignette: 0.6` [0 to 1, step 0.05]  How dark the corners get.
+- `trail: 0` [0 to 0.95, step 0.01]  Motion streaks. 0 = every frame starts clean; higher = moving things leave fading trails.
+- `seed: 0` [0 to 999, step 1]  Reshuffles this layer's random choices (layout, timing). Same seed = same result.
+
 ## field  (`layers/field.js`)  · stateful, warm-up 3 s
 Flow-field particles: noise sets a direction at every point, particles follow it and leave streaks.
 

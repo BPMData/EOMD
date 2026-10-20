@@ -26,6 +26,7 @@ function stubCanvas(w, h) {
       if (k in o) return o[k];
       if (k === 'measureText') return (s) => ({ width: String(s).length * 7 });
       if (k === 'createImageData') return (iw, ih) => ({ width: iw, height: ih, data: new Uint8ClampedArray(iw * ih * 4) });
+      if (/^create(Linear|Radial|Conic)Gradient$|^createPattern$/.test(k)) return (...a) => { check(String(k), a); return { addColorStop: (...s) => check('addColorStop', s) }; };
       if (k === 'getImageData') return (x, y, iw, ih) => ({ width: iw, height: ih, data: new Uint8ClampedArray(iw * ih * 4).map((_, i) => (i % 4 === 3 && (i >> 2) % 7 < 3 ? 255 : 0)) });
       return (...a) => check(String(k), a);
     },

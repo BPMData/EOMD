@@ -58,6 +58,56 @@ GEN.CARTS = {
    }
   ]
  },
+ "dust-type": {
+  "title": "GEN",
+  "subtitle": "DUST TYPE",
+  "seed": 7,
+  "bpm": 120,
+  "perBar": 4,
+  "bars": 8,
+  "palette": {
+   "bg": "#05090b",
+   "ink": "#e9efee",
+   "accent": "#2fb59a",
+   "dim": "#3e9cc9"
+  },
+  "transition": {
+   "type": "fade",
+   "dur": 1.2
+  },
+  "shots": [
+   {
+    "layer": "dust",
+    "dur": 27.8,
+    "label": "LETTERS TO DUST AND BACK",
+    "params": {
+     "word": "DUST",
+     "colors": "#5cc8e8,#3e9cc9,#2fb59a,#e9efee"
+    }
+   },
+   {
+    "layer": "dust",
+    "dur": 10.2,
+    "label": "BURST",
+    "params": {
+     "word": "GEN",
+     "mode": "explode",
+     "colors": "#5cc8e8,#3e9cc9,#2fb59a,#e9efee"
+    }
+   },
+   {
+    "layer": "dust",
+    "dur": 9.3,
+    "label": "COALESCE",
+    "params": {
+     "word": "TYPE",
+     "mode": "assemble",
+     "colors": "#5cc8e8,#3e9cc9,#2fb59a,#e9efee"
+    }
+   }
+  ],
+  "name": "dust-type"
+ },
  "flow-field": {
   "name": "flow-field",
   "title": "GEN",
