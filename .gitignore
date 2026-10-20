@@ -7,3 +7,5 @@ font_cache/
 *.mp3
 *.wav
 porter_work/
+gen/carts/private/*
+!gen/carts/private/README.txt

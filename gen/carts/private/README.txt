@@ -1,2 +1,2 @@
 Cartridges built on words you cannot publish (a transcript of a commercial record) go here.
-build.py includes them; uncomment gen/carts/private/ in .gitignore before the repo goes public.
+build.py includes them; the repo .gitignore keeps everything here except this README out of git.
