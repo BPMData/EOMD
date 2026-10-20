@@ -4,12 +4,12 @@
 #   CHECK          -> renders again and lists every section whose hash changed (0 mismatches = nothing changed)
 # Sections: comp4 + lounge indexes 0-7 at seed 1 + 0-2 at seed 42 | film24 index 0 | rounds 0, 1, 2 + the first drift section.
 # Scores whose style isn't in AUDIO_LIB (e.g. the 'chip' cartridges until Stage 4) are skipped and listed.
-import os, json, glob, queue, threading, subprocess, tempfile, time
+import os, json, glob, queue, shutil, threading, subprocess, tempfile, time
  
 # ===================== SETTINGS =====================
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # the repo root, with audio/*.js, engine/src/audio/dsp.js, score/*.json
 HASH_FILE   = os.path.join(PROJECT_DIR, 'tests', 'hashes.json')
-NODE_EXE    = '/opt/homebrew/bin/node'
+NODE_EXE    = shutil.which('node') or '/opt/homebrew/bin/node'   # Thonny starts without Homebrew on PATH; for Node 22: '/opt/homebrew/opt/node@22/bin/node'
 SAMPLE_RATE = 48000
 MODE        = 'ask'      # 'ask' = window with two buttons, 'save' = save baseline now, 'check' = check now (no window)
 SCORES      = 'score/*.json'

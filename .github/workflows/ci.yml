@@ -1,0 +1,52 @@
+# CI for EOMD: runs on every push and pull request.
+#   gen     builds the gen library (gen/build.py) and runs its smoke test (gen/tests/smoke.js),
+#           then checks that the generated gen/carts/_bundle.js and gen/KNOBS.md were committed.
+#   audio   the audio regression CHECK (tools/regress.py): renders fixed sections of every score/*.json
+#           and compares them with tests/hashes.json (0 mismatches = no music changed).
+#           Pinned to Node 22, the version the baseline was made with (Node 26 does the math slightly differently).
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  gen:
+    name: gen build + smoke test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build gen (python gen/build.py)
+        run: python gen/build.py
+      - name: Smoke test (node gen/tests/smoke.js)
+        run: node gen/tests/smoke.js
+      - name: Generated files are committed
+        run: |
+          if ! git diff --quiet -- gen/carts/_bundle.js gen/KNOBS.md; then
+            echo "::error::gen/carts/_bundle.js or gen/KNOBS.md is out of date. Run python3 gen/build.py and commit both files."
+            git diff --stat -- gen/carts/_bundle.js gen/KNOBS.md
+            exit 1
+          fi
+
+  audio:
+    name: audio regression check (Node 22)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: tools/regress.py CHECK
+        run: python -c "import sys; sys.path.insert(0, 'tools'); import regress; sys.exit(1 if regress.check() else 0)"
