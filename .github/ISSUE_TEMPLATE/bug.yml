@@ -1,0 +1,37 @@
+name: Bug report
+description: Something doesn't play, build, sound or look right.
+labels: [bug]
+body:
+  - type: input
+    id: what
+    attributes:
+      label: Which file or tool?
+      description: e.g. players/cdrom-player.html, gen/player.html with cartridge tunnel-dive, tools/build.py
+    validations:
+      required: true
+  - type: textarea
+    id: happened
+    attributes:
+      label: What happened, and what did you expect?
+      description: Screenshots or a short screen recording help a lot.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open ...
+        2. Press ...
+        3. See ...
+  - type: input
+    id: setup
+    attributes:
+      label: Browser and computer
+      description: e.g. Chrome 141 on a MacBook Air, Edge on a classroom smart board, Python 3.12 + Node 22 for a tool
+  - type: textarea
+    id: errors
+    attributes:
+      label: Error messages
+      description: From the browser console (F12) or the tool's output, if any.
+      render: text
