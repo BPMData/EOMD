@@ -91,6 +91,32 @@
              bar: (Math.floor(b / pb) % nb) + 1, bars: nb };
   };
 
+  // ---- text -> points: n points spread evenly over the letters of `text` ('/' breaks lines) ----
+  // make(w,h) = E.make. Coordinates in font units (1 = the font size), centered on (0,0); points come in
+  // reading order (top to bottom, left to right), so a sweep by index sweeps across the word.
+  // Returns { x, y, w, h } (Float32Arrays; w,h = the block's size in font units). A blank canvas (font not
+  // loaded, or a stub in tests) still gives n finite points, in a box.
+  C.DISPLAY_FONT = "GenDisplay, 'Helvetica Neue', Arial, sans-serif";
+  C.textPoints = function (make, text, n, seed, font, weight) {
+    const lines = String(text || ' ').split('/'), FS = 160, LH = FS * 1.05, PAD = Math.round(FS * 0.2);
+    const f = (weight || 700) + ' ' + FS + 'px ' + (font || C.DISPLAY_FONT);
+    const probe = make(8, 8).getContext('2d'); probe.font = f;
+    const ws = lines.map((l) => (probe.measureText(l).width || l.length * FS * 0.6));
+    const W = Math.ceil(Math.max.apply(null, ws)) + PAD * 2, H = Math.ceil(LH * lines.length) + PAD * 2;
+    const g = make(W, H).getContext('2d', { willReadFrequently: true });
+    g.font = f; g.fillStyle = '#fff'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    lines.forEach((l, k) => g.fillText(l, W / 2, PAD + LH * (k + 0.5)));
+    let d = null; try { d = g.getImageData(0, 0, W, H).data; } catch (e) { d = null; }
+    const lit = [];
+    if (d) for (let y = 0; y < H; y += 2) for (let x = 0; x < W; x += 2) if (d[(y * W + x) * 4 + 3] > 127) lit.push(x, y);
+    const r = C.rng(seed || 1), X = new Float32Array(n), Y = new Float32Array(n), m = lit.length / 2;
+    for (let i = 0; i < n; i++) {
+      if (m) { const j = Math.min(m - 1, Math.floor((i + r()) * m / n)); X[i] = (lit[2 * j] + r() * 2 - W / 2) / FS; Y[i] = (lit[2 * j + 1] + r() * 2 - H / 2) / FS; }
+      else { X[i] = (r() - 0.5) * (W - PAD * 2) / FS; Y[i] = (r() - 0.5) * (H - PAD * 2) / FS; }
+    }
+    return { x: X, y: Y, w: (W - PAD * 2) / FS, h: (H - PAD * 2) / FS };
+  };
+
   // ---- small helpers ----
   C.pad = (n, w) => String(Math.floor(n)).padStart(w, '0');
   C.merge = function (defs, over) {          // shallow merge; arrays and objects in `over` replace

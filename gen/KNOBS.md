@@ -168,6 +168,38 @@ Composites several layers in one shot (bottom first) with blend modes; e.g. kine
 
 - `layers: [{ layer: 'contour' }, { layer: 'type', blend: 'source-over', params: { backdrop: 0 } }]`  The layers in this shot, bottom first. Each one: layer, params, blend (screen, multiply, overlay ...), alpha.
 
+## swarm  (`layers/swarm.js`)
+One 3D dot cloud flying between formations on a timeline: warp, 3D shapes, words made of dots, a floor with a self-driving car.
+
+- `keys: [{ t: 0, shape: 'warp' }, { t: 2, shape: 'sphere' }, { t: 5, shape: 'word', text: 'GEN' }]`  The timeline, one formation per key: { t, shape, text, ... }. Shapes: warp, cloud, burst, floor, word, or a depth shape (sphere, torus, knot, vase, cylinder, sheet, curl). A key may have parts: [{ shape, share, text, size, x, y, z, color, accent, dot }] to split the dots, and cam: { yaw, pitch, dist, x, y } to move the camera. Per key: morph, stagger, arc, sweep.
+- `n: 2400` [200 to 6000, step 100]  How many dots. More = crisper words, slower drawing.
+- `morph: 1.4` [0.1 to 6, step 0.05]  Seconds each dot takes to fly to its new spot (a key's own morph wins).
+- `stagger: 0.5` [0 to 3, step 0.05]  Seconds between the first and last dot setting off, so formations build up instead of jumping.
+- `sweep: 0.7` [0 to 1, step 0.05]  1 = dots set off left to right across the new formation; 0 = in random order.
+- `arc: 0.6` [0 to 3, step 0.05]  How curved the flight paths are. 0 = straight lines.
+- `size: 0.8` [0.1 to 3, step 0.01]  Height of a word's letters (3D units; a sphere is 1 across its radius). Long words shrink to fit.
+- `depth: 0.12` [0 to 1, step 0.01]  Thickness of the letters front to back, so they look solid when the camera turns.
+- `yaw: 0` [-180 to 180, step 1]  Camera angle around the formation, in degrees.
+- `pitch: 0` [-89 to 89, step 1]  Camera tilt: + looks down (at a floor), - looks up.
+- `dist: 3.2` [0.5 to 12, step 0.05]  Camera distance.
+- `focal: 1.3` [0.3 to 4, step 0.05]  Lens: lower = wide-angle, dramatic depth; higher = flatter.
+- `orbit: 0` [-90 to 90, step 0.5]  Camera circles the formation at this many degrees per second.
+- `sway: 5` [0 to 45, step 0.5]  A slow side-to-side drift of the camera, in degrees.
+- `warpSpeed: 6` [0 to 30, step 0.5]  How fast the warp starfield streams at the camera.
+- `fly: 1.2` [0 to 8, step 0.05]  How fast a floor slides toward the camera.
+- `spin: 10` [-120 to 120, step 1]  Turning speed of 3D shapes, in degrees per second.
+- `dot: 2.4` [0.5 to 10, step 0.1]  Dot size.
+- `fog: 0.6` [0 to 1, step 0.01]  Far dots fade into the background.
+- `accent: 0.12` [0 to 1, step 0.01]  Share of dots drawn in the accent color (a part's accent wins).
+- `links: 0` [0 to 1, step 0.01]  Thin lines between neighboring dots, like a network. 0 = none.
+- `linkDist: 22` [4 to 120, step 1]  Longest link in pixels (at 1080p).
+- `car: 0` [0 to 1, step 1]  On: a self-driving car drives across the floor, sweeping it with a lidar beam.
+- `scan: 0.5` [0 to 4, step 0.05]  Lidar sweeps per second.
+- `pulse: 0.3` [0 to 1.5, step 0.01]  How much things swell on each beat (the cartridge's BPM).
+- `streak: 0.06` [0 to 0.5, step 0.01]  Motion-blur tails: each dot draws a line back to where it was this many seconds ago. Warp becomes hyperspace.
+- `trail: 0.2` [0 to 0.95, step 0.01]  Motion streaks. 0 = every frame starts clean; higher = moving things leave fading trails.
+- `seed: 0` [0 to 999, step 1]  Reshuffles this layer's random choices (layout, timing). Same seed = same result.
+
 ## tree  (`layers/tree.js`)
 Recursive branching fractal; grows in once, then sways. arms > 1 makes a radial mandala.
 
@@ -201,6 +233,12 @@ Truchet tiles rewired by travelling waves; tiles turn 90 degrees and change colo
 - `gapB: 0.35` [0 to 1, step 0.01]  Gaps in the lines in the flipped (accent) color.
 - `spin: 1` [0 to 1, step 1]  On: tiles turn as a wave passes, rewiring the maze. Off: they only change color.
 - `breathe: 0.15` [0 to 1, step 0.01]  Lines get thicker on each beat.
+- `words: []`  Words spelled out in tiles: [{ text, t, out, reveal }]. From shot second t the tiles inside the letters flip over, left to right across `reveal` seconds, and turn bright; at `out` they flip back. '/' breaks lines.
+- `wordRows: 7` [3 to 20, step 1]  Letter height in tiles. Bigger = smoother letters (needs small cells).
+- `wordWidth: 0.3` [0.05 to 0.5, step 0.01]  Line thickness inside the letters.
+- `wordFill: 0.12` [0 to 1, step 0.01]  A soft glow filling the letter tiles, so the word reads from far away.
+- `wordDim: 0.6` [0 to 1, step 0.01]  How much the rest of the maze darkens while a word is up.
+- `rest: 0` [0 to 1, step 0.01]  How dark the maze is when no word is up (0 = full brightness). Set it near wordDim so the maze never flares between words.
 - `trail: 0` [0 to 0.9, step 0.01]  Motion streaks. 0 = every frame starts clean; higher = moving things leave fading trails.
 - `seed: 0` [0 to 999, step 1]  Reshuffles this layer's random choices (layout, timing). Same seed = same result.
 
@@ -222,6 +260,10 @@ Demoscene wormhole: rings fly at the camera along a bending path; wire, dots or 
 - `dot: 2.4` [0.5 to 10, step 0.1]  Dot size (wire and dots styles).
 - `fill: 0.5` [0 to 1, step 0.01]  Panel brightness (checker style).
 - `accentEvery: 6` [0 to 20, step 1]  Every Nth ring is in the accent color. 0 = none.
+- `words: []`  Words made of dots that fly down the tunnel at you: [{ text, t, hold, approach, pass, size }]. t = shot second the word arrives and parks in front of you; it holds for `hold` seconds while the tunnel streams past, then flies through the camera in `pass` seconds and bursts. '/' breaks lines.
+- `wordDots: 1600` [200 to 5000, step 100]  Dots in each word. More = crisper letters.
+- `wordSize: 0.5` [0.1 to 1.5, step 0.01]  Letter height of the words (the tunnel is 1 across its radius). Long words shrink to fit.
+- `wordNear: 0.95` [0.3 to 4, step 0.05]  How close a parked word sits. Lower = bigger on screen.
 - `pulse: 0.6` [0 to 2, step 0.01]  How much things swell on each beat (the cartridge's BPM).
 - `trail: 0` [0 to 0.9, step 0.01]  Motion streaks. 0 = every frame starts clean; higher = moving things leave fading trails.
 - `seed: 0` [0 to 999, step 1]  Reshuffles this layer's random choices (layout, timing). Same seed = same result.

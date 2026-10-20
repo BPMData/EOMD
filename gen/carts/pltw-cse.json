@@ -2,64 +2,54 @@
  "title": "PLTW",
  "subtitle": "COMPUTER SCIENCE ESSENTIALS",
  "seed": 11,
- "bpm": 96, "perBar": 4, "bars": 24,
+ "bpm": 120, "perBar": 4, "bars": 30,
  "audio": "pltw-cse.mp3",
- "palette": { "bg": "#0e0318", "ink": "#f7f4f1", "accent": "#3e34d9", "dim": "#141e8a" },
- "hud": { "stats": false },
- "transition": { "type": "iris", "dur": 1.2 },
+ "palette": { "bg": "#0e0318", "ink": "#f7f4f1", "accent": "#6f68e6", "dim": "#141e8a" },
+ "hud": { "corners": true, "title": true, "label": false, "timecode": false, "beat": false, "stats": false, "progress": false },
+ "transition": { "type": "cut", "dur": 0 },
  "shots": [
-  { "layer": "dust", "dur": 8.5, "label": "PLTW", "transition": { "type": "cut", "dur": 0 },
-    "params": { "word": "PLTW", "mode": "assemble", "size": 380, "colors": "#f7f4f1,#3e34d9,#6f68e6" } },
-
-  { "layer": "stack", "dur": 14, "label": "CS ESSENTIALS",
-    "palette": { "bg": "#0e0318", "ink": "#f7f4f1", "accent": "#6f68e6", "dim": "#461c5d" },
-    "params": { "layers": [
-     { "layer": "tunnel", "params": { "style": "checker", "sides": 16, "fill": 0.4, "speed": 4.2, "twist": 0.2, "lines": 0.4, "accentEvery": 4 } },
-     { "layer": "type", "params": { "backdrop": 0, "script": [
-      { "t": 0.6, "text": "PLTW", "fx": "slam", "size": 1.4 },
-      { "t": 2.5, "text": "COMPUTER", "fx": "zoom" },
-      { "t": 3.4, "text": "SCIENCE", "fx": "slam" },
-      { "t": 4.4, "text": "ESSENTIALS", "fx": "stretch" },
-      { "t": 6.9, "text": "blocks/to/text", "fx": "stack", "dur": 3 },
-      { "t": 10.4, "text": "CODE", "fx": "slam" },
-      { "t": 11.2, "text": "BUILD", "fx": "slam" },
-      { "t": 12.0, "text": "DRIVE", "fx": "zoom", "size": 1.3, "dur": 2.2 }
-     ] } }
+  { "layer": "swarm", "dur": 10, "label": "BOOT",
+    "params": { "n": 4000, "streak": 0.08, "warpSpeed": 9, "yaw": 28, "sway": 3, "keys": [
+      { "t": 0, "shape": "warp" },
+      { "t": 2.0, "shape": "sphere", "morph": 1.3, "stagger": 0.3, "sweep": 0, "arc": 0.4 },
+      { "t": 4.6, "shape": "word", "text": "PLTW", "size": 1.0, "morph": 1.0, "stagger": 0.4, "arc": 0.8, "cam": { "yaw": 0 }, "camTime": 1.6 },
+      { "t": 8.8, "shape": "burst", "r": 0.4, "grow": 6, "morph": 0.5, "stagger": 0.3, "sweep": 1 }
     ] } },
 
-  { "layer": "stack", "dur": 12.5, "label": "VEXCODE",
-    "params": { "layers": [
-     { "layer": "depth", "params": { "shapes": ["plane"], "nu": 44, "nv": 44, "size": 0.62, "focal": 700, "camZ": 2.3, "camY": 0.85,
-        "tiltX": 6, "wobble": 1.5, "spinY": 0, "lift": 0.1, "fly": 1.6, "dot": 3.4, "lines": 0.18, "fog": 0.95, "trail": 0.3, "accent": 0.15 } },
-     { "layer": "type", "params": { "backdrop": 0, "caps": 0, "script": [
-      { "t": 0.8, "text": "VEXcode VR", "fx": "slam", "y": -0.4 },
-      { "t": 3.3, "text": "VEXcode EXP", "fx": "zoom", "y": -0.4 },
-      { "t": 5.8, "text": "self-driving/vehicles", "fx": "stack", "y": -0.35 },
-      { "t": 8.6, "text": "SDVs", "fx": "slam", "size": 1.5, "y": -0.4 },
-      { "t": 10.4, "text": "robot cars", "fx": "wave", "y": -0.4, "dur": 2.4 }
-     ] } }
+  { "layer": "tunnel", "dur": 14, "label": "TUNNEL",
+    "palette": { "bg": "#0e0318", "ink": "#f7f4f1", "accent": "#3e34d9", "dim": "#461c5d" },
+    "params": { "style": "checker", "sides": 16, "fill": 0.22, "speed": 4.5, "twist": 0.2, "lines": 0.4, "accentEvery": 4, "words": [
+      { "text": "COMPUTER", "t": 1.5, "hold": 2.0 },
+      { "text": "SCIENCE", "t": 4.5, "hold": 1.0 },
+      { "text": "ESSENTIALS", "t": 6.5, "hold": 1.0 },
+      { "text": "CODE", "t": 9.4, "hold": 0.1, "approach": 0.8 },
+      { "text": "BUILD", "t": 10.4, "hold": 0.1, "approach": 0.8 },
+      { "text": "DRIVE", "t": 11.4, "hold": 0.1, "approach": 0.8 }
     ] } },
 
-  { "layer": "stack", "dur": 12.5, "label": "APPS + PYTHON",
-    "transition": { "type": "wipe", "dur": 1.2 },
-    "params": { "layers": [
-     { "layer": "truchet", "alpha": 0.4, "params": { "cell": 96, "width": 0.17, "waves": 3, "speed": 1.4, "gapA": 0, "gapB": 0.35 } },
-     { "layer": "type", "params": { "backdrop": 0, "caps": 0, "script": [
-      { "t": 0.8, "text": "MIT App Inventor", "fx": "slam" },
-      { "t": 3.3, "text": "apps/for your/phone", "fx": "stack" },
-      { "t": 6.0, "text": "Python", "fx": "zoom", "size": 1.5 },
-      { "t": 8.4, "text": "print(\"Hello, World!\")", "fx": "type", "dur": 4.2 }
-     ] } }
+  { "layer": "swarm", "dur": 12, "label": "SELF-DRIVING",
+    "params": { "n": 4200, "car": 1, "pitch": 14, "dist": 2.4, "accent": 0.04, "streak": 0.06, "fly": 1.4, "sway": 3, "keys": [
+      { "t": 0, "parts": [ { "shape": "floor", "share": 0.55, "dot": 1.3 }, { "shape": "cloud", "share": 0.45, "y": -1.6, "dot": 0.8 } ] },
+      { "t": 1.0, "morph": 1.1, "stagger": 0.5, "arc": 0.3, "parts": [ { "shape": "floor", "share": 0.55, "dot": 1.3 },
+        { "shape": "word", "share": 0.45, "text": "VEXcode VR", "y": -0.5, "z": 2.4, "size": 0.95, "dot": 1.7 } ] },
+      { "t": 4.5, "morph": 1.0, "stagger": 0.4, "arc": 0.3, "parts": [ { "shape": "floor", "share": 0.55, "dot": 1.3 },
+        { "shape": "word", "share": 0.45, "text": "VEXcode EXP", "y": -0.5, "z": 2.4, "size": 0.95, "dot": 1.7 } ] },
+      { "t": 8.0, "morph": 1.0, "stagger": 0.4, "arc": 0.3, "parts": [ { "shape": "floor", "share": 0.55, "dot": 1.3 },
+        { "shape": "word", "share": 0.45, "text": "self-driving/vehicles", "y": -0.5, "z": 2.4, "size": 0.62, "dot": 1.7 } ] },
+      { "t": 11.0, "morph": 0.8, "stagger": 0.2, "arc": 0.4, "parts": [ { "shape": "floor", "share": 0.55, "dot": 1.3 }, { "shape": "cloud", "share": 0.45, "y": -1.6, "dot": 0.8 } ] }
     ] } },
 
-  { "layer": "stack", "dur": 12.5, "label": "PLTW CSE",
-    "palette": { "bg": "#0e0318", "ink": "#f7f4f1", "accent": "#6f68e6", "dim": "#141e8a" },
-    "params": { "layers": [
-     { "layer": "depth", "alpha": 0.7, "params": { "shapes": ["knot", "torus", "sphere"], "hold": 2.5, "morph": 1.6, "size": 0.42, "spinY": 22, "accent": 0.25, "trail": 0.6 } },
-     { "layer": "type", "params": { "backdrop": 0, "script": [
-      { "t": 0.8, "text": "PLTW", "fx": "slam", "size": 1.5, "dur": 2.4 },
-      { "t": 3.6, "text": "COMPUTER/SCIENCE/ESSENTIALS", "fx": "stack", "dur": 10.6 }
-     ] } }
+  { "layer": "truchet", "dur": 12, "label": "APPS + PYTHON",
+    "params": { "cell": 22, "width": 0.24, "waves": 3, "speed": 1.4, "wordRows": 12, "wordDim": 0.55, "rest": 0.45, "wordFill": 0.18, "words": [
+      { "text": "MIT App/Inventor", "t": 0.6, "out": 5.2, "reveal": 0.8 },
+      { "text": "Python", "t": 6.0, "out": 11.3, "reveal": 0.6 }
+    ] } },
+
+  { "layer": "swarm", "dur": 12, "label": "PLTW CSE",
+    "params": { "n": 4400, "streak": 0.06, "sway": 3, "keys": [
+      { "t": 0, "shape": "knot", "size": 1.1, "spin": 30 },
+      { "t": 0.8, "shape": "word", "text": "PLTW", "size": 1.1, "morph": 0.9, "stagger": 0.3 },
+      { "t": 4.6, "shape": "word", "text": "COMPUTER/SCIENCE/ESSENTIALS", "size": 0.55, "maxw": 3.8, "morph": 1.0, "stagger": 0.4, "cam": { "dist": 3.5 } }
     ] } }
  ]
 }

@@ -22,6 +22,10 @@
       dot: [2.4, 0.5, 10, 0.1],
       fill: [0.5, 0, 1, 0.01],
       accentEvery: [6, 0, 20, 1],
+      words: [],
+      wordDots: [1600, 200, 5000, 100],
+      wordSize: [0.5, 0.1, 1.5, 0.01],
+      wordNear: [0.95, 0.3, 4, 0.05],
       pulse: [0.6, 0, 2, 0.01],
       trail: [0, 0, 0.9, 0.01],
       seed: [0, 0, 999, 1],
@@ -43,8 +47,20 @@
       dot: "Dot size (wire and dots styles).",
       fill: "Panel brightness (checker style).",
       accentEvery: "Every Nth ring is in the accent color. 0 = none.",
+      words: "Words made of dots that fly down the tunnel at you: [{ text, t, hold, approach, pass, size }]. t = shot second the word arrives and parks in front of you; it holds for `hold` seconds while the tunnel streams past, then flies through the camera in `pass` seconds and bursts. '/' breaks lines.",
+      wordDots: "Dots in each word. More = crisper letters.",
+      wordNear: "How close a parked word sits. Lower = bigger on screen.",
+      wordSize: "Letter height of the words (the tunnel is 1 across its radius). Long words shrink to fit.",
     },
-    init(P, E) { return { P, n: Math.round(P.sides), m: Math.round(P.rings), ph: (E.seed % 1000) * 0.37 }; },
+    init(P, E) {
+      const words = (Array.isArray(P.words) ? P.words : []).map((w, k) => {
+        const nd = Math.round(P.wordDots), tp = C.textPoints(E.make, w.text || '', nd, E.seed * 13 + k + 1), h = new Float32Array(nd * 2);
+        for (let i = 0; i < nd * 2; i++) h[i] = C.hash(i, k, 3, E.seed);
+        return { t: w.t || 0, hold: w.hold == null ? 1.2 : w.hold, app: w.approach || 1.6, pass: w.pass || 0.5, tp, h, nd,
+                 ws: Math.min(w.size || P.wordSize, 1.7 / Math.max(0.1, tp.w)) };
+      });
+      return { P, n: Math.round(P.sides), m: Math.round(P.rings), ph: (E.seed % 1000) * 0.37, words };
+    },
     frame(ctx, S, t, dt, E) {
       const P = S.P, n = S.n, m = S.m, pal = E.pal, sp = P.spacing, depth = m * sp;
       E.fade(ctx, dt, P.trail);
@@ -104,6 +120,30 @@
           ctx.beginPath();
           for (let j = 0; j < n; j++) { ctx.moveTo(r.pts[2 * j] + rad, r.pts[2 * j + 1]); ctx.arc(r.pts[2 * j], r.pts[2 * j + 1], rad, 0, TAU); }
           ctx.fill();
+        }
+      }
+      // words: dots parked in front of the camera while the rings stream past, then flown through
+      const far = Math.min(depth, 16), HOLD = P.wordNear;
+      for (const w of S.words) {
+        const t0 = w.t - w.app, t2 = w.t + w.hold, t3 = t2 + w.pass;
+        if (t < t0 || t > t3) continue;
+        let rel, burst = 0, a = 1;
+        if (t < w.t) { const u = (w.t - t) / w.app; rel = HOLD + (far - HOLD) * u * u; a = C.smooth(1 - u) * 0.6 + 0.4 * (1 - u); }
+        else if (t < t2) rel = HOLD - 0.2 * (t - w.t) / Math.max(0.01, w.hold);
+        else { const u = (t - t2) / w.pass; rel = (HOLD - 0.2) * (1 - u) * (1 - u) + 0.08; burst = u * u; a = 1 - u * u * 0.6; }
+        const pc = path(zc + rel), lean = rel / 3, sc = F / rel;
+        const ox = pc[0] - cam[0] - (look[0] - cam[0]) * lean * 0.6, oy = pc[1] - cam[1] - (look[1] - cam[1]) * lean * 0.6;
+        const cx = E.cx + ox * sc, cy = E.cy + oy * sc, rad = Math.min(9 * E.s, P.dot * E.s * 1.1 * HOLD / rel);
+        a *= 1 - P.fog * C.smooth(rel / depth);
+        for (const acc of [0, 1]) {
+          ctx.beginPath();
+          for (let i = 0; i < w.nd; i++) {
+            if ((w.h[i] < 0.1) !== !!acc) continue;
+            const sp = 1 + burst * (1.5 + 4 * w.h[w.nd + i]);
+            const x = cx + w.tp.x[i] * w.ws * sp * sc, y = cy + w.tp.y[i] * w.ws * sp * sc;
+            ctx.moveTo(x + rad, y); ctx.arc(x, y, rad, 0, TAU);
+          }
+          ctx.fillStyle = C.rgba(acc ? pal.accent : pal.ink, a); ctx.fill();
         }
       }
       S.z = zc;

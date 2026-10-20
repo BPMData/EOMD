@@ -9,6 +9,8 @@ Making a new piece means writing or editing one cartridge, not code.
 **Before a new piece, ask Bryan "efficient or full creative mode?" (CLAUDE.md, "New pieces").** The cartridges in
 `carts/` are examples, not templates to reuse; a new piece may need new layers.
 
+**Make the words part of the picture** (swarm / tunnel / truchet / dust words), not captions over a background; see `carts/pltw-cse.json`.
+
 **Cheapest workflow for Claude:** read this file and `KNOBS.md` (generated, lists every knob with range).
 Write `carts/<name>.json`. Run `python3 gen/build.py` then `node gen/tests/smoke.js`. Bryan tunes by eye in
 the player's KNOBS panel and pastes back the JSON from COPY JSON. Do not read `layers/*.js` unless adding or
@@ -39,13 +41,14 @@ of one shot with the start of the next (capped at half of either shot).
 ## Layers
 | layer | what it draws | stateful? |
 |---|---|---|
-| `truchet` | quarter-circle tiles rewired by travelling waves (turn 90°, recolor, arcs break mid-turn) | no |
+| `truchet` | quarter-circle tiles rewired by travelling waves (turn 90°, recolor, arcs break mid-turn); `words` = tiles spell words, flipping in left to right | no |
+| `swarm` | ONE 3D dot cloud flying between formations on a timeline (`keys`): warp, cloud, burst, floor, any `m3d` surface, **words made of the dots**; parts split the dots (floor + a word rising out of it); `car` = self-driving car with a lidar sweep; `streak` = motion tails | no |
 | `depth` | 3D dot + wire mesh morphing between `m3d` surfaces; perspective, depth-sorted, trails; `plane` + `fly` = endless floor | trails only |
 | `contour` | topographic isolines (marching squares) over drifting noise; index lines in accent | no |
 | `tree` | recursive branching fractal; grows in, sways; `arms` > 1 = radial mandala | no |
 | `field` | flow-field particle streaks | yes (3 s warm-up) |
 | `julia` | Julia set at low res, upscaled (pixelated); `c` orbits a circle | no |
-| `tunnel` | demoscene wormhole: rings fly at the camera along a bending path; `style` wire / dots / checker | no |
+| `tunnel` | demoscene wormhole: rings fly at the camera along a bending path; `style` wire / dots / checker; `words` = dot-words that park in front of you, then fly through the camera and burst | no |
 | `reaction` | Gray-Scott reaction-diffusion; `pattern` coral / mitosis / maze / worms / spots / waves / fingerprint | yes (4 s) |
 | `harmonograph` | damped-pendulum pen drawings on turning paper; a new seeded figure every `period` | no |
 | `halftone` | two overprinted dot screens driven by `field` ripples / noise / rings / text (a big word) | no |
@@ -83,7 +86,7 @@ Tokens after `|`, any order: an effect or a delivery word that maps to one
   a public repo). Claude never types them; Bryan pastes his own transcript or Whisper output.
 
 ## Player (`player.html`, built to `dist/gen-player.html`)
-- **Standalone:** `ONLY_CART = '<name>'` in `build.py` writes `dist/<name>.html` with only that cartridge (opens straight into it). Use it for any one-off video or screen.
+- **Standalone / video:** `tools__gen_export.py` (repo root, Thonny GUI): pick a cartridge + folder → MAKE HTML (only that cartridge, opens straight into it) / MAKE MP4 (cartridge's `"audio"` laid in frame-exact) / BOTH. Scripted: `build.main(only_cart='<name>', out_path=...)` or `ONLY_CART` in `build.py`.
 - URL: `?cart=reel` · `?shot=2` · `?seed=9` · `?nohud` · `?gallery` · `?scale=0.75` (render resolution, for slow boards;
   `halftone` and `reaction` are the heaviest, then `contour`)
   · `?manual&t=12` (no clock; `advance(dt)` and `renderAt(t)` in the console, for frame capture).
@@ -111,6 +114,8 @@ st.goto(i); st.setCart(cart, keepTime); st.refresh(); st.info();
 - Each shot draws into its own canvas; start `frame` with `E.fade(ctx, dt, P.trail)`.
 - `warm: seconds` if the layer keeps state between frames; the stage re-simulates that much after a seek.
 - After adding a layer: add its `<script>` to `player.html`, a cartridge that uses it, run build + smoke.
+
+**Words as visuals:** `C.textPoints(E.make, 'LINE ONE/LINE TWO', n, seed)` → `{x, y, w, h}`: n points spread evenly over the letters (font units, centered, reading order). Every word-forming layer uses it; prefer it to drawing text on top.
 
 **Helpers** (`GEN.core`): `rng(seed)` (`.range .int .pick .chance`), `hash(x,y,z,seed)`, `noise3(x,y,z,seed)`,
 `fbm(x,y,z,oct,seed)`, `lerp clamp fract smooth inOut outBack`, `rgb rgba mix mixArr`, `beat(t,bpm,perBar,bars)`,

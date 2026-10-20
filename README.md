@@ -59,7 +59,7 @@ so they run from Thonny or any editor's Run button, or from a terminal.
 | A **living poster** (vines that grow and write words) | `tools__build.py` with `TARGETS = ['living']`, pick `LIVING_VARIANT` and `LIVING_SCORE` | `dist/living-player*.html` |
 | The **CD-ROM screensaver** (five retro computer worlds, chip music) | `tools__build_cdrom.py` (and `tools__cdrom_ambient.py` for the version without tip cards) | `dist/cdrom-player.html` |
 | A **self-contained gen player** to put on a USB stick | `python3 gen/build.py` | `gen/dist/gen-player.html` |
-| **One gen cartridge on its own** (for a video or one screen) | set `ONLY_CART` in `gen/build.py`, run it | `gen/dist/<cartridge>.html` |
+| **One gen cartridge as its own HTML and/or an MP4 with its music** | run `tools__gen_export.py` (pick cartridge + folder) | the folder you picked |
 
 The first build downloads the open-source fonts (SIL OFL, from Google Fonts' GitHub) and caches them; after that,
 everything is offline. `tools__build.py` needs `pip install fonttools brotli`.
@@ -72,7 +72,10 @@ looping) stream. `score__FORMAT.md` explains every field. To make one: copy a sc
 
 ## Make an MP4
 
-Run **`tools__html_to_mp4.py`** (a small window: pick a player `.html`, pick where to save, press RENDER).
+**gen cartridges:** run **`tools__gen_export.py`**: pick a cartridge, pick a folder, press MAKE MP4 (or MAKE HTML for a
+standalone player, or MAKE BOTH). The cartridge's music is laid in exactly in sync.
+
+**Any other player:** run **`tools__html_to_mp4.py`** (a small window: pick a player `.html`, pick where to save, press RENDER).
 
 - **Films** (like the Academies loop) render frame-exact, with the music synthesized offline in sync.
 - **Everything else** (gen cartridges, living posters, the screensaver) is stepped one frame at a time, so

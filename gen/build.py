@@ -27,7 +27,9 @@ AUDIO_DIR    = os.path.join(GEN_DIR, 'audio')   # where a cartridge's "audio" fi
 EMBED_AUDIO  = True        # put each used track inside the built file (a 4 MB MP3 adds ~5.5 MB)
 # ------------------------------------------
 
-def main():
+def main(only_cart=None, out_path=None):
+    """Build. only_cart / out_path override ONLY_CART / OUT_DIR+name (tools__gen_export.py calls it this way). Returns the path written."""
+    only_cart = ONLY_CART if only_cart is None else only_cart
     carts_dir = os.path.join(GEN_DIR, 'carts')
     layer_names = set()
     for f in os.listdir(os.path.join(GEN_DIR, 'layers')):
@@ -76,14 +78,14 @@ def main():
 
     # the built file can hold fewer cartridges than the folder bundle (which always has them all)
     out_name, default_cart, page_title, n_all = OUT_NAME, DEFAULT_CART, PAGE_TITLE, len(carts)
-    if ONLY_CART:
-        if ONLY_CART not in carts:
-            sys.exit(f'ONLY_CART {ONLY_CART!r} not found (cartridges: {", ".join(carts)})')
-        c = carts[ONLY_CART]
-        carts = {ONLY_CART: c}
-        out_name, default_cart = ONLY_CART + '.html', ONLY_CART
-        page_title = ' · '.join(x for x in (c.get('title'), c.get('subtitle')) if x) or ONLY_CART
-        print(f'STANDALONE: only {ONLY_CART!r}')
+    if only_cart:
+        if only_cart not in carts:
+            sys.exit(f'ONLY_CART {only_cart!r} not found (cartridges: {", ".join(carts)})')
+        c = carts[only_cart]
+        carts = {only_cart: c}
+        out_name, default_cart = only_cart + '.html', only_cart
+        page_title = ' · '.join(x for x in (c.get('title'), c.get('subtitle')) if x) or only_cart
+        print(f'STANDALONE: only {only_cart!r}')
     elif ONLY_CARTS:
         carts = {k: v for k, v in carts.items() if k in ONLY_CARTS}
     if len(carts) < n_all:
@@ -137,10 +139,11 @@ def main():
     if re.search(r'<script src=|<link[^>]+href="http|url\(http', out):
         sys.exit('Build still references an outside file; not writing it.')
 
-    os.makedirs(OUT_DIR, exist_ok=True)
-    path = os.path.join(OUT_DIR, out_name)
+    path = out_path or os.path.join(OUT_DIR, out_name)
+    os.makedirs(os.path.dirname(path), exist_ok=True)
     open(path, 'w', encoding='utf-8').write(out)
     print(f'Wrote {path}  ({len(out) // 1024} KB, {n} scripts inlined)')
+    return path
 
 def write_knobs_md():
     """KNOBS.md: every layer's knobs (default, min, max, step, comment), read from layers/*.js.
