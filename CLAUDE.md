@@ -11,6 +11,13 @@ Read `STATUS.md` at the start of every session (what's approved, what's unheard,
 - **Never invent facts:** names, dates, programs, campuses, pathways, numbers. If it isn't in a brief, copy file or config, ask.
 - **Edit in place, commit per stage:** change the source files directly (no patcher scripts), and commit at the end of each stage or delivered change with a message that says what changed.
 
+## New pieces: ask the mode first
+Before starting any NEW piece (a new video, poster or player; not a change to an existing one), ask Bryan one question and wait for the answer:
+**"Efficient mode (build from the existing gen layers and music, lowest token cost) or full creative mode (design this piece from scratch)?"**
+- **The existing cartridges, scores, styles and palettes are examples of what the tools can do, not a menu.** None of them is the default or the expected answer for a new piece. Take ideas from them; never reach for one just because it's there.
+- **Efficient mode** still means fitting the subject: pick (or tune) visuals and music that suit the piece's topic and audience. Never reuse music written for another piece (e.g. the hallway film's music, built around the seven academies) unless Bryan asks for it.
+- **Full creative mode** sets the bar at the Academies film: a one-off design made for its subject. New gen layers, new music (a new score, or a new `audio__style-*.js`), or a player written from scratch are all fair game; spend the tokens.
+
 ## Working rules
 - Open only the files the task needs; the file sets below say which. Don't read `engine__*` for living or jukebox work (except `engine__src__audio__dsp.js` for DSP internals).
 - Don't read `dist/` builds (big, mostly base64 fonts) unless the task is debugging a build. The same goes for whole-file reads of `academies-film/danbury-academies-player.html` (~395 KB): search it, read the part you need.
@@ -107,6 +114,7 @@ Rough and early beats polished and lost.
 - **Living poster or jukebox.** Run `tools__build.py`; choose `TARGETS`, `LIVING_SCORE` and `LIVING_VARIANT` at the top.
 - **CD-ROM screensaver.** Run `tools__build_cdrom.py`, then `tools__cdrom_ambient.py` for the ambient version.
 - **gen.** `python3 gen/build.py`, then `node gen/tests/smoke.js` (both must pass). `DISPLAY_FONT` (Montserrat Bold) is shared by the `type`, `halftone` and `dust` layers.
+- **A gen piece for one video or one screen gets a standalone file.** Set `ONLY_CART = '<cart name>'` in `gen/build.py` and run it: `gen/dist/<cart name>.html` holds only that cartridge, opens straight into it (no URL options needed) and is titled after it. That file is what goes into `tools__html_to_mp4.py` or onto a USB stick. Set `ONLY_CART` back to `''` afterwards so the next build is the full player.
 - **Academies film.** Edit `academies-film/danbury-academies-player.html` directly (both config copies).
 - **Video.** Run `tools__html_to_mp4.py` on any built player.
 - **Publishing a build.** `players/` holds copies of `dist/jukebox.html`, `cdrom-player.html`, `cdrom-ambient.html`, `living-player.html`, `living-player-cs.html`, `living-player-ex.html` and `gen/dist/gen-player.html`. After rebuilding one of them, copy it into `players/` and commit, so the public copies don't go stale. Only publish a build that loads without script errors.

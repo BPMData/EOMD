@@ -3,7 +3,13 @@
 _Last updated: Oct 20, 2026 (moved to Claude Code: git repo, spent patchers and Track 2 auditions deleted, CLAUDE.md + this file; gen dust layer wired in; `tools__html_to_mp4.py`. Earlier: Oct 15 Dust Type study; 9e Overclock long form; 9f airship parts; 9g PATCHES folded into the player source; 9h ambient screensaver + CD-ROM music in the jukebox (not yet run); living posters' time-left readout; Academies film heroes, icons and word blocks)_
 
 ## Status
-- **PLTW CSE promo (NEW Oct 20, UNSEEN by Bryan): gen cartridge `gen/carts/pltw-cse.json`, 60 s, 5 shots** (dust PLTW assemble →
+- **Oct 20, after the PLTW promo:** Bryan REJECTED its music (the hallway film's seven-academy music doesn't fit a CS class;
+  it should sound computer-science-y). New rule in CLAUDE.md ("New pieces"): ask "efficient or full creative mode?" before any
+  new piece; existing cartridges/music are examples, not defaults. `gen/build.py` `ONLY_CART` makes a standalone one-cartridge
+  player (`gen/dist/<cart>.html`). `tools__html_to_mp4.py` no longer crashes on a silent page (it renders picture-only).
+  Known gap, deliberately not fixed: the MP4 tool can't hear a gen cartridge's `"audio"` track (it plays through an `<audio>`
+  element; the tool only taps Web Audio), so a gen MP4 with music needs the track muxed in with ffmpeg.
+- **PLTW CSE promo (NEW Oct 20; visuals unseen, music rejected): gen cartridge `gen/carts/pltw-cse.json`, 60 s, 5 shots** (dust PLTW assemble →
   checker tunnel + "Computer Science Essentials / blocks to text" → flyover floor + VEXcode VR / VEXcode EXP / self-driving vehicles /
   SDVs → truchet + MIT App Inventor / Python / `print("Hello, World!")` → depth morph + end title). Colors from PLTW's brand page
   (pltw.org/about/brand-assets): Dark Blue `#0e0318` bg, Cream `#f7f4f1` ink, PLTW Blue `#3e34d9` accent, Deep Blue `#141e8a`, CS Purple

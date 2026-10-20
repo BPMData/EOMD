@@ -203,7 +203,8 @@ class Job:
         finally:
             f.close(); page.close()
         if os.path.getsize(webm) < 2000:
-            self.log('  the page made no sound (silent track kept)', 'WARN')
+            self.log('  the page made no sound: rendering the picture only (no audio track)', 'WARN')
+            return None
         return webm
 
     def _encode(self, frame, dur, audio, loop_audio=False, base=0):

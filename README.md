@@ -59,6 +59,7 @@ so they run from Thonny or any editor's Run button, or from a terminal.
 | A **living poster** (vines that grow and write words) | `tools__build.py` with `TARGETS = ['living']`, pick `LIVING_VARIANT` and `LIVING_SCORE` | `dist/living-player*.html` |
 | The **CD-ROM screensaver** (five retro computer worlds, chip music) | `tools__build_cdrom.py` (and `tools__cdrom_ambient.py` for the version without tip cards) | `dist/cdrom-player.html` |
 | A **self-contained gen player** to put on a USB stick | `python3 gen/build.py` | `gen/dist/gen-player.html` |
+| **One gen cartridge on its own** (for a video or one screen) | set `ONLY_CART` in `gen/build.py`, run it | `gen/dist/<cartridge>.html` |
 
 The first build downloads the open-source fonts (SIL OFL, from Google Fonts' GitHub) and caches them; after that,
 everything is offline. `tools__build.py` needs `pip install fonttools brotli`.

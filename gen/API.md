@@ -6,6 +6,9 @@ harmonographs, halftone screens, and kinetic typography synced to a track. A pie
 a small JSON file.
 Making a new piece means writing or editing one cartridge, not code.
 
+**Before a new piece, ask Bryan "efficient or full creative mode?" (CLAUDE.md, "New pieces").** The cartridges in
+`carts/` are examples, not templates to reuse; a new piece may need new layers.
+
 **Cheapest workflow for Claude:** read this file and `KNOBS.md` (generated, lists every knob with range).
 Write `carts/<name>.json`. Run `python3 gen/build.py` then `node gen/tests/smoke.js`. Bryan tunes by eye in
 the player's KNOBS panel and pastes back the JSON from COPY JSON. Do not read `layers/*.js` unless adding or
@@ -80,6 +83,7 @@ Tokens after `|`, any order: an effect or a delivery word that maps to one
   a public repo). Claude never types them; Bryan pastes his own transcript or Whisper output.
 
 ## Player (`player.html`, built to `dist/gen-player.html`)
+- **Standalone:** `ONLY_CART = '<name>'` in `build.py` writes `dist/<name>.html` with only that cartridge (opens straight into it). Use it for any one-off video or screen.
 - URL: `?cart=reel` · `?shot=2` · `?seed=9` · `?nohud` · `?gallery` · `?scale=0.75` (render resolution, for slow boards;
   `halftone` and `reaction` are the heaviest, then `contour`)
   · `?manual&t=12` (no clock; `advance(dt)` and `renderAt(t)` in the console, for frame capture).
