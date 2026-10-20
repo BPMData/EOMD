@@ -30,6 +30,9 @@ _Last updated: Oct 20, 2026 (moved to Claude Code: git repo, spent patchers and 
   gen gallery UI, so standalone builds are now presentation mode (`GEN.PRESENT`, set by `gen/build.py`). Bryan asked why
   the r2 session took ~30 min wall-clock (cheap in tokens): mostly build + headless frame-grab rounds and two 2-min MP4
   renders; a lighter check loop is a possible later improvement.
+- **Repo made presentable for Bryan's CS class (Oct 20):** README leads with the PLTW promo (link + `media/pltw-cse-preview.jpg`),
+  a "How the PLTW video works" section for students, a note on the `__` file names, stale MP4/music lines fixed; GitHub
+  homepage set to the Pages site, topics added.
 - **Rule added Oct 20:** CLAUDE.md "New pieces": ask efficient vs full creative mode first; words inside the picture;
   one-off music scored to picture. `tools__html_to_mp4.py` renders picture-only when a page is silent (no more crash).
   Known gap: `tools__html_to_mp4.py` still can't hear a gen cartridge's `<audio>` track (use `tools__gen_export.py`).

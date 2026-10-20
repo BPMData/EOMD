@@ -40,7 +40,7 @@ Before starting any NEW piece (a new video, poster or player; not a change to an
 - **Any piece, video:** `tools__html_to_mp4.py`
 
 ## Folder layout
-Mostly flat: in a file name `__` stands for `/` (e.g. `audio__style-lounge.js` = `audio/style-lounge.js`); the build scripts accept both. Real folders: `academies-film/`, `gen/`, `players/` (published copies of the finished builds, in git, so a clone plays out of the box), `fonts/` (OFL TTFs `tools__build_cdrom.py` downloads), `dist/` (builds, git-ignored), `font_cache/` (`tools__build.py`'s font cache, git-ignored).
+Mostly flat: in a file name `__` stands for `/` (e.g. `audio__style-lounge.js` = `audio/style-lounge.js`); the build scripts accept both. Real folders: `academies-film/`, `gen/`, `players/` (published copies of the finished builds, in git, so a clone plays out of the box), `fonts/` (OFL TTFs `tools__build_cdrom.py` downloads), `media/` (README images, e.g. `pltw-cse-preview.jpg` cut from the MP4), `dist/` (builds, git-ignored), `font_cache/` (`tools__build.py`'s font cache, git-ignored).
 
 ### academies-film/
 - **`danbury-academies-player.html` is the MASTER for the Academies film.** It has the 8 animated hero marks, the 21 redrawn pathway icons and the trilingual word blocks on all 7 academies. Edit this file directly. Its config sits in it TWICE (the visuals' copy and the audio worker's copy in `<script type="text/plain" id="dhs-audio-src">`); a config edit must change both.
