@@ -3,3 +3,7 @@ dist/
 __pycache__/
 .DS_Store
 font_cache/
+*.mp4
+*.mp3
+*.wav
+porter_work/
