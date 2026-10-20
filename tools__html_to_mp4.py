@@ -16,7 +16,9 @@ from tkinter import ttk, filedialog, messagebox
 from pathlib import Path
 
 # ===================== SETTINGS =====================
-FFMPEG_EXE    = 'ffmpeg'      # or the full path, e.g. '/opt/homebrew/bin/ffmpeg'
+FFMPEG_EXE    = ''            # '' = find it (PATH, then the usual Homebrew / MacPorts / Windows spots); or a full path
+FFMPEG_SPOTS  = ['/opt/homebrew/bin/ffmpeg', '/usr/local/bin/ffmpeg', '/opt/local/bin/ffmpeg', '~/bin/ffmpeg',
+                 r'C:\ffmpeg\bin\ffmpeg.exe', r'C:\Program Files\ffmpeg\bin\ffmpeg.exe']
 DEFAULT_HTML  = ''            # optional: pre-fill the player path
 OUT_DIR       = ''            # '' = save the .mp4 next to the .html
 FPS           = 30
@@ -100,6 +102,14 @@ FILM_FRAME_JS = r"""
 class Cancelled(Exception): pass
 
 
+def find_ffmpeg(hint=''):
+    """Full path to ffmpeg, or ''. Thonny starts without Homebrew on PATH, so a bare 'ffmpeg' often isn't found."""
+    for c in ([hint] if hint else []) + ['ffmpeg'] + FFMPEG_SPOTS:
+        p = shutil.which(os.path.expanduser(c))
+        if p: return p
+    return ''
+
+
 def file_url(path, query):
     return Path(path).resolve().as_uri() + ('?' + query if query else '')
 
@@ -116,8 +126,8 @@ def detect(page):
 
 
 class Job:
-    def __init__(self, app, html, out, w, h, fps, seconds, loops, query, audio):
-        self.app, self.html, self.out, self.w, self.h, self.fps = app, html, out, w, h, fps
+    def __init__(self, app, ffmpeg, html, out, w, h, fps, seconds, loops, query, audio):
+        self.ffmpeg, self.app, self.html, self.out, self.w, self.h, self.fps = ffmpeg, app, html, out, w, h, fps
         self.seconds, self.loops, self.query, self.audio = seconds, loops, query, audio
         self.tmp = os.path.splitext(out)[0] + '_tmp'
 
@@ -198,7 +208,7 @@ class Job:
 
     def _encode(self, frame, dur, audio, loop_audio=False, base=0):
         n = max(1, round(dur * self.fps))
-        cmd = [FFMPEG_EXE, '-y', '-loglevel', 'error', '-f', 'image2pipe', '-vcodec', 'mjpeg', '-framerate', str(self.fps), '-i', '-']
+        cmd = [self.ffmpeg, '-y', '-loglevel', 'error', '-f', 'image2pipe', '-vcodec', 'mjpeg', '-framerate', str(self.fps), '-i', '-']
         if audio: cmd += (['-stream_loop', '-1'] if loop_audio else []) + ['-i', audio]
         cmd += ['-t', f'{n / self.fps:.3f}', '-c:v', 'libx264', '-preset', 'medium', '-pix_fmt', 'yuv420p', '-crf', str(CRF)]
         cmd += (['-c:a', 'aac', '-b:a', f'{AUDIO_KBPS}k', '-ar', '48000'] if audio else ['-an']) + ['-movflags', '+faststart', self.out]
@@ -228,7 +238,7 @@ class App:
     def __init__(self, root):
         self.root = root
         root.title('/// H T M L → M P 4 ///'); root.geometry('820x620'); root.configure(bg=COLOR_BG)
-        self.html = tk.StringVar(value=DEFAULT_HTML); self.out = tk.StringVar()
+        self.html = tk.StringVar(value=DEFAULT_HTML); self.out = tk.StringVar(); self.ffmpeg = tk.StringVar(value=find_ffmpeg(FFMPEG_EXE))
         self.size = tk.StringVar(value=DEFAULT_SIZE); self.fps = tk.StringVar(value=str(FPS))
         self.seconds = tk.StringVar(value=str(SECONDS)); self.loops = tk.StringVar(value=str(LOOPS))
         self.query = tk.StringVar(value=URL_OPTIONS); self.audio = tk.BooleanVar(value=WITH_AUDIO)
@@ -248,7 +258,8 @@ class App:
         self.root.after(100, self._pump)
 
     def check_tools(self):
-        if not shutil.which(FFMPEG_EXE): self.log(f'❌ ffmpeg not found ({FFMPEG_EXE}). Install it (brew install ffmpeg) or set FFMPEG_EXE.', 'ERROR')
+        if self.ffmpeg.get(): self.log(f'ffmpeg: {self.ffmpeg.get()}')
+        else: self.log('❌ ffmpeg not found. Press BROWSE on the ffmpeg row (Mac: Cmd+Shift+G, then /opt/homebrew/bin), or install it: brew install ffmpeg', 'ERROR')
         try: import playwright  # noqa: F401
         except ImportError:
             self.log(f'❌ Playwright is not installed for this Python ({sys.executable}).', 'ERROR')
@@ -267,6 +278,12 @@ class App:
         p = filedialog.asksaveasfilename(defaultextension='.mp4', filetypes=[('MP4', '*.mp4')], initialdir=os.path.dirname(h) or None, initialfile=os.path.basename(h) or None)
         if p: self.out.set(str(Path(p)))
 
+    def pick_ffmpeg(self):
+        p = filedialog.askopenfilename(title='Find ffmpeg (Mac: Cmd+Shift+G, then /opt/homebrew/bin)', initialdir='/opt/homebrew/bin' if os.path.isdir('/opt/homebrew/bin') else None)
+        if p:
+            if find_ffmpeg(p) == '': messagebox.showerror('Not a program', f'{p}\nisn\'t a runnable file.'); return
+            self.ffmpeg.set(str(Path(p))); self.log(f'ffmpeg: {p}  (set FFMPEG_EXE at the top to keep it)', 'SUCCESS')
+
     def _num(self, var, name, kind=float, lo=0):
         try: v = kind(var.get())
         except ValueError: raise ValueError(f'{name} must be a number')
@@ -279,8 +296,10 @@ class App:
             html = self.html.get().strip(); out = self.out.get().strip()
             if not os.path.isfile(html): raise ValueError('Choose the player .html first.')
             if not out: raise ValueError('Choose where to save the .mp4.')
+            ff = find_ffmpeg(self.ffmpeg.get().strip())
+            if not ff: raise ValueError('ffmpeg not found: press BROWSE on the ffmpeg row.')
             w, h = SIZES[self.size.get()]
-            job = Job(self, html, out, w, h, self._num(self.fps, 'FPS', int), self._num(self.seconds, 'Seconds'),
+            job = Job(self, ff, html, out, w, h, self._num(self.fps, 'FPS', int), self._num(self.seconds, 'Seconds'),
                       self._num(self.loops, 'Loops', int), self.query.get().strip().lstrip('?'), self.audio.get())
         except (ValueError, KeyError) as e:
             messagebox.showerror('Check the settings', str(e)); return
@@ -327,6 +346,8 @@ class App:
         self._btn(r, '[ BROWSE ]', self.pick_html).pack(side='left')
         r = self._row(f); self._label(r, 'Save .mp4   ').pack(side='left'); self._entry(r, self.out).pack(side='left', fill='x', expand=True, padx=4)
         self._btn(r, '[ BROWSE ]', self.pick_out).pack(side='left')
+        r = self._row(f); self._label(r, 'ffmpeg      ').pack(side='left'); self._entry(r, self.ffmpeg).pack(side='left', fill='x', expand=True, padx=4)
+        self._btn(r, '[ BROWSE ]', self.pick_ffmpeg).pack(side='left')
 
         s = tk.LabelFrame(self.root, text=' SETTINGS ', bg=COLOR_BG, fg=COLOR_ACCENT, bd=2, relief='groove', font=FONT_HEADER); s.pack(fill='x', padx=10, pady=4)
         r = self._row(s); self._label(r, 'Size').pack(side='left')
