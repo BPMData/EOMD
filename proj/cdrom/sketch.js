@@ -11,7 +11,7 @@ const SPR=['..K.........K...','...K.......K....','....K.....K.....','..KKKKKKKKK
 const SPAL={K:'#1B1B2A',Y:'#F5D547',y:'#D4AE35',W:'#FFFFFF',E:'#1B1B2A',C:'#FFF3B0'};
 function sprite(c,x,y,px){for(let r=0;r<SPR.length;r++)for(let q=0;q<16;q++){const ch=SPR[r][q];if(ch!=='.'){c.fillStyle=SPAL[ch];c.fillRect(x+q*px,y+r*px,px+.5,px+.5)}}}
 
-/* ---------- card (copy word for word, proj__cs__copy.md card 5) ---------- */
+/* ---------- card (copy word for word, proj/cs/copy.md card 5) ---------- */
 const CARD={tip:'Tip 5 of 14',en:['One Change at a Time','Change one thing. Test. Repeat.'],es:['Un cambio a la vez','Cambia una cosa. Prueba. Repite.'],pt:['Uma mudança por vez','Mude uma coisa. Teste. Repita.']};
 function wrapL(c,t,mw){const o=[];let cur='';for(const w of t.split(' ')){const n=cur?cur+' '+w:w;if(c.measureText(n).width<=mw||!cur)cur=n;else{o.push(cur);cur=w}}return o.concat(cur)}
 const PAD=46,TB=64;

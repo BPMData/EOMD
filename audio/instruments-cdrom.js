@@ -1,5 +1,5 @@
-/* audio__instruments-cdrom.js: CD-ROM screensaver voices added to INSTR (Encyclopedia Lounge + Stage 3 auditions).
-   Load after audio__instruments.js + audio__instruments-film.js. Same generator contract (yield every 8k samples).
+/* audio/instruments-cdrom.js: CD-ROM screensaver voices added to INSTR (Encyclopedia Lounge + Stage 3 auditions).
+   Load after audio/instruments.js + audio/instruments-film.js. Same generator contract (yield every 8k samples).
    Adds only new names, so loading it never changes an existing score's sound (regress-safe).
    Pitched: fmEP, slap(…,pop), brass, bleep(…,pw), fmBell, fretless(…,fromMidi), lyricon, triBass, loungeVibes.
    Unpitched (sr, v, …): hat(open,seed), snare, clap, rim, chipKick, chipNoise(dec,rate,seed). */

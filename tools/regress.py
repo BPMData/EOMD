@@ -1,24 +1,24 @@
-# tools__regress.py: AUDIO REGRESSION CHECK. Run in Thonny. Needs Node.js on PATH.
-# Renders a fixed set of sections from every score__*.json with the project audio files and hashes the samples.
-#   SAVE BASELINE  -> writes tests__hashes.json (do this BEFORE changing audio code)
+# tools/regress.py: AUDIO REGRESSION CHECK. Run in Thonny. Needs Node.js on PATH.
+# Renders a fixed set of sections from every score/*.json with the project audio files and hashes the samples.
+#   SAVE BASELINE  -> writes tests/hashes.json (do this BEFORE changing audio code)
 #   CHECK          -> renders again and lists every section whose hash changed (0 mismatches = nothing changed)
 # Sections: comp4 + lounge indexes 0-7 at seed 1 + 0-2 at seed 42 | film24 index 0 | rounds 0, 1, 2 + the first drift section.
 # Scores whose style isn't in AUDIO_LIB (e.g. the 'chip' cartridges until Stage 4) are skipped and listed.
 import os, json, glob, queue, threading, subprocess, tempfile, time
  
 # ===================== SETTINGS =====================
-PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))   # folder with audio__*.js, engine__src__audio__dsp.js, score__*.json
-HASH_FILE   = os.path.join(PROJECT_DIR, 'tests__hashes.json')
+PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # the repo root, with audio/*.js, engine/src/audio/dsp.js, score/*.json
+HASH_FILE   = os.path.join(PROJECT_DIR, 'tests', 'hashes.json')
 NODE_EXE    = '/opt/homebrew/bin/node'
 SAMPLE_RATE = 48000
 MODE        = 'ask'      # 'ask' = window with two buttons, 'save' = save baseline now, 'check' = check now (no window)
-SCORES      = 'score__*.json'
+SCORES      = 'score/*.json'
 COMP4       = [(1, 8), (42, 3)]   # (seed, how many sections from index 0); also used for 'lounge'
 FILM24      = [0]
 ROUNDS      = [0, 1, 2]           # the first drift section is always added
 # dsp, instruments (+ film voices, + CD-ROM voices), arranger core, then one file per style (any order among the styles).
-AUDIO_LIB   = ['engine__src__audio__dsp.js', 'audio__instruments.js', 'audio__instruments-film.js', 'audio__instruments-cdrom.js',
-               'audio__chips.js', 'audio__arranger.js', 'audio__style-comp4.js', 'audio__style-film24.js', 'audio__style-rounds.js', 'audio__style-lounge.js', 'audio__style-chip.js']
+AUDIO_LIB   = ['engine/src/audio/dsp.js', 'audio/instruments.js', 'audio/instruments-film.js', 'audio/instruments-cdrom.js',
+               'audio/chips.js', 'audio/arranger.js', 'audio/style-comp4.js', 'audio/style-film24.js', 'audio/style-rounds.js', 'audio/style-lounge.js', 'audio/style-chip.js']
 # ====================================================
  
 NODE = r"""
@@ -43,7 +43,7 @@ def render(log):
     """Render every section and return {'node': version, 'hashes': {key: hash}}."""
     miss = [f for f in AUDIO_LIB if not os.path.exists(os.path.join(PROJECT_DIR, f))]
     if miss: raise RuntimeError('missing audio files: ' + ', '.join(miss))
-    scores = sorted(os.path.basename(p) for p in glob.glob(os.path.join(PROJECT_DIR, SCORES)))
+    scores = sorted(os.path.relpath(p, PROJECT_DIR).replace(os.sep, '/') for p in glob.glob(os.path.join(PROJECT_DIR, SCORES)))   # e.g. 'score/late-library.json'
     if not scores: raise RuntimeError('no ' + SCORES + ' in ' + PROJECT_DIR)
     tmp = tempfile.mkdtemp(prefix='regress_')
     js, cj = os.path.join(tmp, 'regress.js'), os.path.join(tmp, 'regress.json')

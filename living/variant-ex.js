@@ -1,9 +1,9 @@
-/* living__variant-ex.js: Exploration Seminar variant of the living poster. Needs living__trio.js (injected before this file).
-   CSCARDS here = the 24 cards of proj__ex__copy.md (17 tips + 7 academy cards; the name is shared with the CS build). Same trio and timer as CS, no end card; academy colors via CARDSTYLE. */
+/* living/variant-ex.js: Exploration Seminar variant of the living poster. Needs living/trio.js (injected before this file).
+   CSCARDS here = the 24 cards of proj/ex/copy.md (17 tips + 7 academy cards; the name is shared with the CS build). Same trio and timer as CS, no end card; academy colors via CARDSTYLE. */
 document.title='Mr. Murphy’s Exploration Seminar';
 document.getElementById('cv').setAttribute('aria-label','Mr. Murphy’s Exploration Seminar: a slowly growing, living poster with academy and pathway tips in English, Spanish and Portuguese');
 const MONO='monospace'; // this copy has no `code` spans, so no mono font is embedded
-// ---- academy colors (proj__academies__brand.md; f = fill, t = text on it). Edit CMAP to recolor a card: [fill] or [fill, edge] ----
+// ---- academy colors (proj/academies/brand.md; f = fill, t = text on it). Edit CMAP to recolor a card: [fill] or [fill, edge] ----
 const INK='#0A1633',WHITE='#FFFFFF';
 const AC={blue:{f:'#0033A0',t:WHITE},teal:{f:'#009CA6',t:INK},slate:{f:'#527A8A',t:WHITE},orange:{f:'#DC4405',t:WHITE,bold:1},green:{f:'#006341',t:WHITE},
           red:{f:'#D50032',t:WHITE},yellow:{f:'#FFD100',t:INK},purple:{f:'#5C068C',t:WHITE}};

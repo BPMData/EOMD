@@ -1,6 +1,6 @@
 # SSR poster: brief and decisions
 Smart board, Sustained Silent Reading, 15–20 min, students reading silently, many English learners (Spanish, Brazilian Portuguese).
-Source copy: `proj__ssr__poster-source.html` (used word for word).
+Source copy: `proj/ssr/poster-source.html` (used word for word).
 
 ## Decisions
 - **Look.** Kells-leaning living poster: flat color, curling outlined vines, spirals, eye-buds (Bryan loves them), spiral roundels; deep teal ↔ indigo background shifting over 90 s.

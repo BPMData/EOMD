@@ -1,16 +1,16 @@
 # Score format (style "comp4")
-A score is a small JSON recipe; `audio__arranger.js` performs it forever without repeating. The same seed always gives the same performance.
+A score is a small JSON recipe; `audio/arranger.js` performs it forever without repeating. The same seed always gives the same performance.
 
 | Field | Meaning |
 |---|---|
 | `id`, `title`, `notes` | Name and description (shown in the jukebox) |
 | `style` | `"comp4"` (default), `"film24"`, `"rounds"`, `"lounge"` (see below) |
 | `bpm`, `bars`, `tail` | Tempo; bars per section (8); seconds of ring-out carried into the next section |
-| `master_db` | Loudness trim. Never hand-edit; `tools__calibrate.py` sets it for −23 LUFS |
+| `master_db` | Loudness trim. Never hand-edit; `tools/calibrate.py` sets it for −23 LUFS |
 | `progressions` | List of progressions; each is 4 chords of `[bassMidi, [4 voicing midis]]`, 2 bars each. Sections rotate through them |
 | `pad` | `cut` (lowpass Hz), `gain`, `send` (reverb) |
 | `bass` | `gain` (root, held), `gain2` (fifth on beat 3 of bar 2), `send` |
-| `comp` | `inst` (any `audio__instruments.js` name), `gain`, `stabGain` (answering stab), `send`, `prob` [base, extra] = chance of the answering stab |
+| `comp` | `inst` (any `audio/instruments.js` name), `gain`, `stabGain` (answering stab), `send`, `prob` [base, extra] = chance of the answering stab |
 | `melody` | `root` (midi of scale degree 0), `scale` (semitones), `start` (first degree), `range` [lo, hi] degrees; `lead`/`gain`/`send`; `alt`/`altGain`/`altSend` (used every `altEvery`-th section); `themeEvery` (new motif every N sections); `restEvery` (every Nth section has no melody) |
 | `reverb` | `size` (0–1), `wet` |
 
@@ -19,7 +19,7 @@ A score is a small JSON recipe; `audio__arranger.js` performs it forever without
 - Use pentatonic scales over maj7/9 chords.
 - A motif returns varied every section. Shift `themeEvery`/`restEvery` to taste.
 
-# Style "film24" (fixed seamless loop; see `score__academies-hallway.json`)
+# Style "film24" (fixed seamless loop; see `score/academies-hallway.json`)
 A ported film soundtrack, not a generative piece: every section is the same `bars`-bar loop on circular buffers (`tail` 0), so sections join with no gap. `seed` is ignored. Use it when a piece must stay note-for-note identical.
 
 | Field | Meaning |
@@ -32,7 +32,7 @@ A ported film soundtrack, not a generative piece: every section is the same `bar
 | lead `notes` | `[step16, midi, lenSteps, vel, gain?, pan?]`, steps counted from the lead's `bar0` (16 steps per bar) |
 | `fx` | `echo` (`time` in beats, `fb`, `lp`, `toWet`, `toMix`), `reverb` (`size`, `damp`, `width`, `hp`, `lp`, `mix`), `bus` (`hp`, `shelfHz`, `shelfDb`) |
 
-# Style "rounds" (20-min study loop; see `score__corporate-calm.json`)
+# Style "rounds" (20-min study loop; see `score/corporate-calm.json`)
 Form: `rounds.length` rounds, each = every air in `airs` for `airBars` bars, led by that round's variation list; a `drift` section after every `blockEvery` rounds. Fully deterministic (seed ignored); the loop is seamless. `bars` is the **section** size (2), not the form length: sections overlap-add by their ring-out (`tail`, seconds: 4 s note tails + effect decay), and index wraps at the end of the form.
 
 | Field | Meaning |
@@ -48,8 +48,8 @@ Form: `rounds.length` rounds, each = every air in `airs` for `airBars` bars, led
 | `bed` | Kick, snap, shaker, bass (patterns for even/odd rounds), pad levels |
 | `fx` | `srcTail`, `lead` (pan by air parity, reverb/echo sends), `echo`, `reverb`, `bus`, `clip` (soft clipper; only acts above 0.6 FS, i.e. never at −23 LUFS) |
 
-# Style "lounge" (Encyclopedia Lounge bossa; see `score__encyclopedia-lounge.json`)
-Endless and seeded, like comp4: 8-bar sections + `tail` s of ring-out, overlap-added. A jazz-tune form: the **head** (the authored tune) every `headEvery` sections, generative **choruses** in between. Needs `audio__instruments-cdrom.js` (rim, bleep, loungeVibes). Written for the CD-ROM screensaver's work-time music, not reading rooms: it has drums and bells on purpose.
+# Style "lounge" (Encyclopedia Lounge bossa; see `score/encyclopedia-lounge.json`)
+Endless and seeded, like comp4: 8-bar sections + `tail` s of ring-out, overlap-added. A jazz-tune form: the **head** (the authored tune) every `headEvery` sections, generative **choruses** in between. Needs `audio/instruments-cdrom.js` (rim, bleep, loungeVibes). Written for the CD-ROM screensaver's work-time music, not reading rooms: it has drums and bells on purpose.
 
 | Field | Meaning |
 |---|---|

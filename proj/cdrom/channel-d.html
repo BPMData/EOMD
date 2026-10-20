@@ -13,7 +13,7 @@ body.solo{background:#000}body.solo main{max-width:none;padding:0}body.solo h1,b
 <div id="sk"></div></main>
 <script>
 'use strict';
-/* proj__cdrom__dud.js: the Dud (Bryan's original 16x15 sprite, exact) + failed-evolution parts.
+/* proj/cdrom/dud.js: the Dud (Bryan's original 16x15 sprite, exact) + failed-evolution parts.
    Rows are 16 chars. K outline, Y body, y shade, C highlight, W eye white, E pupil, '.' empty.
    A mutation = base rows with part rows swapped in. Same parts drive Dud 2D (flat) and Dud 3D (voxels). */
 const DUD=(()=>{
@@ -69,7 +69,7 @@ function drawGrid(c,G){c.fillStyle=G.base;c.fillRect(0,0,W,H);
  for(const b of G.big){const im=bigImg(b.s,b.fg);c.imageSmoothingEnabled=false;c.drawImage(im,X0+b.x*CW,b.y*CH+CH-im.height*2.5,im.width*5,im.height*5);c.imageSmoothingEnabled=true}}
 const BIGC=new Map();function bigImg(s,col){const k=s+col;if(BIGC.has(k))return BIGC.get(k);const fs=17.6,w=Math.ceil(s.length*fs*.6)+2,h=22,b=document.createElement('canvas');b.width=w;b.height=h;const c=b.getContext('2d');c.font='700 '+fs+'px Mono';c.textBaseline='middle';c.fillStyle=col;[...s].forEach((ch,i)=>c.fillText(ch,i*fs*.6,h/2+1));const d=c.getImageData(0,0,w,h),a=d.data;for(let i=3;i<a.length;i+=4)a[i]=a[i]>100?255:0;c.putImageData(d,0,0);BIGC.set(k,b);return b}
  
-/* ---------- cards: three separate windows, copy word for word (proj__cs__copy.md card 5) ---------- */
+/* ---------- cards: three separate windows, copy word for word (proj/cs/copy.md card 5) ---------- */
 const LANGS=[{lab:'English',t:'One Change at a Time',b:'Change one thing. Test. Repeat.',bg:'#aaaaaa',bd:'#ffffff',lf:'#000000',tc:'#0000aa',bc:'#000000',x:2,y:1},
  {lab:'Español',t:'Un cambio a la vez',b:'Cambia una cosa. Prueba. Repite.',bg:'#aa00aa',bd:'#ffff55',lf:'#000000',tc:'#ffff55',bc:'#ffffff',x:27,y:8},
  {lab:'Português',t:'Uma mudança por vez',b:'Mude uma coisa. Teste. Repita.',bg:'#00aaaa',bd:'#ffffff',lf:'#000000',tc:'#000000',bc:'#000000',x:4,y:15}];

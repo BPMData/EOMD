@@ -1,13 +1,13 @@
-# tools__render_piece.py: renders a one-off, fixed-length piece of music (a proj__<name>__music.js that sets PIECE.render)
+# tools/render_piece.py: renders a one-off, fixed-length piece of music (a proj/<name>/music.js that sets PIECE.render)
 # to WAV + MP3: loudness to TARGET_LUFS, true peak limited to CEILING_DBTP, then checked with ffmpeg.
 # Run in Thonny (Run button). Needs Node.js; ffmpeg for the MP3 and the check.
-# One-off pieces are scored to picture (e.g. proj__pltw__music.js for the gen cartridge pltw-cse); endless scores use
-# score__*.json + tools__calibrate.py instead.
+# One-off pieces are scored to picture (e.g. proj/pltw/music.js for the gen cartridge pltw-cse); endless scores use
+# score/*.json + tools/calibrate.py instead.
 import os, json, shutil, subprocess, tempfile
 
 # ===================== SETTINGS =====================
-SRC_DIR      = os.path.dirname(os.path.abspath(__file__))
-PIECE        = 'proj__pltw__music.js'
+SRC_DIR      = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # the repo root (this script sits in tools/)
+PIECE        = 'proj/pltw/music.js'
 OUT_MP3      = os.path.join(SRC_DIR, 'gen', 'audio', 'pltw-cse.mp3')   # where the player build looks for the cartridge's "audio"
 OUT_WAV      = os.path.join(SRC_DIR, 'dist', 'pltw-cse.wav')            # full-quality copy (dist/ is git-ignored)
 SAMPLE_RATE  = 48000
@@ -20,7 +20,7 @@ FFMPEG_EXE   = shutil.which('ffmpeg') or '/opt/homebrew/bin/ffmpeg'
 
 JS = r"""
 const fs = require('fs'); globalThis.DHS = {};
-eval(fs.readFileSync(%(dir)s + '/engine__src__audio__dsp.js', 'utf8'));
+eval(fs.readFileSync(%(dir)s + '/engine/src/audio/dsp.js', 'utf8'));
 eval(fs.readFileSync(%(dir)s + '/' + %(piece)s, 'utf8'));
 const P = DHS.dsp, SR = %(sr)d, t0 = Date.now();
 let bus = PIECE.render(SR);

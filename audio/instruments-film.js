@@ -1,9 +1,9 @@
-/* audio__instruments-film.js: the "film" voices, ported 1:1 from the Academies hallway film (load right after audio__instruments.js).
-   Adds to INSTR: drums + leads + filmBass/filmPad/filmChime. Same generator contract as audio__instruments.js.
+/* audio/instruments-film.js: the "film" voices, ported 1:1 from the Academies hallway film (load right after audio/instruments.js).
+   Adds to INSTR: drums + leads + filmBass/filmPad/filmChime. Same generator contract as audio/instruments.js.
    Drums take (sr, v[, seed]) with no pitch; filmPad takes (sr, midi, dur, t0, v) where t0 = absolute seconds (drives the filter breathing). */
 (function(G){'use strict';
 const P=G.DHS.dsp,TAU=Math.PI*2,I=G.INSTR;
-const arr=function*(n,fn){const b=new Float32Array(n);for(let i=0;i<n;i++){b[i]=fn(i);if((i&8191)===8191)yield}return b};   // same helper as audio__instruments.js
+const arr=function*(n,fn){const b=new Float32Array(n);for(let i=0;i<n;i++){b[i]=fn(i);if((i&8191)===8191)yield}return b};   // same helper as audio/instruments.js
 /* ---- film voices (Academies hallway film, 96 BPM). Same maths as the film's music.js; the generator wrapper only adds yields. ---- */
 const fm=function*(sr,f,n,ratio,idx0,idx1,idxDec,amp){let pc=0,pm=0;return yield* arr(n,i=>{const t=i/sr;pm=(pm+f*ratio/sr)%1;const ix=idx1+(idx0-idx1)*Math.exp(-t/idxDec);pc=(pc+f/sr)%1;return Math.sin(TAU*pc+ix*Math.sin(TAU*pm))*amp[i]})};
 // drums (no pitch): kick (sr,v), snap (sr,v), shaker (sr,v,seed), woodblock (sr,v)

@@ -4,8 +4,8 @@
 import os, re, json, shutil, subprocess, tempfile
  
 # ===================== SETTINGS =====================
-SRC_DIR     = os.path.dirname(os.path.abspath(__file__))
-SCORE       = 'score__late-library.json'
+SRC_DIR     = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # the repo root (this script sits in tools/)
+SCORE       = 'score/late-library.json'
 SECTIONS    = 8          # ~4 min of music at 60-66 BPM
 SEED        = 1
 TARGET_LUFS = -23.0
@@ -18,7 +18,7 @@ score_path = os.path.join(SRC_DIR, SCORE); score = json.load(open(score_path, en
 os.makedirs(OUT_DIR, exist_ok=True); wav = os.path.join(OUT_DIR, f"preview_{score['id']}_seed{SEED}.wav")
 js = r"""
 const fs=require('fs');globalThis.DHS={};const D=%(dir)s;
-for(const f of ['engine__src__audio__dsp.js','audio__instruments.js','audio__instruments-film.js','audio__instruments-cdrom.js','audio__chips.js','audio__arranger.js','audio__style-comp4.js','audio__style-film24.js','audio__style-rounds.js','audio__style-lounge.js','audio__style-chip.js'])eval(fs.readFileSync(D+'/'+f,'utf8'));
+for(const f of ['engine/src/audio/dsp.js','audio/instruments.js','audio/instruments-film.js','audio/instruments-cdrom.js','audio/chips.js','audio/arranger.js','audio/style-comp4.js','audio/style-film24.js','audio/style-rounds.js','audio/style-lounge.js','audio/style-chip.js'])eval(fs.readFileSync(D+'/'+f,'utf8'));
 const P=DHS.dsp,sc=%(score)s,SR=48000,N=%(n)d,hop=MUSIC.sectionLen(sc)*SR,tot=Math.round(hop*N),L=new Float32Array(tot),R=new Float32Array(tot);
 for(let i=0;i<N;i++){const s=MUSIC.run(sc,{sr:SR,seed:%(seed)d,index:i}),o=Math.round(i*hop);for(let j=0;j<s.L.length&&o+j<tot;j++){L[o+j]+=s.L[j];R[o+j]+=s.R[j]}}
 const lu=P.lufs({N:tot,L,R},SR),g=P.db(%(target)f-lu),b=Buffer.alloc(44+tot*4);

@@ -1,4 +1,4 @@
-/* audio__instruments.js: shared instrument library on DHS.dsp (engine__src__audio__dsp.js).
+/* audio/instruments.js: shared instrument library on DHS.dsp (engine/src/audio/dsp.js).
    Every instrument is a generator: (sr, midi, durSeconds, velocity, ...) → yields every 8k samples, returns Float32Array
    (pad returns [L, R]). Use with `yield*` inside a generator, or INSTR.now(gen) to run one to completion.
    Soft attacks and dark tops throughout: these were tuned for silent-reading rooms.

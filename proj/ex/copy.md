@@ -4,7 +4,7 @@
 - Same engine as the CS poster: `LIVING_VARIANT='ex'`, three-card trios for **every** card (EN · ES · PT, fixed slots), same timer and end card.
 - Cards may use the academy colors from the hallway film.
 - Cursive words: explore, rank, pathway, academy, campus, future, choose, career, goal, lottery, research.
-- Card format matches `proj__cs__copy.md` (`- **EN:** Title / body`) so the build can parse it.
+- Card format matches `proj/cs/copy.md` (`- **EN:** Title / body`) so the build can parse it.
 - ES/PT keep official names in English (academies, pathways, YouScience results, West/Main Campus), since that's what students see on forms and Schoology. Terms follow Bryan's Set 4: pathway = vía / caminho; rank = clasificar / classificar; lottery = sorteo / sorteio.
 - Card colors carry the academy; titles never name a color (Bryan, Oct 9).
 

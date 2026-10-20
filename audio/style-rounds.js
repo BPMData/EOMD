@@ -1,4 +1,4 @@
-/* audio__style-rounds.js: style "rounds" (load after audio__arranger.js). See score__corporate-calm.json. */
+/* audio/style-rounds.js: style "rounds" (load after audio/arranger.js). See score/corporate-calm.json. */
 (function(G){'use strict';
 const P=G.DHS.dsp,I=G.INSTR,M=G.MUSIC;
 // ---------------------------------------------------------------- style "rounds"

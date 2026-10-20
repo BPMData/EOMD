@@ -1,4 +1,4 @@
-/* audio__style-comp4.js: style "comp4" (load after audio__arranger.js).
+/* audio/style-comp4.js: style "comp4" (load after audio/arranger.js).
    Every 2 bars one chord. Pad (3 notes), bass (root + fifth),
    4-note comping stab with an optional answering stab, and a pentatonic lead motif in theme-and-variations form.
    Each section = score.bars bars + score.tail seconds of ring-out; play section k at k*sectionLen and let tails overlap.

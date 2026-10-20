@@ -1,4 +1,4 @@
-/* proj__pltw__music.js: "PLTW CSE", the one-off 60-second score for the gen cartridge pltw-cse (Oct 2026, full creative mode).
+/* proj/pltw/music.js: "PLTW CSE", the one-off 60-second score for the gen cartridge pltw-cse (Oct 2026, full creative mode).
    Written to picture, 120 BPM, A minor: every hit lands on a moment in gen/carts/pltw-cse.json (CUES below; keep them in step).
      0-10  BOOT     data chatter over a rising drone; blip clouds as the dots fly into a sphere, then into PLTW; impact; riser
     10-24  TUNNEL   four-on-the-floor drop, rolling bass, arp; crash + stab each time a word bursts past the camera;
@@ -6,8 +6,8 @@
     24-36  DRIVE    motorik groove, pulsing bass; a lidar ping on every sweep; blip clouds as words lift off the floor
     36-48  TILES    chiptune: square-wave lead and bass, a broken beat, tile-flip tick runs when the maze spells a word
     48-60  FINALE   blip cloud into PLTW, full drop, blip cloud into the title, last chord rings out
-   Self-contained synths on DHS.dsp (engine__src__audio__dsp.js) only: no shared instruments, so nothing here can change another
-   piece. Render with tools__render_piece.py (PIECE = 'proj__pltw__music.js') -> gen/audio/pltw-cse.mp3, -16 LUFS, -1.5 dBTP. */
+   Self-contained synths on DHS.dsp (engine/src/audio/dsp.js) only: no shared instruments, so nothing here can change another
+   piece. Render with tools/render_piece.py (PIECE = 'proj/pltw/music.js') -> gen/audio/pltw-cse.mp3, -16 LUFS, -1.5 dBTP. */
 (function (G) {
   'use strict';
   const P = G.DHS.dsp, TAU = Math.PI * 2, ex = Math.exp;

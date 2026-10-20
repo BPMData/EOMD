@@ -1,10 +1,10 @@
-/* proj__cdrom__track2-r2.js: Track 2, round 2. "Stage 1 · Overclock": an original fast action-stage theme written with late-80s
+/* proj/cdrom/track2-r2.js: Track 2, round 2. "Stage 1 · Overclock": an original fast action-stage theme written with late-80s
    arcade/console fusion techniques (line clichés, circle of fifths, secondary dominants, chromatic pivots, slap bass with octave
    pops and chromatic approaches, twin lead in 3rds/6ths with 16th runs and arpeggios, 16th hats with ghost snares). No quotes.
    Form: Intro (4 bars, plays once) + A (8, E minor) + B (8, modulates to F# minor and walks back) — A+B loop. 158–168 BPM.
    Oct 9e (option 3): bars 20–27 = C (half-time breakdown), 28–35 = D (a generated solo over A's chords, T.solo / T.setSolo).
    Piece 'overclock' still plays bars 0–19 (A+B loop, unchanged); piece 'overclock-long' plays the composed long form via `order`.
-   Load after engine__src__audio__dsp.js and audio__chips.js.
+   Load after engine/src/audio/dsp.js and audio/chips.js.
      TRACK2R2.events(bpm, mask, order)     chip-neutral notes {t, k, m, d, v}; k = mel | har | bass | kick | snare | hat | crash
      TRACK2R2.chipEvents(chip, bpm, mask)  CHIPS events {t, part, m, d, v} for one chip
    mask = {mel, har, bass, drums} (1 = on). Per chip: the melody moves by whole octaves to the chip's lead register (beeper one

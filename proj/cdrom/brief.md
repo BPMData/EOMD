@@ -1,4 +1,4 @@
-# proj__cdrom__brief.md: CS Lab Screensaver ("the CD-ROM one"), v3.1 (Oct 9: Overclock default; timer readout; Their Finest Duds word structures)
+# proj/cdrom/brief.md: CS Lab Screensaver ("the CD-ROM one"), v3.1 (Oct 9: Overclock default; timer readout; Their Finest Duds word structures)
 
 ## Pitch
 A 90s CD-ROM screensaver left running on a lab CRT, starring failed virtual pets. Up-tempo, funny,
@@ -6,23 +6,23 @@ readable. Plays in CS work time (incl. 7 am) once students are working on their 
 CS living poster: reuse its timer/TICKET OUT, controls, music streaming, wake lock, reduced motion.
 
 ## Files
-- `proj__cdrom__dud.js`: the Dud, Bryan's original 16×15 sprite (exact), plus mutation parts (antennae,
+- `proj/cdrom/dud.js`: the Dud, Bryan's original 16×15 sprite (exact), plus mutation parts (antennae,
   eyes, mouth, legs, palette), angry/happy/squint/grimace faces, tuck legs and the goggles overlay. Use it everywhere.
-- `proj__cdrom__channel-d.html`: the approved D1/D2 sketch (105 KB, mostly the embedded font).
-- `proj__cdrom__sketch.js`: the approved Stage 1 vibe-board code. Reuse its raycaster, card window, marquee
+- `proj/cdrom/channel-d.html`: the approved D1/D2 sketch (105 KB, mostly the embedded font).
+- `proj/cdrom/sketch.js`: the approved Stage 1 vibe-board code. Reuse its raycaster, card window, marquee
   words, contour desk, starfield and channel-surf dither dissolve.
-- `proj__cdrom__player-src.html`: the player source (Stage 2b). `tools__build_cdrom.py` builds `dist/cdrom-player.html` from it,
-  swapping in `proj__cdrom__music.js` and applying its PATCHES (fold them into the source in Stage 5).
-- Copy: `proj__cs__copy.md` + `proj__cdrom__cards.md`, word for word. Code words: `living__words-cs.json` (the words only).
+- `proj/cdrom/player-src.html`: the player source (Stage 2b). `tools/build_cdrom.py` builds `dist/cdrom-player.html` from it,
+  swapping in `proj/cdrom/music.js` and applying its PATCHES (fold them into the source in Stage 5).
+- Copy: `proj/cs/copy.md` + `proj/cdrom/cards.md`, word for word. Code words: `living/words-cs.json` (the words only).
 - Fonts (OFL, embedded): VT323 (card headlines, window labels, SAVE card, D1/D2 big headlines; Oct 8: Pixelify was too
   hard to read, E looked like 8/B), Pixelify Sans (marquee words, STAR VOYAGE title, boot punch lines), Atkinson Hyperlegible
   (body), Jacquard 24 (Their Finest Duds title, boot logo). Source: github.com/google/fonts (ofl/…); licenses are in
-  `fonts__OFL-*.txt`. D1/D2 use Source Code Pro (license already in the project).
-- Music: `audio__chips.js` + `audio__style-chip.js` + `score__cdrom-{fm,tia,beep,snes,arcade}.json` (chips);
-  `audio__style-lounge.js` + `score__encyclopedia-lounge.json` + voices in `audio__instruments-cdrom.js` (Lounge);
-  `audio__style-loungechip.js` (Lounge (Chipped); its five scores are derived at build);
-  `proj__cdrom__track2-r2.js` (Overclock's notes) + `audio__style-overclock.js` + `score__cdrom-overclock.json` (Overclock).
-  Player sound block: `proj__cdrom__music.js` (Oct 9: the build's music patches are folded into it).
+  `fonts/OFL-*.txt`. D1/D2 use Source Code Pro (license already in the project).
+- Music: `audio/chips.js` + `audio/style-chip.js` + `score__cdrom-{fm,tia,beep,snes,arcade}.json` (chips);
+  `audio/style-lounge.js` + `score/encyclopedia-lounge.json` + voices in `audio/instruments-cdrom.js` (Lounge);
+  `audio/style-loungechip.js` (Lounge (Chipped); its five scores are derived at build);
+  `proj/cdrom/track2-r2.js` (Overclock's notes) + `audio/style-overclock.js` + `score/cdrom-overclock.json` (Overclock).
+  Player sound block: `proj/cdrom/music.js` (Oct 9: the build's music patches are folded into it).
 
 ## Cast: the Duds (failed virtual pets)
 - **Dud 2D** (flat pixels) lives in Contour Desk and DOS Prompt. **Dud 3D** (glossy voxels on the same parts)
@@ -41,7 +41,7 @@ CS living poster: reuse its timer/TICKET OUT, controls, music streaming, wake lo
   engraved inner line, a goggled "cool Dud" mascot that hops every 3 s, a gold **Dud Lab** logo (Jacquard 24, extrude, glint
   sweep every 3.5 s), a joke "TM", "P R E S E N T S". Then a setup line types out (VT323) and a punch line zooms in with a bounce
   (Pixelify, one Dud color per letter). "CLICK OR PRESS ANY KEY TO BEGIN" blinks (1 Hz); "press M to begin without sound".
-- Taglines rotate one per open (`BOOT_LINES` in `tools__build_cdrom.py`, editable; `?line=N`). Bryan's two, word for word:
+- Taglines rotate one per open (`BOOT_LINES` in `tools/build_cdrom.py`, editable; `?line=N`). Bryan's two, word for word:
   NOW EMBARKING UPON... A CYBER ADVENTURE! · Preparing to Float Upon.... THE TEMPORAL SUPERHIGHWAY!. Six more by Claude: The future
   is now... AND ALSO 1980! · Please insert disc 1 of... INFINITY! · You are about to experience... TOTAL EDUTAINMENT! · Fasten
   your seatbelt for... THE DUD DIMENSION! · Warning: may contain... MAXIMUM MULTIMEDIA! · Strap in! Next stop... THE INFORMATION
@@ -81,7 +81,7 @@ across a dissolve.
    airship approaches (≥44 px letters for ~26 s, ~190 px at the bottom), passes beneath and returns far ahead with a new word.
    A structure sweeping over a Dud makes it angry (soft color swap ≤0.5 s). Every ~3–4 min one is lined up to pass dead centre
    under the airship: nearby Duds cheer, the 2-note ding plays, confetti bursts from the bottom centre. Reduced motion: they stand
-   still, fully grown. Code: `proj__cdrom__addons.js`.
+   still, fully grown. Code: `proj/cdrom/addons.js`.
    **Duds in the air (Oct 9d):** the speaker rides a zeppelin at bottom centre (cards pop from it; the cheer fires when it passes over
    the lined-up word); the other Duds fly faux-3D fighter planes on any heading, never colliding (a close pass makes both pilots scowl).
 2. **Lab Maze**: original first-person raycaster at low res, upscaled. Circuit-board walls, school floor tiles, drop
@@ -121,7 +121,7 @@ across a dissolve.
      change. Code words bounce off walls, partitions, furniture and loot (a word left inside one after a room change
      ghosts out). Status row shows ROOM nn. Duds are 5×3 ASCII
      critters, e.g. `[o_o]`; mutations are character swaps (brackets per color, eyes, antennae, legs). Max 3 Duds.
-   - Code to reuse: `proj__cdrom__channel-d.html` (sim, grid renderer, box drawing, cards, speech). Bryan kept
+   - Code to reuse: `proj/cdrom/channel-d.html` (sim, grid renderer, box drawing, cards, speech). Bryan kept
      its joke lines (Oct 7).
    - No real OS names, startup text or logos.
 
@@ -135,7 +135,7 @@ across a dissolve.
   (Bryan, Oct 8: keep the soft blips, a bit louder; raised ~3 dB, `LOUNGE_SPK`).
 
 ## Music (v3.0)
-**Audition (Oct 8).** Sources are `proj__cdrom__audition.js` / `proj__cdrom__audition2.js` (Node, sandbox only) and the voices in `audio__instruments-cdrom.js`.
+**Audition (Oct 8).** Sources are `proj__cdrom__audition.js` / `proj__cdrom__audition2.js` (Node, sandbox only) and the voices in `audio/instruments-cdrom.js`.
 The six styles were A Night Drive (city pop),
 B Local Forecast (smooth-jazz fusion), C Encyclopedia Lounge (edutainment bossa, 116 BPM, G major ii–V, marimba + vibes,
 nylon pluck, clave, CD-ROM "ding" bleeps), D Tracker Funk (pulse arps, 4-bit triangle bass), E1 Lab Maze FM and E2 Adventure 2600.
@@ -147,8 +147,8 @@ Overclock (Bryan, Oct 9: Chips on the TIA is too abrasive to open with). `?music
 **Mode 1, Overclock (Track 2, default; Oct 9, heard and loved).** "Stage 1 · Overclock", an original fast
 action-stage theme in late-80s arcade/console fusion style (line clichés, circle of fifths, secondary dominants, chromatic pivot
 E minor → F♯ minor, slap bass with octave pops and chromatic approaches, twin lead in 3rds/6ths with 16th runs, 16th hats + ghost
-snares). 4-bar intro once, then A (8 bars) + B (8 bars) loop. The notes live in `proj__cdrom__track2-r2.js` (shared with the
-audition page); `audio__style-overclock.js` cuts it into 8-bar sections and adds chip speech.
+snares). 4-bar intro once, then A (8 bars) + B (8 bars) loop. The notes live in `proj/cdrom/track2-r2.js` (shared with the
+audition page); `audio/style-overclock.js` cuts it into 8-bar sections and adds chip speech.
 - Each channel plays it on its own chip, exactly as auditioned: twin lead on fm / snes / arcade; tia and beep play the melody
   alone; the TIA drops sour notes an octave. Era switches re-voice it on a bar line, as in Chips.
 - **Tempo + key (Overclock only):** default **142.5 BPM, −3 semitones (C♯ minor)**. A Tempo and a Key menu sit next to the
@@ -166,7 +166,7 @@ audition page); `audio__style-overclock.js` cuts it into 8-bar sections and adds
 - **Variations + energy (Oct 9c):** after the intro, Overclock plays as seeded passes (full / var / sparse / build / break / lift)
   in sets of ~2.5–3.5 min: melodic variations, twin 3rd/6th flips, tom fills, sparse verses, a half-time breakdown, snare-roll
   builds and a whole-step key lift. Every session plays a different chain; `?plain` plays the bare A+B loop. A longer composed form
-  (C/D sections) is planned on top (`FORM` in `audio__style-overclock.js`).
+  (C/D sections) is planned on top (`FORM` in `audio/style-overclock.js`).
 
 **Mode 2, Chips: a chip per channel.** Each channel's backing track is played by its own era's sound chip, as if the
 scene were a real game. All five chips play the SAME generative composition, so an era switch re-voices the tune on a bar line.
@@ -193,11 +193,11 @@ A skin survives only as gentle post-EQ (for example the TV-speaker lowpass on th
 Built as the generative style `lounge`: C()'s tune is the head every 6th section; generative choruses in between (motifs
 from the head's rhythms, chord-tone/chord-scale walks). The vibraphone (`loungeVibes`) answers in bars 5–6, leads every
 4th chorus and doubles every other head; every 5th chorus is a breather. Keys G → B♭ → G → E♭ (3 sections each), with
-turnarounds re-aimed at the next key. Cartridge `score__encyclopedia-lounge.json` (−23.0 LUFS), in the jukebox. Entering from
+turnarounds re-aimed at the next key. Cartridge `score/encyclopedia-lounge.json` (−23.0 LUFS), in the jukebox. Entering from
 another mode, it restarts at its head.
 
 **Mode 4, Lounge (Chipped) (built Oct 8, not yet heard).** Lounge's real notes (same seed + section = same tune) played by each
-channel's chip within its limits, not a filter. `audio__style-loungechip.js` mirrors the lounge generator call for call
+channel's chip within its limits, not a filter. `audio/style-loungechip.js` mirrors the lounge generator call for call
 (`MUSIC.loungeEvents`), then gives each line to a part the chip has (`MUSIC.loungeChipEvents`):
 - fm: marimba line → FM lead; vibes answers, breather arps, bleeps → glass bell; guitar comping → organ stabs; clave → soft rim; shaker → hats.
 - tia: the whole tune on ch0, bass on ch1, clave as a noise tick; no comping, no shaker.
@@ -235,11 +235,11 @@ score + that chip's tail, lead and master_db + `LOUNGE_CHIPPED_TRIM`). Loudness 
 - Options 5 / 10 / 15 / 20 / 25 / 30 min + Other… (1–240). `?min=` still works.
 - **Time-left readout (Oct 9b, Bryan):** top-right, big retro-terminal digits (VT323 88 px, hi-vis yellow on a dark plate,
   ~14:1), in **10-second steps rounded up**: a 20-minute timer shows 20:00 at once, 19:50 after 10 s, 19:40 … 00:00. Students see
-  how long is left without second-by-second doom-peeking. The bottom progress bar stays. Code: `proj__cdrom__addons.js`.
+  how long is left without second-by-second doom-peeking. The bottom progress bar stays. Code: `proj/cdrom/addons.js`.
 
 ## Lore
 - Duds = failed virtual pets, hinted in-world: D1 README lines, maze code panels. The trilingual "What Is a Dud?" card (D1)
-  is in the shuffle; it lives in `proj__cdrom__cards.md` (CD-ROM only, so the CS poster is unaffected).
+  is in the shuffle; it lives in `proj/cdrom/cards.md` (CD-ROM only, so the CS poster is unaffected).
 
 ## Hard rules
 - One self-contained offline HTML, 1920×1080, embedded OFL fonts.

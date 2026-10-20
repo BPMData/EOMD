@@ -1,4 +1,4 @@
-/* audio__style-chip.js: style "chip" (load after audio__arranger.js and audio__chips.js).
+/* audio/style-chip.js: style "chip" (load after audio/arranger.js and audio/chips.js).
    One shared, endless, generative composer; the score's `chip` ('fm' | 'tia' | 'beep' | 'snes' | 'arcade') decides which
    era chip plays it and which registers the parts are written in. Every channel shares the grid (116 BPM, 8-bar sections),
    so channel dissolves cross on the beat. Same seed + index = same section.

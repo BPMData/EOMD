@@ -1,4 +1,4 @@
-"""tools__cdrom_ambient.py: makes the AMBIENT CD-ROM screensaver from the finished one (Oct 9). Run in Thonny after tools__build_cdrom.py.
+"""tools/cdrom_ambient.py: makes the AMBIENT CD-ROM screensaver from the finished one (Oct 9). Run in Thonny after tools/build_cdrom.py.
 
 Reads dist/cdrom-player.html and writes dist/cdrom-ambient.html: the same five channels, music, boot screen, timer and
 Duds, but no tip cards and so no Dud speech (the Duds only ever speak a card). Nothing else changes:
@@ -16,8 +16,8 @@ Every edit must match exactly once or nothing is written. The source files are n
 import json, os
 
 # ---- settings
-FOLDER = os.path.dirname(os.path.abspath(__file__))           # the Build folder
-SRC = os.path.join(FOLDER, 'dist', 'cdrom-player.html')       # the finished player (tools__build_cdrom.py writes it)
+FOLDER = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # the repo root (this script sits in tools/)
+SRC = os.path.join(FOLDER, 'dist', 'cdrom-player.html')       # the finished player (tools/build_cdrom.py writes it)
 OUT = os.path.join(FOLDER, 'dist', 'cdrom-ambient.html')
 TITLE = 'CS Lab Screensaver · Ambient'
 LABEL = 'CS lab screensaver: failed virtual pets wander five retro computer worlds'
@@ -29,7 +29,7 @@ STAMP_SIZE = 40              # letter size before the chunky-pixel upscale (x3 o
 STAMP_INK = (200, 16, 46)    # stamp red; worn spots use a lighter red
 STAMP_INK2 = (226, 74, 84)
 
-STAMP_JS = r'''/* ambient build (tools__cdrom_ambient.py): a worn rubber stamp slammed across the boot card */
+STAMP_JS = r'''/* ambient build (tools/cdrom_ambient.py): a worn rubber stamp slammed across the boot card */
 const STAMP={text:__TEXT__,ang:__ANG__,x:__X__,y:__Y__,fs:__FS__,ink:[__INK__],ink2:[__INK2__],ps:3,alpha:.92,img:null};
 // drawn rotated at 1/3 resolution, hard-edged, with blotchy ink loss on an ordered dither (like the plaque), upscaled x3 without smoothing
 function stampImg(){if(STAMP.img)return STAMP.img;const S=STAMP,m=M,ch=[...S.text];m.font=`700 ${S.fs}px Atk`;

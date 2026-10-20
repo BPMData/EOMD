@@ -1,5 +1,5 @@
 # CD-ROM screensaver: extra cards (CD-ROM only; the CS living poster does not read this file)
-- Same format as `proj__cs__copy.md`. Ids start with `D` so they never clash with the CS cards.
+- Same format as `proj/cs/copy.md`. Ids start with `D` so they never clash with the CS cards.
 - Added Oct 8 (Bryan): the in-world explanation of what a Dud is.
 ## Cards
  

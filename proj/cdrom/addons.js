@@ -1,4 +1,4 @@
-/* proj__cdrom__addons.js (Oct 9): player add-ons. tools__build_cdrom.py injects this file right before the channel-surf section
+/* proj/cdrom/addons.js (Oct 9): player add-ons. tools/build_cdrom.py injects this file right before the channel-surf section
    (after the channels, so it can use and extend them). Edit here; the build picks it up.
    1. Timer readout: while the session timer runs, the time left shows top-right in big hi-vis yellow VT323 on a dark terminal plate,
       in 10-second steps (a 20-minute timer shows 20:00, then 19:50 after 10 s, 19:40 ...), so students know how long is left

@@ -1,5 +1,5 @@
-/* proj__cdrom__music.js: STAGE 4 sound block of the CD-ROM player (Oct 9: the 14 MUSIC_PATCHES are folded in; Overclock added).
-   tools__build_cdrom.py swaps this file in for the Stage 2a sound code in proj__cdrom__player-src.html (everything between the
+/* proj/cdrom/music.js: STAGE 4 sound block of the CD-ROM player (Oct 9: the 14 MUSIC_PATCHES are folded in; Overclock added).
+   tools/build_cdrom.py swaps this file in for the Stage 2a sound code in proj/cdrom/player-src.html (everything between the
    "sound:" comment and the "session timer" comment), so edit the music here, not there.
    Needs in scope: Q, POP, SPEECH, DIS, CUR/NXT (read at click time), ORDER, LOCK, rng(), and the #snd #vol #mus buttons.
    The audio library (<script id="audiolib">) supplies MUSIC, CHIPS and CDM_SCORES {fm, tia, beep, snes, arcade, lounge,
@@ -95,7 +95,7 @@ function* cdmIntro(sr){const b=60/123,B3=3*b,T=(bar,beat)=>(bar-1)*B3+(beat-1)*b
   const vel=V([100,80,60,40][bar-5]);[1,1.38,1.75,2.12,2.5,2.88,3.25,3.62].forEach((bt,j)=>ev.push({t:T(bar,bt),part:'lead',m:[43,55,43,31,67,55,43,31][j]+12,d:0.3*b,v:vel}))}   // +12: the reed2 sample sounds an octave down
  ev.sort((x,y)=>x.t-y.t);const P=DHS.dsp,ch=CHIPS.snes,N=Math.round((8*B3+2.6)*sr);
  // Oct 9 (Bryan: the drop bars sounded underwater): clear sampler (light echo, pre-emphasis, slap bass, 16 kHz EQ) and a bright
- // low 'pulse' sample for the octave pulse, when audio__chips.js has them (tools__patch_oct9b.py); otherwise the Oct 8 sound
+ // low 'pulse' sample for the octave pulse, when audio/chips.js has them (tools__patch_oct9b.py); otherwise the Oct 8 sound
  const cl=!!ch.postClear,pul=!!(ch.leads&&ch.leads.includes('pulse')),pe=(cl&&ch.postClear)||ch.post;
  const mono=yield* ch.render(ev,N,sr,123,{lead:pul?'pulse':'reed2',clear:cl?1:0});
  const hp=P.rbjHighpass(pe.hp,0.7,sr),lp=P.svf(),g=P.db(((CDM_SCORES.snes&&CDM_SCORES.snes.master_db)||0)+INTRO_DB+(cl?(pul?INTRO_BRIGHT_DB:3.8):0)),L=new Float32Array(N);

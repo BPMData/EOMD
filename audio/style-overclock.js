@@ -1,5 +1,5 @@
-/* audio__style-overclock.js: style "overclock" = Track 2, "Stage 1 · Overclock", as an endless stream of 8-bar sections.
-   Load after audio__chips.js, audio__arranger.js and proj__cdrom__track2-r2.js (which holds the composition: TRACK2R2).
+/* audio/style-overclock.js: style "overclock" = Track 2, "Stage 1 · Overclock", as an endless stream of 8-bar sections.
+   Load after audio/chips.js, audio/arranger.js and proj/cdrom/track2-r2.js (which holds the composition: TRACK2R2).
    The notes come from TRACK2R2 (the audition page's piece); this file arranges them into an endless song and voices each bar
    on the chip through TRACK2R2.chipEvents, so the chip rules (registers, twin lead only on fm/snes/arcade, sour TIA notes) stay
    in one place.
@@ -20,7 +20,7 @@
      (TRACK2R2.solo(pass seed, first note of the next bar)). Variations only touch A and B (C and D are already new).
      Bass approach notes at a bar's end now aim at the bar that really follows (fixes the old 'always aims at A1').
      The 9c 'lift' pass (A B up) is no longer drawn: liftB closes every set instead.
-     Needs the Oct 9e proj__cdrom__track2-r2.js (T.solo, T.barLabel, T.approach, T.firstBass, events(…, order)).
+     Needs the Oct 9e proj/cdrom/track2-r2.js (T.solo, T.barLabel, T.approach, T.firstBass, events(…, order)).
    Score fields: style "overclock", chip, bpm, tr (semitones), bars (8), tail, lead (sampler melody sample), vary (1 = passes,
      0 = the plain A+B loop; the player's ?plain sets 0), master_db (number or {chip: dB}), clear (1 or a list of chips).
    Dud speech: o.speech = [{t, d}] is voiced by the same chip on the 32nd grid, from the chord tones of the bar it falls in.
@@ -75,7 +75,7 @@ function barInfo(seed,n){const pz=piece();if(n<pz.intro)return{bi:n,lv:3,lift:0,
 M.overclockPlan=(seed,n=12)=>{const PL=plan(seed);while(PL.passes.length<n)addSet(PL);return PL.passes.slice(0,n).map((x,i)=>x.type+(i&&PL.passes[i].lift?'+'+PL.passes[i].lift:''))};
 M.overclockAt=(sc,seed,n)=>{const b=barInfo(seed,n);return b.intro?{bar:n,intro:1}:{bar:n,pass:b.p,type:b.type,barInPass:b.j+1,energy:b.lv,lift:b.lift,section:T.barLabel(b.bi,b.lift)}};
 
-/* ---------- harmony helpers (copied from proj__cdrom__track2-r2.js so varied melodies get their twin) ---------- */
+/* ---------- harmony helpers (copied from proj/cdrom/track2-r2.js so varied melodies get their twin) ---------- */
 const chName=(bi,st)=>{const ch=piece().bars[bi].ch;let n=ch[0][1];for(const [s,c] of ch)if(s<=st)n=c;return n};
 const chord=s=>{const r=s.match(/^[A-G]#?/)[0];return{root:NOTE[r],tones:new Set(Q[s.slice(r.length)].map(i=>pc(NOTE[r]+i)))}};
 const scaleOf=(key,ch)=>{const sc=new Set(T.KEYS[key]);for(const t of ch.tones)if(!sc.has(t)){const a=pc(t-1),b=pc(t+1),x=sc.has(a)&&!ch.tones.has(a)?a:sc.has(b)&&!ch.tones.has(b)?b:null;if(x!==null)sc.delete(x);sc.add(t)}return sc};

@@ -1,4 +1,4 @@
-/* proj__cdrom__dud.js: the Dud (Bryan's original 16x15 sprite, exact) + failed-evolution parts.
+/* proj/cdrom/dud.js: the Dud (Bryan's original 16x15 sprite, exact) + failed-evolution parts.
    Rows are 16 chars. K outline, Y body, y shade, C highlight, W eye white, E pupil, '.' empty.
    A mutation = base rows with part rows swapped in. Same parts drive Dud 2D (flat) and Dud 3D (voxels). */
 const DUD=(()=>{

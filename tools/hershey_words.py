@@ -1,19 +1,19 @@
 # Makes words.json: single-stroke cursive (Hershey Script Simplex, public domain) for the vine-writing effect.
-# Run in Thonny. Edit WORDS, run, then rebuild with tools__build.py.
+# Run in Thonny. Edit WORDS, run, then rebuild with tools/build.py.
 import os, json, urllib.request
 
 # ===================== SETTINGS =====================
 WORDS   = ['read', 'wonder', 'notice', 'quiet', 'imagine', 'story', 'page', 'chapter', 'listen', 'think', 'focus', 'curious', 'dream', 'discover', 'explore', 'question', 'pause', 'ponder', 'linger', 'savor', 'learn', 'words', 'books', 'breathe', 'slowly', 'reread', 'picture', 'connect', 'predict', 'believe', 'journey', 'voices', 'mystery', 'poems', 'unfold', 'gather', 'libro', 'livro', 'imaginar', 'explorar', 'aprender', 'curioso', 'pausa']
 # lowercase a-z only (no accents in the font). Spanish/Portuguese: libro/livro, imaginar, explorar, aprender, curioso, pausa
-VARIANT = 'ex'   # 'ssr' writes living__words.json from WORDS; 'cs' living__words-cs.json from WORDS_CS; 'ex' living__words-ex.json from WORDS_EX
+VARIANT = 'ex'   # 'ssr' writes living/words.json from WORDS; 'cs' living/words-cs.json from WORDS_CS; 'ex' living/words-ex.json from WORDS_EX
 WORDS_CS = ['debug', 'indent', 'loop', 'print', 'string', 'syntax', 'return', 'variable', 'function', 'input', 'while', 'error', 'comment', 'test', 'python']
 WORDS_EX = ['explore', 'rank', 'pathway', 'academy', 'campus', 'future', 'choose', 'career', 'goal', 'lottery', 'research']
 # 8 letters max fits the board best
 JHF_URL = 'https://raw.githubusercontent.com/kamalmostafa/hershey-fonts/master/hershey-fonts/scripts.jhf'
-SRC_DIR = os.path.dirname(os.path.abspath(__file__))
+SRC_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # the repo root (this script sits in tools/)
 JHF     = os.path.join(SRC_DIR, 'font_cache', 'scripts.jhf')
 LIST    = {'ssr': WORDS, 'cs': WORDS_CS, 'ex': WORDS_EX}[VARIANT]
-OUT     = os.path.join(SRC_DIR, {'ssr': 'living__words.json', 'cs': 'living__words-cs.json', 'ex': 'living__words-ex.json'}[VARIANT])
+OUT     = os.path.join(SRC_DIR, {'ssr': 'living/words.json', 'cs': 'living/words-cs.json', 'ex': 'living/words-ex.json'}[VARIANT])
 # ====================================================
 
 os.makedirs(os.path.dirname(JHF), exist_ok=True)

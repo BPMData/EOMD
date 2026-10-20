@@ -1,7 +1,7 @@
-/* audio__style-film24.js: style "film24" (load after audio__arranger.js).
+/* audio/style-film24.js: style "film24" (load after audio/arranger.js).
    Style "film24": a fixed, seamless loop (score.bars bars, tail 0) played on circular buffers, ported from the Academies hallway film.
    Constant bed (kick/snap/shaker/bass/pad) + one lead per section, each level-matched, then echo + reverb. Fully deterministic: seed is ignored,
-   every section is the same loop, and consecutive sections join with no gap or overlap. Score fields: see score__academies-hallway.json. */
+   every section is the same loop, and consecutive sections join with no gap or overlap. Score fields: see score/academies-hallway.json. */
 (function(G){'use strict';
 const P=G.DHS.dsp,I=G.INSTR,M=G.MUSIC;
 // ---------------------------------------------------------------- style "film24"

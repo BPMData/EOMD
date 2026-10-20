@@ -1,4 +1,4 @@
-# tools__html_to_mp4.py: HTML → MP4. Pick a finished player .html, get an .mp4 (video + its music).
+# tools/html_to_mp4.py: HTML → MP4. Pick a finished player .html, get an .mp4 (video + its music).
 # Run in Thonny. Needs ffmpeg on PATH and Playwright for the Python Thonny runs:
 #   Thonny > Tools > Manage packages > "playwright" > Install, then in Tools > Open system shell:  python -m playwright install chromium
 # Two kinds of player, found automatically:
@@ -271,7 +271,7 @@ class App:
         if h: self.out.set(str(Path(OUT_DIR or os.path.dirname(h)) / (Path(h).stem + '.mp4')))
 
     def pick_html(self):
-        p = filedialog.askopenfilename(filetypes=[('HTML player', '*.html *.htm')], initialdir=os.path.dirname(self.html.get()) or os.path.dirname(os.path.abspath(__file__)))
+        p = filedialog.askopenfilename(filetypes=[('HTML player', '*.html *.htm')], initialdir=os.path.dirname(self.html.get()) or os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
         if p: self.html.set(str(Path(p))); self._auto_out()
 
     def pick_out(self):

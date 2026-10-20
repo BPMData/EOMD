@@ -1,27 +1,27 @@
-# tools__build_cdrom.py: builds the CD-ROM screensaver player (one offline HTML).
+# tools/build_cdrom.py: builds the CD-ROM screensaver player (one offline HTML).
 # Run in Thonny. Settings are the variables below.
 # Stage 4 (+ Oct 8: switch fix, channel titles + chronological order, Contour intro in the music block; boot screen,
-# Previous Era / Next Era buttons, Lounge (Chipped) music mode): the Stage 2a sound block of proj__cdrom__player-src.html is swapped for proj__cdrom__music.js, the audio library
+# Previous Era / Next Era buttons, Lounge (Chipped) music mode): the Stage 2a sound block of proj/cdrom/player-src.html is swapped for proj/cdrom/music.js, the audio library
 # (chips + lounge + the five chip scores + the lounge score) is embedded, and the PATCHES below hook the music into the
 # player's channel switch, card timing, pause and button row. Every patch must match exactly once or the build stops.
-# Oct 9: Overclock (Track 2) is the default music mode: AUDIO_LIB adds its notes (proj__cdrom__track2-r2.js) and style
-# (audio__style-overclock.js), MUSIC_SCORES adds score__cdrom-overclock.json; the music patches are folded into proj__cdrom__music.js.
-# Oct 9b: proj__cdrom__addons.js (timer readout, Their Finest Duds word structures) is injected before the channel-surf section.
-# Oct 9 fold (tools__fold_cdrom.py): the old PATCHES, the channel titles and the boot screen now live in proj__cdrom__player-src.html.
+# Oct 9: Overclock (Track 2) is the default music mode: AUDIO_LIB adds its notes (proj/cdrom/track2-r2.js) and style
+# (audio/style-overclock.js), MUSIC_SCORES adds score/cdrom-overclock.json; the music patches are folded into proj/cdrom/music.js.
+# Oct 9b: proj/cdrom/addons.js (timer readout, Their Finest Duds word structures) is injected before the channel-surf section.
+# Oct 9 fold (tools__fold_cdrom.py): the old PATCHES, the channel titles and the boot screen now live in proj/cdrom/player-src.html.
 import base64, io, json, os, re, urllib.request
 
-PROJECT = os.path.dirname(os.path.abspath(__file__))   # folder holding the project files (this script sits in it)
+PROJECT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # the repo root (this script sits in tools/)
 FONT_DIR = os.path.join(PROJECT, 'fonts')            # downloaded OFL fonts are cached here
 OUT = os.path.join(PROJECT, 'dist', 'cdrom-player.html')
 SUBSET = True                                        # shrink fonts with fontTools if installed (pip install fonttools)
 
 # music: load order matters (dsp, instruments, chips, arranger core, then the styles)
-AUDIO_LIB = ['engine__src__audio__dsp.js', 'audio__instruments.js', 'audio__instruments-film.js', 'audio__instruments-cdrom.js',
-             'audio__chips.js', 'audio__arranger.js', 'audio__style-chip.js', 'audio__style-lounge.js', 'audio__style-loungechip.js',
-             'proj__cdrom__track2-r2.js', 'audio__style-overclock.js']
-MUSIC_SCORES = {'fm': 'score__cdrom-fm.json', 'tia': 'score__cdrom-tia.json', 'beep': 'score__cdrom-beep.json',
-                'snes': 'score__cdrom-snes.json', 'arcade': 'score__cdrom-arcade.json', 'lounge': 'score__encyclopedia-lounge.json',
-                'overclock': 'score__cdrom-overclock.json'}
+AUDIO_LIB = ['engine/src/audio/dsp.js', 'audio/instruments.js', 'audio/instruments-film.js', 'audio/instruments-cdrom.js',
+             'audio/chips.js', 'audio/arranger.js', 'audio/style-chip.js', 'audio/style-lounge.js', 'audio/style-loungechip.js',
+             'proj/cdrom/track2-r2.js', 'audio/style-overclock.js']
+MUSIC_SCORES = {'fm': 'score/cdrom-fm.json', 'tia': 'score/cdrom-tia.json', 'beep': 'score/cdrom-beep.json',
+                'snes': 'score/cdrom-snes.json', 'arcade': 'score/cdrom-arcade.json', 'lounge': 'score/encyclopedia-lounge.json',
+                'overclock': 'score/cdrom-overclock.json'}
 # Lounge (Chipped) (Oct 8): the build derives one score per chip (lc_<chip>) from the lounge score: Lounge's notes, played by that
 # chip with its own tail, lead sample and master_db + this trim (dB). Not loudness-measured yet: nudge a trim if a channel's
 # Lounge (Chipped) sounds louder or quieter than its Chips music (+1 = louder).
@@ -34,20 +34,17 @@ FONTS = {'VT': 'vt323/VT323-Regular.ttf',
          'ATK': 'atkinsonhyperlegible/AtkinsonHyperlegible-Regular.ttf',
          'ATKB': 'atkinsonhyperlegible/AtkinsonHyperlegible-Bold.ttf'}
 
-# Channel titles (TITLES) and the boot screen (BOOT_LINES, BOOT_AUTO, BOOT_CHIME): now in proj__cdrom__player-src.html.
+# Channel titles (TITLES) and the boot screen (BOOT_LINES, BOOT_AUTO, BOOT_CHIME): now in proj/cdrom/player-src.html.
 
 
-# (name, old, new): exact, single-match edits to the player source. Fold them into proj__cdrom__player-src.html when convenient.
+# (name, old, new): exact, single-match edits to the player source. Fold them into proj/cdrom/player-src.html when convenient.
 PATCHES = []   # folded Oct 9 (tools__fold_cdrom.py); add new edits here, fold again later
 
-# (name, old, new): exact, single-match edits to proj__cdrom__music.js, applied after it is swapped in
-MUSIC_PATCHES = []   # Oct 9: the 14 earlier patches are folded into proj__cdrom__music.js; add new ones here
+# (name, old, new): exact, single-match edits to proj/cdrom/music.js, applied after it is swapped in
+MUSIC_PATCHES = []   # Oct 9: the 14 earlier patches are folded into proj/cdrom/music.js; add new ones here
 
 def src(name):
-    for p in (os.path.join(PROJECT, name), os.path.join(PROJECT, *name.split('__'))):
-        if os.path.exists(p):
-            return open(p, encoding='utf-8').read()
-    raise FileNotFoundError(name)
+    return open(os.path.join(PROJECT, name), encoding='utf-8').read()   # name is relative to the repo root, e.g. 'audio/chips.js'
 
 def font(key):
     os.makedirs(FONT_DIR, exist_ok=True)
@@ -69,9 +66,9 @@ def font(key):
             print('fontTools not installed: embedding full fonts')
     return base64.b64encode(data).decode()
 
-def cards():  # word for word from proj__cs__copy.md + proj__cdrom__cards.md (CD-ROM-only cards, ids D1, D2...); Python cards flagged, ?python turns them on
+def cards():  # word for word from proj/cs/copy.md + proj/cdrom/cards.md (CD-ROM-only cards, ids D1, D2...); Python cards flagged, ?python turns them on
     out, cur = [], None
-    for ln in (src('proj__cs__copy.md') + '\n' + src('proj__cdrom__cards.md')).split('\n'):
+    for ln in (src('proj/cs/copy.md') + '\n' + src('proj/cdrom/cards.md')).split('\n'):
         m = re.match(r'### ([PD]?\d+)\.', ln)
         if m:
             cur = {'id': m.group(1), 'py': m.group(1).startswith('P')}; out.append(cur); continue
@@ -104,20 +101,20 @@ def swap_sound_block(html):
     a = html.index('/* ================= sound:')
     b = html.index('/* ---------- session timer')
     assert a < b
-    return html[:a] + patch(src('proj__cdrom__music.js'), MUSIC_PATCHES, 'proj__cdrom__music.js') + '\n' + html[b:]
+    return html[:a] + patch(src('proj/cdrom/music.js'), MUSIC_PATCHES, 'proj/cdrom/music.js') + '\n' + html[b:]
 
-html = patch(src('proj__cdrom__player-src.html'), PATCHES, 'the player source')
+html = patch(src('proj/cdrom/player-src.html'), PATCHES, 'the player source')
 html = swap_sound_block(html)
 html = html.replace('__AUDIOLIB__', audio_lib(), 1)
-html = html.replace('/*__ADDONS__*/', src('proj__cdrom__addons.js'), 1)   # Oct 9b: timer readout + word structures
-mono = re.search(r'base64,([A-Za-z0-9+/=]+)', src('proj__cdrom__channel-d.html')).group(1)  # Source Code Pro subset from the D1/D2 sketch
+html = html.replace('/*__ADDONS__*/', src('proj/cdrom/addons.js'), 1)   # Oct 9b: timer readout + word structures
+mono = re.search(r'base64,([A-Za-z0-9+/=]+)', src('proj/cdrom/channel-d.html')).group(1)  # Source Code Pro subset from the D1/D2 sketch
 for k in FONTS:
     html = html.replace('__%s__' % k, font(k), 1)
 html = html.replace('__MONO__', mono, 1)
-html = html.replace('/*__DUD__*/', src('proj__cdrom__dud.js').replace("if(typeof module!=='undefined')module.exports=DUD;", ''), 1)
+html = html.replace('/*__DUD__*/', src('proj/cdrom/dud.js').replace("if(typeof module!=='undefined')module.exports=DUD;", ''), 1)
 cs = cards()
 html = html.replace('/*__CARDS__*/', 'const CARDS=' + json.dumps(cs, ensure_ascii=False) + ';', 1)
-html = html.replace('/*__WORDS__*/', 'const CODEWORDS=' + json.dumps(list(json.loads(src('living__words-cs.json')).keys())) + ';', 1)
+html = html.replace('/*__WORDS__*/', 'const CODEWORDS=' + json.dumps(list(json.loads(src('living/words-cs.json')).keys())) + ';', 1)
 assert '/*__ADDONS__*/' not in html and '__PIX__' not in html and '__VT__' not in html and '__JQ__' not in html and '/*__CARDS__*/' not in html and '__AUDIOLIB__' not in html
 os.makedirs(os.path.dirname(OUT), exist_ok=True)
 open(OUT, 'w', encoding='utf-8').write(html)

@@ -1,4 +1,4 @@
-/* audio__chips.js: era sound-chip renderers for the CD-ROM screensaver (load after engine__src__audio__dsp.js).
+/* audio/chips.js: era sound-chip renderers for the CD-ROM screensaver (load after engine/src/audio/dsp.js).
    CHIPS.<chip>.render(events, N, sr, bpm) is a generator (yields while working) → mono Float32Array of N samples.
    Event: {t (s from section start), part, m (midi), d (s), v (0–1)}; parts: lead, lead2, bass, arp, pad, speech,
    kick, snare, hat, tom, crash. Each chip plays only what its hardware could:

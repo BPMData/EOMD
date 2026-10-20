@@ -1,5 +1,7 @@
 # EOMD: Efficient Offline Motion Designer
 
+[![CI](https://github.com/BPMData/EOMD/actions/workflows/ci.yml/badge.svg)](https://github.com/BPMData/EOMD/actions/workflows/ci.yml)
+
 Motion graphics and music that live in a single HTML file. The picture is drawn live on a canvas by JavaScript, and
 the music is synthesized by JavaScript too (live in the browser, or rendered once and tucked inside the file): no video
 editor, no stock footage, no After Effects, no internet once it's built. Open the file and it plays. When you want a
@@ -64,32 +66,32 @@ Start sound for the music. Move the mouse to see the controls.
 
 ## Build your own
 
-Builds land in `dist/` (not in git); `players/` holds published copies of them. The build scripts are plain Python with every setting at the top,
-so they run from Thonny or any editor's Run button, or from a terminal.
+Builds land in `dist/` (not in git); `players/` holds published copies of them. The build scripts (in `tools/`) are plain Python with every setting at the top,
+so they run from Thonny or any editor's Run button, or from a terminal (`python3 tools/build.py`); `dist/` is always at the repo root.
 
 | You want | Run | Then open |
 |---|---|---|
-| The **jukebox** (every music cartridge, endless and seeded) | `tools__build.py` with `TARGETS = ['jukebox']` | `dist/jukebox.html` |
-| A **living poster** (vines that grow and write words) | `tools__build.py` with `TARGETS = ['living']`, pick `LIVING_VARIANT` and `LIVING_SCORE` | `dist/living-player*.html` |
-| The **CD-ROM screensaver** (five retro computer worlds, chip music) | `tools__build_cdrom.py` (and `tools__cdrom_ambient.py` for the version without tip cards) | `dist/cdrom-player.html` |
+| The **jukebox** (every music cartridge, endless and seeded) | `tools/build.py` with `TARGETS = ['jukebox']` | `dist/jukebox.html` |
+| A **living poster** (vines that grow and write words) | `tools/build.py` with `TARGETS = ['living']`, pick `LIVING_VARIANT` and `LIVING_SCORE` | `dist/living-player*.html` |
+| The **CD-ROM screensaver** (five retro computer worlds, chip music) | `tools/build_cdrom.py` (and `tools/cdrom_ambient.py` for the version without tip cards) | `dist/cdrom-player.html` |
 | A **self-contained gen player** to put on a USB stick | `python3 gen/build.py` | `gen/dist/gen-player.html` |
-| **One gen cartridge as its own HTML and/or an MP4 with its music** | run `tools__gen_export.py` (pick cartridge + folder) | the folder you picked |
+| **One gen cartridge as its own HTML and/or an MP4 with its music** | run `tools/gen_export.py` (pick cartridge + folder) | the folder you picked |
 
 The first build downloads the open-source fonts (SIL OFL, from Google Fonts' GitHub) and caches them; after that,
-everything is offline. `tools__build.py` needs `pip install fonttools brotli`.
+everything is offline. `tools/build.py` needs `pip install fonttools brotli`.
 
 ### Music
-Each piece of music is a **score cartridge**: a ~2 KB `score__*.json` that the arranger turns into an endless (or
-looping) stream. `score__FORMAT.md` explains every field. To make one: copy a score, change it, run
-`tools__calibrate.py` (sets the loudness and writes an MP3 preview), listen, then rebuild the jukebox.
-`tools__midi.py` exports any score to a multitrack MIDI file.
+Each piece of music is a **score cartridge**: a ~2 KB `score/*.json` that the arranger turns into an endless (or
+looping) stream. `score/FORMAT.md` explains every field. To make one: copy a score, change it, run
+`tools/calibrate.py` (sets the loudness and writes an MP3 preview), listen, then rebuild the jukebox.
+`tools/midi.py` exports any score to a multitrack MIDI file.
 
 ## Make an MP4
 
-**gen cartridges:** run **`tools__gen_export.py`**: pick a cartridge, pick a folder, press MAKE MP4 (or MAKE HTML for a
+**gen cartridges:** run **`tools/gen_export.py`**: pick a cartridge, pick a folder, press MAKE MP4 (or MAKE HTML for a
 standalone player, or MAKE BOTH). The cartridge's music is laid in exactly in sync.
 
-**Any other player:** run **`tools__html_to_mp4.py`** (a small window: pick a player `.html`, pick where to save, press RENDER).
+**Any other player:** run **`tools/html_to_mp4.py`** (a small window: pick a player `.html`, pick where to save, press RENDER).
 
 - **Films** (like the Academies loop) render frame-exact, with the music synthesized offline in sync.
 - **Everything else** (living posters, the screensaver) is stepped one frame at a time, so
@@ -111,13 +113,13 @@ python -m playwright install chromium
 
 - Python 3 (Thonny works; the GUI tools use Tk, which ships with Python)
 - A modern browser to play the players (Chrome, Edge, Firefox, Safari)
-- Node.js for the audio tools (`tools__regress.py`, `tools__midi.py`, `tools__porter.py`, `tools__render_piece.py`) and `gen/tests/smoke.js`
-- ffmpeg + Playwright for MP4 export; `fonttools` + `brotli` for `tools__build.py`
+- Node.js for the audio tools (`tools/regress.py`, `tools/midi.py`, `tools/porter.py`, `tools/render_piece.py`) and `gen/tests/smoke.js`
+- ffmpeg + Playwright for MP4 export; `fonttools` + `brotli` for `tools/build.py`
 
 ## How the PLTW video works
 
 The whole thing is a 55-line JSON cartridge (`gen/carts/pltw-cse.json`) driving reusable layers, plus a score written in
-JavaScript (`proj__pltw__music.js`). A few of the ideas, if you're curious:
+JavaScript (`proj/pltw/music.js`). A few of the ideas, if you're curious:
 
 - **Text becomes points.** To make a word out of dots, the word is drawn once on a hidden canvas, and the code reads back
   which pixels are lit and spreads N points evenly over them (`GEN.core.textPoints` in `gen/core.js`). Any formation
@@ -131,26 +133,34 @@ JavaScript (`proj__pltw__music.js`). A few of the ideas, if you're curious:
 - **The car's lidar** is a rotating angle: any floor dot whose direction from the car is just behind the beam lights up.
 - **The music is math too.** Every sound (kick drum, bass, chiptune lead, the blips as dots fly into place) is built
   from oscillators, noise and filters, sample by sample, then mixed, measured for loudness (−16 LUFS) and limited,
-  all in plain JavaScript (`engine__src__audio__dsp.js`). Its timeline (`CUES`) is the video's timeline.
+  all in plain JavaScript (`engine/src/audio/dsp.js`). Its timeline (`CUES`) is the video's timeline.
 
 It was designed and built with an AI coding assistant (Claude Code) working inside this repo, which is the point of
 the project: the reusable parts are already here, so a new piece is mostly a short cartridge and good ideas.
 
-## Why the file names look like `audio__style-lounge.js`
+## Where things are
 
-Most of the repo is flat on purpose: in a file name, `__` stands for a folder (`audio__style-lounge.js` =
-`audio/style-lounge.js`). A flat folder is easy to upload to AI chat tools that don't take folders, and the build
-scripts accept either form. `gen/`, `players/`, `academies-film/`, `fonts/` and `media/` are real folders.
+| Folder | What's in it |
+|---|---|
+| `players/` | Finished, ready-to-play builds |
+| `gen/` | The generative motion library: layers, cartridges (`gen/carts/`), its own build and smoke test |
+| `score/` | Music cartridges (`*.json`) and `FORMAT.md`, which explains every field |
+| `audio/` | The music engine: instruments, the arranger and one file per arranger style |
+| `tools/` | The Python scripts you run (builds, MP4 export, music tools) |
+| `proj/<piece>/` | One piece's brief, copy and sources (`cdrom`, `pltw`, `cs`, `ex`, `ssr`, `academies`) |
+| `living/`, `jukebox/` | The living-poster engine and the jukebox page |
+| `engine/` | The starter timeline engine the Academies film grew from; `engine/src/audio/dsp.js` is the DSP everything uses |
+| `academies-film/` | The finished Academies hallway film |
+| `fonts/` | Downloaded open-source fonts and their licenses |
 
-## Sharing your cartridges
+## Contributing
 
-A proper way to submit your own gen cartridges and music scores is planned. Until then, open a pull request that adds
-your `gen/carts/<name>.json` or `score__<name>.json` (run `gen/build.py` + `node gen/tests/smoke.js`, or
-`tools__calibrate.py` for a score, first), or post it in an issue.
+New gen cartridges (the easiest first pull request: one JSON file), music scores, new layers and fixes are all welcome,
+and so is work written with an AI assistant. See **[CONTRIBUTING.md](CONTRIBUTING.md)** for how to test and submit.
 
 ## License
 
-Code: MIT, © 2026 Bryan Patrick Murphy (see `LICENSE`). Fonts keep their own SIL Open Font License (`fonts__OFL-*.txt`,
+Code: MIT, © 2026 Bryan Patrick Murphy (see `LICENSE`). Fonts keep their own SIL Open Font License (`fonts/OFL-*.txt`,
 `gen/fonts/OFL-Montserrat.txt`, `academies-film/source/fonts/OFL.txt`). The Academies of Danbury High School names and
-logos in `academies-film/` and `proj__academies__*` belong to the school; they're here as an example piece and aren't
+logos in `academies-film/` and `proj/academies/*` belong to the school; they're here as an example piece and aren't
 covered by the MIT license.

@@ -1,5 +1,5 @@
-# tools__midi.py: MIDI EXPORT. Run in Thonny. Needs Node.js on PATH (same as tools__regress.py).
-# Turns a score__*.json (+ seed) into a Type-1 .mid: one track per instrument, drums on channel 10.
+# tools/midi.py: MIDI EXPORT. Run in Thonny. Needs Node.js on PATH (same as tools/regress.py).
+# Turns a score/*.json (+ seed) into a Type-1 .mid: one track per instrument, drums on channel 10.
 # How: the real arranger runs in Node with every instrument swapped for a silent stub that logs (inst, midi, length, velocity)
 # and P.write logs where each note lands. Nothing is re-implemented, so the notes are exactly what the player plays.
 #   comp4  -> SECONDS of music from section 0 (endless; same seed = same performance)
@@ -7,8 +7,8 @@
 import os, json, struct, subprocess, tempfile, time
  
 # ===================== SETTINGS =====================
-PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))   # folder with audio__*.js, engine__src__audio__dsp.js, score__*.json
-SCORE       = 'score__late-library.json'
+PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # the repo root, with audio/*.js, engine/src/audio/dsp.js, score/*.json
+SCORE       = 'score/late-library.json'
 SEED        = 1            # comp4 only
 SECONDS     = 20 * 60      # comp4 only: how much to export (rounded up to whole sections)
 LOOPS       = 1            # film24 / rounds only
@@ -16,8 +16,8 @@ OUT_DIR     = os.path.join(PROJECT_DIR, 'midi')
 NODE_EXE    = 'node'
 PPQ         = 480          # ticks per quarter note
 QUANTIZE    = 0            # 0 = keep the exact timing (strums, shaker jitter); 4 = snap starts to 16ths, 2 = 8ths
-AUDIO_LIB   = ['engine__src__audio__dsp.js', 'audio__instruments.js', 'audio__instruments-film.js', 'audio__instruments-cdrom.js', 'audio__chips.js', 'audio__arranger.js',
-               'audio__style-comp4.js', 'audio__style-film24.js', 'audio__style-rounds.js', 'audio__style-lounge.js', 'audio__style-chip.js']
+AUDIO_LIB   = ['engine/src/audio/dsp.js', 'audio/instruments.js', 'audio/instruments-film.js', 'audio/instruments-cdrom.js', 'audio/chips.js', 'audio/arranger.js',
+               'audio/style-comp4.js', 'audio/style-film24.js', 'audio/style-rounds.js', 'audio/style-lounge.js', 'audio/style-chip.js']
 # Voices with no set length (pluck in rounds) get half a beat.
 # General MIDI programs (0-based) as a starting point in a DAW; drums use the note numbers in DRUMS on channel 10.
 PROGRAMS    = dict(rhodes=4, keys=4, piano=0, vibes=11, marimba=12, mallet=13, tine=10, chime=14, filmChime=14,
@@ -114,7 +114,7 @@ def export(log=print):
     meta = [(0, 0, b'\xFF\x51\x03' + us.to_bytes(3, 'big')), (0, 0, b'\xFF\x58\x04\x04\x02\x18\x08')]
     tracks.insert(0, track(meta, r['title']))
     os.makedirs(OUT_DIR, exist_ok=True)
-    stem = os.path.splitext(SCORE)[0].replace('score__', '')
+    stem = os.path.splitext(os.path.basename(SCORE))[0]
     out = os.path.join(OUT_DIR, f"{stem}{'_seed' + str(SEED) if r['style'] in ('comp4', 'chip', 'lounge') else ''}.mid")
     with open(out, 'wb') as f:
         f.write(b'MThd' + struct.pack('>IHHH', 6, 1, len(tracks), PPQ)); [f.write(t) for t in tracks]

@@ -1,5 +1,5 @@
-/* living__variant-cs.js: CS-class variant of the living poster. Needs living__trio.js (injected before this file); CS-only parts: title,
-   Source Code Pro for `code` spans, TRIO from CSCARDS (parsed from proj__cs__copy.md at build; Python/skipped cards already filtered), end card. */
+/* living/variant-cs.js: CS-class variant of the living poster. Needs living/trio.js (injected before this file); CS-only parts: title,
+   Source Code Pro for `code` spans, TRIO from CSCARDS (parsed from proj/cs/copy.md at build; Python/skipped cards already filtered), end card. */
 document.title='Mr. Murphy’s Computer Science';
 document.getElementById('cv').setAttribute('aria-label','Mr. Murphy’s Computer Science: a slowly growing, living poster with coding tips in English, Spanish and Portuguese');
 {const st=document.createElement('style');st.textContent='@font-face{font-family:"Source Code Pro";src:url(data:font/woff2;base64,__MONO__) format("woff2");font-weight:400 700;font-display:block}';document.head.appendChild(st)}

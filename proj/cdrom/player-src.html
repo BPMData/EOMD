@@ -1,8 +1,8 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>CS Lab Screensaver</title>
-<!-- proj__cdrom__player-src.html: CD-ROM screensaver, Stage 2b (all five channels: Contour flight, Lab Maze, Starfield, D1 DOS Prompt, D2 roguelike).
-     Built by tools__build_cdrom.py, which fills in the four base64 fonts and the DUD/CARDS/WORDS hooks. -->
+<!-- proj/cdrom/player-src.html: CD-ROM screensaver, Stage 2b (all five channels: Contour flight, Lab Maze, Starfield, D1 DOS Prompt, D2 roguelike).
+     Built by tools/build_cdrom.py, which fills in the four base64 fonts and the DUD/CARDS/WORDS hooks. -->
 <style>
 @font-face{font-family:Pix;src:url(data:font/ttf;base64,__PIX__) format("truetype");font-weight:400 700;font-display:block}
 @font-face{font-family:Jq;src:url(data:font/ttf;base64,__JQ__) format("truetype");font-weight:400;font-display:block}
@@ -647,7 +647,7 @@ async function soundButton(){if(!snd.started){if(!snd.ctx&&!audioInit()){sb.text
  snd.muted=!snd.muted;sb.textContent=snd.muted?'Unmute':'Mute';setGain()}
 function setGain(){if(!snd.out)return;const g=snd.out.gain,now=snd.ctx.currentTime;g.cancelScheduledValues(now);g.setTargetAtTime(target(),now,.12)}
 sb.onclick=soundButton;vs.oninput=()=>{snd.vol=vs.value/100;setGain()};
-/* ---------- session timer (from living__sound-timer.js) ---------- */
+/* ---------- session timer (from living/sound-timer.js) ---------- */
 const tb=document.getElementById('tmr'),ts=document.getElementById('tmin'),tc=document.getElementById('tcus');ts.onchange=()=>{tc.hidden=ts.value!=='c';poke()};
 if(Q.get('min')){const m=String(Math.max(1,Math.min(120,+Q.get('min')||20)));if(![...ts.options].some(o=>o.value===m))ts.add(new Option(m,m));ts.value=m}
 function chimeCtx(){if(snd.ctx)return snd.ctx;if(!snd.cctx){const AC=window.AudioContext||window.webkitAudioContext;if(AC)snd.cctx=new AC()}return snd.cctx}

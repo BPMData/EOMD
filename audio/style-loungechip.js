@@ -1,6 +1,6 @@
-/* audio__style-loungechip.js: style "loungechip" = Encyclopedia Lounge played by an era chip ("Lounge (Chipped)").
-   Load after audio__chips.js and audio__style-lounge.js (which supplies MUSIC.loungePlan).
-   The notes are Lounge's own: MUSIC.loungeEvents mirrors audio__style-lounge.js call for call (same seed + section = same
+/* audio/style-loungechip.js: style "loungechip" = Encyclopedia Lounge played by an era chip ("Lounge (Chipped)").
+   Load after audio/chips.js and audio/style-lounge.js (which supplies MUSIC.loungePlan).
+   The notes are Lounge's own: MUSIC.loungeEvents mirrors audio/style-lounge.js call for call (same seed + section = same
    melody, vibes answers, bass, comping chords, clave, shaker and bleep pickups; only the humanize jitter is dropped, chips
    sit on the grid). MUSIC.loungeChipEvents then gives each line to a part the chip really has, in its registers:
      fm     marimba line → FM lead; vibes answers + breather arps + bleeps → glass bell; guitar comping → organ stabs;
@@ -13,13 +13,13 @@
             electric piano chords, clave → soft snare, shaker → noise hats.
    The marimba line moves by whole octaves toward the chip's lead register, then single notes fold in where the chip can't reach.
    Dud speech: o.speech = [{t, d}] is voiced by the chip from Lounge's chord tones (as the chip style does).
-   Score: the lounge score + chip, tail, master_db (+ lead for snes); tools__build_cdrom.py derives one per chip (lc_<chip>). */
+   Score: the lounge score + chip, tail, master_db (+ lead for snes); tools/build_cdrom.py derives one per chip (lc_<chip>). */
 (function(G){'use strict';
 const P=G.DHS.dsp,M=G.MUSIC,C=G.CHIPS;
 const u=r=>(r()+1)/2,pick=(r,a)=>a[Math.floor(u(r)*a.length)%a.length];
 const H=(a,b)=>((Math.imul(a^0x9e3779b9,0x85ebca6b)^Math.imul((b+0x632be5ab)|0,0xc2b2ae35))>>>0);
 const MAJ=[0,2,4,5,7,9,11],pc=n=>((n%12)+12)%12,fold=k=>{k=pc(k);return k>6?k-12:k};
-// ---- copied from audio__style-lounge.js (keep in step with it)
+// ---- copied from audio/style-lounge.js (keep in step with it)
 const walk=(p,s,set)=>{const d=Math.sign(s);let n=Math.abs(s);while(n>0){p+=d;if(set.has(pc(p)))n--}return p};
 const near=(p,set)=>{for(let k=0;k<12;k++){if(set.has(pc(p-k)))return p-k;if(set.has(pc(p+k)))return p+k}return p};
 function harmony(ch,kb){const tones=new Set([pc(ch[0]+kb),...ch[1].map(n=>pc(n+kb))]),sc=new Set(MAJ.map(x=>pc(x+7+kb)));

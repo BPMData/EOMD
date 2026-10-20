@@ -1,18 +1,18 @@
-# tools__porter.py: SCORE PORTER. Pulls a finished player's music into the score/jukebox system and proves it matches.
-# Run in Thonny. Needs Node.js and ffmpeg on PATH. Keep this file in the project folder (next to audio__arranger.js).
+# tools/porter.py: SCORE PORTER. Pulls a finished player's music into the score/jukebox system and proves it matches.
+# Run in Thonny. Needs Node.js and ffmpeg on PATH. Keep this file in tools/ (the repo root, with audio/arranger.js, is its parent folder).
 #   1 EXTRACT   player .html  -> its inline audio source (.js), without anyone opening the 370 KB file
 #   2 ORIGINAL  audio source  -> original.wav (the finished player's own music, rendered by its own code)
 #   3 PORT      score .json   -> port.wav     (rendered by the project's arranger, sections overlap-added, loops wrapped)
 #   4 NULL TEST original vs port: correlation, residual, bit-identical check
 #   5 CALIBRATE score .json   -> sets master_db for the target LUFS (writes it back) + MP3 preview
-# Making the score itself (notes, a new audio__style-*.js for a new structure, added to AUDIO_LIB) is still the creative part; this does the checking.
+# Making the score itself (notes, a new audio/style-*.js for a new structure, added to AUDIO_LIB) is still the creative part; this does the checking.
 import os, re, sys, json, time, queue, shutil, struct, threading, subprocess
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 from pathlib import Path
  
 # ===================== SETTINGS =====================
-PROJECT_DIR     = os.path.dirname(os.path.abspath(__file__))  # folder with audio__*.js, engine__src__audio__dsp.js, score__*.json
+PROJECT_DIR     = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # the repo root, with audio/*.js, engine/src/audio/dsp.js, score/*.json
 WORK_DIR        = os.path.join(PROJECT_DIR, 'porter_work')    # extracted sources, renders, previews
 NODE_EXE        = 'node'
 FFMPEG_EXE      = 'ffmpeg'
@@ -28,8 +28,8 @@ DEFAULT_PLAYER_HTML = ''      # optional: pre-fill the player path
  
 COLOR_BG, COLOR_FG, COLOR_ACCENT, COLOR_ERROR = "#121212", "#FFD500", "#FF7F00", "#FF3333"
 FONT_MONO, FONT_HEADER = ("Consolas", 10), ("Consolas", 11, "bold")
-AUDIO_LIB = ['engine__src__audio__dsp.js', 'audio__instruments.js', 'audio__instruments-film.js', 'audio__instruments-cdrom.js', 'audio__chips.js', 'audio__arranger.js',   # core first, then one file per style
-             'audio__style-comp4.js', 'audio__style-film24.js', 'audio__style-rounds.js', 'audio__style-lounge.js', 'audio__style-chip.js']
+AUDIO_LIB = ['engine/src/audio/dsp.js', 'audio/instruments.js', 'audio/instruments-film.js', 'audio/instruments-cdrom.js', 'audio/chips.js', 'audio/arranger.js',   # core first, then one file per style
+             'audio/style-comp4.js', 'audio/style-film24.js', 'audio/style-rounds.js', 'audio/style-lounge.js', 'audio/style-chip.js']
  
 # ---------------------------------------------------------------- Node scripts (config arrives as a JSON file)
 NODE_COMMON = r"""
@@ -262,7 +262,7 @@ class PorterApp:
         self.wav_a.set(self.wav_a.get() or os.path.join(WORK_DIR, 'original.wav')); self.wav_b.set(self.wav_b.get() or os.path.join(WORK_DIR, 'port.wav'))
  
     def _refresh_scores(self):
-        names = sorted(Path(self.project.get()).glob('score__*.json'))
+        names = sorted(Path(self.project.get()).glob('score/*.json'))
         self.cb['values'] = [p.name for p in names]
         if names and not self.score.get(): self.score.set(names[0].name)
  
@@ -280,7 +280,7 @@ class PorterApp:
                 self.root.after(0, lambda: [b.config(state='normal') for b in self.buttons])
         threading.Thread(target=work, daemon=True).start()
  
-    def _score_path(self): return os.path.join(self.project.get(), self.score.get())
+    def _score_path(self): return os.path.join(self.project.get(), 'score', self.score.get())   # the picker lists the names inside score/
     def _sections(self):
         try: return max(0, int(self.sections.get()))
         except ValueError: return 0

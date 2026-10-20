@@ -1,4 +1,4 @@
-/* living__trio.js: shared trilingual-trio code for the CS and Exploration variants. tools__build.py injects it right after
+/* living/trio.js: shared trilingual-trio code for the CS and Exploration variants. tools/build.py injects it right after
    `const CSCARDS=[...]` and before the variant file. The variant must define MONO (font stack for `code` spans), then TRIO, TICKET; it may define CARDSTYLE(tipIndex,langIndex)→style (else LANGS).
    Each bloom = three fiddleheads, three cards: EN top, ES middle, PT bottom, always the same colors and order. */
 // ---- knobs ----

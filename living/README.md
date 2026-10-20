@@ -1,9 +1,9 @@
-# living__README.md: Kells growth engine
-One continuous, generative composition, not a timeline of cuts. Vines grow along a curl-noise field, branch, and curl into spirals. A fiddlehead blooms text cards, and vines write cursive words. Built for the SSR poster (see proj__ssr__brief.md). Build it with `tools__build.py`. The music comes from a `score__*.json` via `MUSIC.bind(score)`, exposed as `SSRM` for `living__sound-timer.js`.
+# living/README.md: Kells growth engine
+One continuous, generative composition, not a timeline of cuts. Vines grow along a curl-noise field, branch, and curl into spirals. A fiddlehead blooms text cards, and vines write cursive words. Built for the SSR poster (see proj/ssr/brief.md). Build it with `tools/build.py`. The music comes from a `score/*.json` via `MUSIC.bind(score)`, exposed as `SSRM` for `living/sound-timer.js`.
 
 ## Where to change things (all in template.html)
 - **Copy:** `MSGS` holds one array per text card, cycled in order. `TICKET` is the end-of-timer card. Roles: `mr title accent kicker body sub item small tl`. `tl` is the drawn "0 MIN ⟶ ~15–20 MIN" row.
-- **Variants:** `/*__VARIANT__*/` (right after `TICKET`) is where `tools__build.py` injects a variant script, e.g. `living__variant-cs.js`. A variant can replace `MSGS`/`TICKET`, add fonts to `VFONTS`, and set `TRIO` (sets of cards that bloom together, one fiddlehead each). Fiddleheads and cards live in lists (`FS`, `CLS`), so several can be up at once; SSR uses one.
+- **Variants:** `/*__VARIANT__*/` (right after `TICKET`) is where `tools/build.py` injects a variant script, e.g. `living/variant-cs.js`. A variant can replace `MSGS`/`TICKET`, add fonts to `VFONTS`, and set `TRIO` (sets of cards that bloom together, one fiddlehead each). Fiddleheads and cards live in lists (`FS`, `CLS`), so several can be up at once; SSR uses one.
 - **Card colors:** `VAR[0]` is cream with charcoal; `VAR[1]` is charcoal with mustard. Cards alternate.
 - **Look:** `K` holds vine colors and widths (w), outline (ow), speed (sp), max roots (cap), spawn rate, branch and leaf rates, length range (L), and the share of interior sprouts (`inner`). `KIND` holds the pop shapes. The background is in `draw()`.
 - **Pace:** DRIFT (7 px/s stream), GAP (vine spacing), WSPEED (writing speed). Cluster timings are in stepCluster (2.6 s in, 13 s hold, 2.6 s out). Pre-grow is in init.

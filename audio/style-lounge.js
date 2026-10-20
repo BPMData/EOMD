@@ -1,5 +1,5 @@
-/* audio__style-lounge.js: style "lounge" = Encyclopedia Lounge, CD-ROM edutainment bossa (load after audio__arranger.js).
-   Needs INSTR voices from audio__instruments.js (+ -film) and audio__instruments-cdrom.js (rim, bleep, loungeVibes).
+/* audio/style-lounge.js: style "lounge" = Encyclopedia Lounge, CD-ROM edutainment bossa (load after audio/arranger.js).
+   Needs INSTR voices from audio/instruments.js (+ -film) and audio/instruments-cdrom.js (rim, bleep, loungeVibes).
    One section = score.bars (8) bars + score.tail s of ring-out; play section k at k*sectionLen and let tails overlap (as comp4).
    Form (head and choruses, like a jazz tune):
    - HEAD on every headEvery-th section: the authored tune in score.head (C() in proj__cdrom__audition.js) on marimba;

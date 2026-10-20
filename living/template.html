@@ -47,8 +47,8 @@ const SUBC='#EAD69F',RUST='#A8351B',SLATE='#34404A';
 const DISP='"Bagel Fat One","Arial Black",sans-serif',SERIF='"EB Garamond",Georgia,serif';
 const DRIFT=RM?3:7,SPEED=RM?.5:1;          // whole growth drifts left like a slow stream (px/s)
 const GAP=4,LAG=44,CELL=20,WSPEED=110,WW=9; // spacing between vines, self-mark lag, grid cell, cursive speed/width
-const HW=__WORDS__;                         // Hershey Script Simplex strokes, one per word in living__words.json (public domain)
-let WB=[],WLAST='',VFONTS=[],TRIO=null;      // VFONTS/TRIO: set by a variant (e.g. living__variant-cs.js)                          // word bag: shuffled once per pass, so no word repeats until all have played
+const HW=__WORDS__;                         // Hershey Script Simplex strokes, one per word in living/words.json (public domain)
+let WB=[],WLAST='',VFONTS=[],TRIO=null;      // VFONTS/TRIO: set by a variant (e.g. living/variant-cs.js)                          // word bag: shuffled once per pass, so no word repeats until all have played
 /* ================= helpers ================= */
 const rgb=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));
 const mixc=(a,b,t)=>{const A=rgb(a),B=rgb(b);return`rgb(${A.map((v,i)=>Math.round(v+(B[i]-v)*t)).join(',')})`};

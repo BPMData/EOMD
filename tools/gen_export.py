@@ -1,25 +1,25 @@
-# tools__gen_export.py: GEN → HTML / MP4. Pick a gen cartridge, pick a folder, press a button.
+# tools/gen_export.py: GEN → HTML / MP4. Pick a gen cartridge, pick a folder, press a button.
 # Run in Thonny (Run button). No settings to edit for normal use; the folder you pick is remembered.
 #   MAKE HTML  a standalone player with only that cartridge (opens straight into it, works offline, double-click to play)
 #   MAKE MP4   a video of one full run of the cartridge, frame by frame, with the cartridge's own music track laid in
 #              exactly in sync (the track is the file named by the cartridge's "audio", from gen/audio/)
 #   MAKE BOTH  both, side by side
-# Needs: ffmpeg + Playwright (only for MP4; same setup as tools__html_to_mp4.py, which does the frame-by-frame rendering).
+# Needs: ffmpeg + Playwright (only for MP4; same setup as tools/html_to_mp4.py, which does the frame-by-frame rendering).
 import os, io, sys, json, queue, threading, subprocess, contextlib, importlib.util
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 from pathlib import Path
 
 # ===================== SETTINGS =====================
-SRC_DIR       = os.path.dirname(os.path.abspath(__file__))
+SRC_DIR       = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # the repo root (this script sits in tools/)
 DEFAULT_OUT   = os.path.expanduser('~/Desktop')         # first-run folder; after that, the last folder you picked
 REMEMBER_FILE = os.path.expanduser('~/.eomd_gen_export.json')
 DEFAULT_SIZE  = 'Landscape 1920×1080'
 FPS           = 30
 # ====================================================
 
-sys.path.insert(0, SRC_DIR)
-import tools__html_to_mp4 as h2m                          # the renderer (its GUI only starts when it's run directly)
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # tools/, for html_to_mp4.py
+import html_to_mp4 as h2m                                # the renderer (its GUI only starts when it's run directly)
 
 GEN_DIR = os.path.join(SRC_DIR, 'gen')
 COLOR_BG, COLOR_FG, COLOR_ACCENT, COLOR_ERROR = h2m.COLOR_BG, h2m.COLOR_FG, h2m.COLOR_ACCENT, h2m.COLOR_ERROR
@@ -140,7 +140,7 @@ class App:
         d = self.out.get()
         if d and os.path.isdir(d): subprocess.run(['open' if sys.platform == 'darwin' else 'explorer', d])
 
-    # ---- UI (same look as tools__html_to_mp4.py)
+    # ---- UI (same look as tools/html_to_mp4.py)
     def _styles(self):
         s = ttk.Style(); s.theme_use('clam')
         s.configure('TButton', background='#333', foreground=COLOR_FG, borderwidth=3, relief='raised', font=FONT_HEADER)
