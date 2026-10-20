@@ -25,6 +25,19 @@ The repo is set up for that:
 
 ## Try it now (no build needed)
 
+**`players/`** has finished, ready-to-play builds. Double-click any of them (Chrome, Edge, Firefox or Safari); press
+Start sound for the music. Move the mouse to see the controls.
+
+| File | What it is |
+|---|---|
+| `players/jukebox.html` | Every music cartridge: lounge, film scores, study loops, chip music. Endless, and the same seed always plays the same music |
+| `players/cdrom-player.html` | CS Lab Screensaver: five retro computer worlds (DOS prompt, ASCII world, a maze, a contour desk with an airship, a starfield), chip music, trilingual coding-tip cards, a session timer |
+| `players/cdrom-ambient.html` | The same screensaver without the tip cards |
+| `players/living-player.html` | Living poster: vines grow across the screen and write words in cursive, with a reading-room soundtrack and timer |
+| `players/living-player-cs.html` | Living poster with trilingual (EN/ES/PT) computer-science tip cards |
+| `players/living-player-ex.html` | Living poster with trilingual cards for a 9th-grade Exploration Seminar |
+| `players/gen-player.html` | The generative library below as one self-contained file (USB-stick ready) |
+
 - **Generative motion library:** double-click **`gen/player.html`**. Press **G** for the gallery of ready-made
   cartridges (Truchet tiles, 3D dot meshes, flow fields, Julia sets, tunnels, reaction-diffusion, kinetic type,
   Dust Type ...), **K** for the knobs. Drag sliders until it looks right, press **COPY JSON**, save it as
@@ -33,9 +46,9 @@ The repo is set up for that:
 - **A finished film:** `academies-film/danbury-academies-player.html`, a 60-second seamless hallway loop with its own
   synthesized soundtrack, all in one file.
 
-## Build the rest
+## Build your own
 
-Builds land in `dist/` (not in git; you make them). The build scripts are plain Python with every setting at the top,
+Builds land in `dist/` (not in git); `players/` holds published copies of them. The build scripts are plain Python with every setting at the top,
 so they run from Thonny or any editor's Run button, or from a terminal.
 
 | You want | Run | Then open |

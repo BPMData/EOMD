@@ -31,7 +31,7 @@ Read `STATUS.md` at the start of every session (what's approved, what's unheard,
 - **Any piece, video:** `tools__html_to_mp4.py`
 
 ## Folder layout
-Mostly flat: in a file name `__` stands for `/` (e.g. `audio__style-lounge.js` = `audio/style-lounge.js`); the build scripts accept both. Real folders: `academies-film/`, `gen/`, `fonts/` (OFL TTFs `tools__build_cdrom.py` downloads), `dist/` (builds, git-ignored), `font_cache/` (`tools__build.py`'s font cache, git-ignored).
+Mostly flat: in a file name `__` stands for `/` (e.g. `audio__style-lounge.js` = `audio/style-lounge.js`); the build scripts accept both. Real folders: `academies-film/`, `gen/`, `players/` (published copies of the finished builds, in git, so a clone plays out of the box), `fonts/` (OFL TTFs `tools__build_cdrom.py` downloads), `dist/` (builds, git-ignored), `font_cache/` (`tools__build.py`'s font cache, git-ignored).
 
 ### academies-film/
 - **`danbury-academies-player.html` is the MASTER for the Academies film.** It has the 8 animated hero marks, the 21 redrawn pathway icons and the trilingual word blocks on all 7 academies. Edit this file directly. Its config sits in it TWICE (the visuals' copy and the audio worker's copy in `<script type="text/plain" id="dhs-audio-src">`); a config edit must change both.
@@ -111,6 +111,7 @@ Rough and early beats polished and lost.
 - **Dust Type standalone.** No script yet: subset Montserrat Bold and base64 it into the `/*__FONT__*/` placeholder (steps in `proj__dust__brief.md`).
 - **Academies film.** Edit `academies-film/danbury-academies-player.html` directly (both config copies).
 - **Video.** Run `tools__html_to_mp4.py` on any built player.
+- **Publishing a build.** `players/` holds copies of `dist/jukebox.html`, `cdrom-player.html`, `cdrom-ambient.html`, `living-player.html`, `living-player-cs.html`, `living-player-ex.html` and `gen/dist/gen-player.html`. After rebuilding one of them, copy it into `players/` and commit, so the public copies don't go stale. Only publish a build that loads without script errors.
 - **New music.** Copy a `score__*.json`, change it, run `tools__calibrate.py`, then listen to the MP3 before building.
 - **Porting a finished player.** Run `tools__porter.py` (extract, render original, render port, null test, calibrate). Making the score is the creative part; if the piece has a new structure it needs a new `audio__style-<name>.js` first.
 - **New arranger style.** Copy a style file, register `MUSIC.styles.<name>` (add `.loopSections` for fixed loops), then add the file to the audio list in all five loaders: `tools__build.py` (`AUDIO_LIB` and `STYLES`), `tools__calibrate.py`, `tools__porter.py` (`AUDIO_LIB`), `tools__regress.py` (`AUDIO_LIB`), `tools__midi.py` (`AUDIO_LIB`, plus its voices in `PROGRAMS`/`DRUMS`). `lounge` and `chip` are in all five. Exceptions: `loungechip` and `overclock` live only in the CD-ROM build and the jukebox (`JUKEBOX_LIB`); no score files use them.

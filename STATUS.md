@@ -4,6 +4,9 @@ _Last updated: Oct 20, 2026 (moved to Claude Code: git repo, spent patchers and 
 
 ## Status
 - **Public on GitHub (Oct 20): https://github.com/BPMData/EOMD** (Efficient Offline Motion Designer), MIT license (Bryan Patrick Murphy), `README.md` for visitors. Commits use the noreply address `123925276+BPMData@users.noreply.github.com`.
+- **Prebuilt players in `players/` (Oct 20):** every build made fresh from the current sources (jukebox, CD-ROM + ambient, the three
+  living posters, gen) and copied in. Each one was loaded headless: no script errors, sound starts, frames render. That means the 9h
+  scripts (jukebox CD-ROM cartridges, ambient version) have now run; their levels and the AMBIENT_VER stamp are still unheard/unseen by Bryan.
 - **Moved to Claude Code (Oct 20, DONE).** This folder (`MotionDesign`) is the single source of truth, in git. Deleted: the spent patchers and one-off tools (`tools__patch_*.py`, `tools__fold_cdrom.py`, `tools__strip_player.py`, `tools__rebuild_living.py`, `tools__sync_check.py`, `tools__check_files.py`), the Track 2 audition files (`proj__cdrom__track2-audition.html`, `-r2-audition.html`, `-r3.js`, `-sketches.js`, `tools__build_track2.py`) and `academies-film/danbury-academies-player_ORIGINAL.html`. `motif.txt` → `proj__cdrom__intro-motif.md`. `00_CLAUDE.md` → `CLAUDE.md`, `00_HANDOFF.md` → this file.
 - **Video export (NEW Oct 20): `tools__html_to_mp4.py`** (Tk GUI). Bryan ran it on the Academies master: "Worked perfectly". Also tested on the CD-ROM build (20 s with music), Dust Type and the gen player. Not tested: CANCEL, portrait, a living poster (none built in `dist/` at the time).
 - **Dust Type (Oct 15, study piece; stage 1 r2 seen and approved: "looks sick now"):** letters burst into coloured powder and
@@ -99,7 +102,8 @@ _Last updated: Oct 20, 2026 (moved to Claude Code: git repo, spent patchers and 
   doesn't use those scores; no Overclock work changed an existing shared audio file.
 - **Living posters (Kells engine, shared `living__template.html`; `LIVING_VARIANT` = 'ssr' | 'cs' | 'ex' in `tools__build.py`):**
   - **Exploration Seminar: DONE (Oct 7; Bryan watched it: "completely fine").** `dist/living-player-ex.html` (built in the old Build folder; this folder's `dist/` doesn't have it yet). 17 trilingual trio cards
-    parsed word for word from `proj__ex__copy.md` (ES/PT are Claude's drafts; Bryan trusts them), 11 cursive words
+    parsed word for word from `proj__ex__copy.md` (Oct 9 added 7 academy cards, cards 18–24, so the build now has 24; those 7
+    haven't been watched yet) (ES/PT are Claude's drafts; Bryan trusts them), 11 cursive words
     (`living__words-ex.json`, made by `tools__hershey_words.py` with VARIANT='ex'), **no end card** (`TICKET=null` in
     `living__variant-ex.js`; the template guards `&&TICKET` are in), academy colors from `proj__academies__brand.md` via `CMAP` +
     `CARDSTYLE` in the variant (blue = rule/campus cards, teal = class cards, pair cards fill + edge; orange 4.31:1 is large-bold only,
@@ -190,8 +194,7 @@ Chips music (the plain `chip` style): Bryan Oct 9, "it's so bad lol"; kept as a 
 
 ## Next
 1. **Move to Claude Code: DONE (Oct 20).** git repo, cleanup, `CLAUDE.md` + `STATUS.md`, gen dust layer wired in.
-2. **Run the 9h scripts and check them:** `tools__build.py` (TARGETS jukebox, or both), `tools__build_cdrom.py` +
-   `tools__cdrom_ambient.py`; listen/watch: the jukebox's 10 new cartridges (levels next to the others) and a few minutes of
+2. **Check the 9h builds (built Oct 20, in `players/`):** listen/watch: the jukebox's 10 new cartridges (levels next to the others) and a few minutes of
    `dist/cdrom-ambient.html` (Starfield should still go to hyperspace; the AMBIENT_VER stamp is unseen).
 3. **Stage 5 extras:** fontTools subsetting for size (`pip install fonttools`), QA note, ZIP. Publish.
 4. **Settle the regression baseline** (see the Regression bullet) before any change to an existing shared audio file: run CHECK under
