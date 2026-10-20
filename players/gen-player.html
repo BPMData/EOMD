@@ -63,6 +63,9 @@ textarea.script { min-height: 240px; white-space: pre; }
 #tapbox.show { display: block; }
 #tapbox b { color: var(--hot); }
 #tapbox button { margin-top: 8px; font-size: 16px; padding: 12px 40px; }
+/* presentation mode (standalone builds, GEN.PRESENT): just the piece. No gallery, knobs, cartridge menu or shot skipping */
+body.present #prev, body.present #next, body.present #cartSel, body.present #knobBtn, body.present #galBtn,
+body.present #knobs, body.present #gallery, body.present #tapbox { display: none !important; }
 /* gallery */
 #gallery { position: fixed; inset: 0; overflow-y: auto; padding: 28px max(16px, env(safe-area-inset-left)); display: none; z-index: 4; background: var(--bg); }
 body.gallery #gallery { display: block; }
@@ -4196,6 +4199,8 @@ GEN.AUDIO = {"pltw-cse.mp3": "data:audio/mpeg;base64,SUQzBAAAAAAAIlRTU0UAAAAOAAA
   const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
                   set(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* storage blocked: fine */ } } };
   const BUNDLE = GEN.CARTS || {};
+  const PRESENT = !!GEN.PRESENT;                       // set by build.py for a standalone (one-cartridge) build
+  if (PRESENT) document.body.classList.add('present');
   const names = Object.keys(BUNDLE);
   if (!names.length) BUNDLE.empty = { name: 'empty', shots: [{ layer: 'depth', dur: 30 }] }, names.push('empty');
   const clone = (o) => JSON.parse(JSON.stringify(o));
@@ -4293,6 +4298,7 @@ GEN.AUDIO = {"pltw-cse.mp3": "data:audio/mpeg;base64,SUQzBAAAAAAAIlRTU0UAAAAOAAA
   addEventListener('keydown', (e) => {
     if (/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
     const k = e.key.toLowerCase();
+    if (PRESENT && !(k === ' ' || k === 'f')) return;        // presentation mode: play/pause and fullscreen only
     if (k === ' ') { e.preventDefault(); $('play').click(); }
     else if (k === 'arrowleft') $('prev').click();
     else if (k === 'arrowright') $('next').click();
@@ -4489,7 +4495,7 @@ GEN.AUDIO = {"pltw-cse.mp3": "data:audio/mpeg;base64,SUQzBAAAAAAAIlRTU0UAAAAOAAA
   $('resetBtn').onclick = () => { const n = $('cartSel').value; loadCart(clone(BUNDLE[n])); msg('Reset to ' + n); };
   addEventListener('dragover', (e) => e.preventDefault());
   addEventListener('drop', (e) => {
-    e.preventDefault(); const f = e.dataTransfer.files[0]; if (!f) return;
+    e.preventDefault(); if (PRESENT) return; const f = e.dataTransfer.files[0]; if (!f) return;
     if (/^audio\//.test(f.type) || /\.(mp3|m4a|wav|ogg|flac|aac)$/i.test(f.name)) {
       if (raw.audio && raw.audio !== f.name) msg('Using "' + f.name + '" for this cartridge\'s track "' + raw.audio + '"');
       raw.audio = raw.audio || f.name;                 // a cartridge without a track adopts the dropped file
@@ -4506,6 +4512,7 @@ GEN.AUDIO = {"pltw-cse.mp3": "data:audio/mpeg;base64,SUQzBAAAAAAAIlRTU0UAAAAOAAA
   // ---------- gallery ----------
   let gal = [];
   function toggleGallery(on) {
+    if (PRESENT) on = false;
     document.body.classList.toggle('gallery', on);
     const grid = $('grid');
     if (!on) { gal = []; grid.innerHTML = ''; return; }

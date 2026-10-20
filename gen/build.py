@@ -116,6 +116,8 @@ def main(only_cart=None, out_path=None):
                 code += f'GEN.CARTS = Object.assign({{ {json.dumps(default_cart)}: GEN.CARTS[{json.dumps(default_cart)}] }}, GEN.CARTS);\n'
             if audio:
                 code += 'GEN.AUDIO = ' + json.dumps(audio) + ';\n'
+            if only_cart:
+                code += 'GEN.PRESENT = true;\n'   # standalone = presentation mode: no gallery, knobs or cartridge menu
         else:
             code = open(os.path.join(GEN_DIR, rel), encoding='utf-8').read()
         code = code.replace('</script', '<\\/script')

@@ -86,7 +86,7 @@ Tokens after `|`, any order: an effect or a delivery word that maps to one
   a public repo). Claude never types them; Bryan pastes his own transcript or Whisper output.
 
 ## Player (`player.html`, built to `dist/gen-player.html`)
-- **Standalone / video:** `tools__gen_export.py` (repo root, Thonny GUI): pick a cartridge + folder → MAKE HTML (only that cartridge, opens straight into it) / MAKE MP4 (cartridge's `"audio"` laid in frame-exact) / BOTH. Scripted: `build.main(only_cart='<name>', out_path=...)` or `ONLY_CART` in `build.py`.
+- **Standalone / video:** `tools__gen_export.py` (repo root, Thonny GUI): pick a cartridge + folder → MAKE HTML (only that cartridge, opens straight into it, presentation mode `GEN.PRESENT`: no gallery/knobs/menu) / MAKE MP4 (cartridge's `"audio"` laid in frame-exact) / BOTH. Scripted: `build.main(only_cart='<name>', out_path=...)` or `ONLY_CART` in `build.py`.
 - URL: `?cart=reel` · `?shot=2` · `?seed=9` · `?nohud` · `?gallery` · `?scale=0.75` (render resolution, for slow boards;
   `halftone` and `reaction` are the heaviest, then `contour`)
   · `?manual&t=12` (no clock; `advance(dt)` and `renderAt(t)` in the console, for frame capture).
