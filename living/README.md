@@ -28,6 +28,6 @@ One continuous, generative composition, not a timeline of cuts. Vines grow along
 ## Cost habits (see also CLAUDE.md)
 - For continuous "living" pieces, start from `living/` instead of the scene timeline. For cut-based films, use the main engine.
 - **Cost control.**
-  - Read `STATUS.md` first; open only the files the task needs.
+  - Read the root `STATUS.md` index first, then `living/STATUS.md`; open only the files the task needs.
   - Edit files in place instead of regenerating them whole; commit per stage.
   - Run sandbox tests and screenshots only when asked or when debugging; Bryan previews on his own devices.

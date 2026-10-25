@@ -2,12 +2,12 @@
 
 Motion-design projects for Bryan Murphy (Danbury HS teacher). Deliverables are self-contained HTML players for classroom and hallway screens, with synthesized music.
 
-Read `STATUS.md` at the start of every session (what's approved, what's unheard, what's next) and update it at the end of a working session.
+Read the root `STATUS.md` index at the start of every session; read a piece's own `STATUS.md` (in its folder) when working on that piece. Update both at the end of a working session.
 
 ## Bryan's rules (non-negotiable)
 - **Python scripts Bryan runs are Thonny-friendly:** run with the Run button, no command-line arguments, every setting a variable in a `SETTINGS` block at the top.
 - **Players are single offline HTML files:** fonts, data, audio code and images inlined; nothing loads from the internet; no remote fonts or images.
-- **Poster copy is word for word:** card and poster text comes from the copy files (`proj/cs/copy.md`, `proj/ex/copy.md`, ...) exactly as written. Don't reword, shorten or "fix" it. ES/PT translations Claude drafted are marked as drafts in `STATUS.md`.
+- **Poster copy is word for word:** card and poster text comes from the copy files (`proj/cs/copy.md`, `proj/ex/copy.md`, ...) exactly as written. Don't reword, shorten or "fix" it. ES/PT translations Claude drafted are marked as drafts in the piece's `STATUS.md`.
 - **Never invent facts:** names, dates, programs, campuses, pathways, numbers. If it isn't in a brief, copy file or config, ask.
 - **Edit in place, commit per stage:** change the source files directly (no patcher scripts), and commit at the end of each stage or delivered change with a message that says what changed.
 
@@ -23,7 +23,7 @@ Before starting any NEW piece (a new video, poster or player; not a change to an
 ## Working rules
 - Open only the files the task needs; the file sets below say which. Don't read `engine/` for living or jukebox work (except `engine/src/audio/dsp.js` for DSP internals).
 - Don't read `dist/` builds (big, mostly base64 fonts) unless the task is debugging a build. The same goes for whole-file reads of `academies-film/danbury-academies-player.html` (~395 KB): search it, read the part you need.
-- A change to a shared audio file needs `tools/regress.py` SAVE BASELINE first and CHECK after The baseline (`tests/hashes.json`, 93 sections) was made with Node 22 and CI runs CHECK on every push; Node 26 on the Mac doesn't match it (see the Regression bullet in `STATUS.md`), so on the Mac point `NODE_EXE` at Node 22 or let CI check.
+- A change to a shared audio file needs `tools/regress.py` SAVE BASELINE first and CHECK after The baseline (`tests/hashes.json`, 93 sections) was made with Node 22 and CI runs CHECK on every push; Node 26 on the Mac doesn't match it (see the Regression bullet in `tools/STATUS.md`), so on the Mac point `NODE_EXE` at Node 22 or let CI check.
 
 ## Files by piece
 - **CD-ROM screensaver (CS Lab Screensaver):**
@@ -56,7 +56,7 @@ Generative motion graphics as small JSON cartridges (Truchet, 3D dot meshes, flo
 | `CONTRIBUTING.md`, `.github/ISSUE_TEMPLATE/` | How outsiders contribute (cartridges, scores, layers, fixes; PR checklist; AI-written work welcome); bug + cartridge-idea issue forms | Changing the contribution rules |
 | `.github/workflows/ci.yml` | CI on every push and PR: gen build + smoke test, and the audio regression CHECK (Node 22) | Changing what CI checks |
 | `README.md`, `LICENSE` | The public face of the repo (github.com/BPMData/EOMD): what EOMD is, how to try it, build, make an MP4; MIT. Keep the README true when tools or builds change | Changing how people use or build it |
-| `STATUS.md` | Current status, music direction, known limits, next steps, open taste questions | Start of every session |
+| `STATUS.md` | The index: one line per piece, cross-cutting items, next steps. Each piece's history, limits and open questions are in its folder's `STATUS.md`; repo-wide history in `notes/history.md` | Start of every session (the index); a piece's file when working on it |
 | `brief/INTERVIEW.md`, `brief/TEMPLATE.md`, `brief/example-academies.md`, `brief/CRAFT.md` | The client interview (questions, how to ask, what happens after), the fill-in brief with the default craft bar and QA, Bryan's Academies prompt as the model brief, and the craft primer for approved brief → approved storyboard (concepts, pitching, storyboard and stills, motion, type, sound, directions, anti-patterns, self-check), read before concepts and before any tool opens | Starting any new piece |
 | `proj/<name>/*` | One piece's brief, decisions, source copy | Working on that piece |
 | `audio/instruments.js` | Shared instrument library, reading-room voices (rhodes, vibes, pad, bass, piano, flute, chime, stream) | Changing or adding sounds |
