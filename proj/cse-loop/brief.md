@@ -1,6 +1,6 @@
 # Brief: CSE hallway loop (working name)
 
-Status: APPROVED 2026-10-25 by Bryan Murphy · Stage: concepts · Mode: full creative · Client: Bryan Murphy · Sign-off: Bryan only ("Nope", round 5)
+Status: APPROVED 2026-10-25 by Bryan Murphy · Stage: storyboard · Mode: full creative · Client: Bryan Murphy · Sign-off: Bryan only ("Nope", round 5)
 Usage: Opus 5.5, medium effort · interview + brief: **ASK** Bryan to note the share of a 5-hour limit the app shows
 
 _**ASK** = missing, **DRAFT** = Claude's draft, **Claude's call** = delegated by the client, **Assumed** = Claude's
@@ -223,3 +223,7 @@ None at approval. **DRAFT** lines (on-screen copy, ES/PT) get checked at the sto
 - 2026-10-25 · "The background color being a pale purple like in A or a washed out griege like in C is bad, choose
   something more punchy and like primary/secondary color-ish ... the danbury academies colorways are much better." ·
   Saturated Danbury colors for the fields; PLTW colors to logo and accents. New house item T34.
+- 2026-10-25 · "The app inventor and VexCode blocks look pretty much exactly like the MakeCode blocks, it's totally fine to just use that for all of them." · One MakeCode block look for every tool.
+- 2026-10-25 · "The PLTW colors aren't TOO ugly if they're like the base background color with white or yellow text on
+  top. But black on top of dark purple does feel sluggish and ugly." · PLTW Blue used as one field (the Python beat)
+  with white text; never dark text on PLTW's dark colors.
