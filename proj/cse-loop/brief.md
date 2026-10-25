@@ -261,3 +261,5 @@ _Opened with `/toolbox` on 2026-10-25, after the storyboard, stills and sound we
 - 2026-10-25 · "B of the submodifiers of option B works (Mallets)." · Sound: S2 Glass Lobby with mallet snaps.
 - 2026-10-25 · "What I didn't like ... is like the drum machine sound that sounds like ... hitting a drum with a brush." · The gated, noise-heavy snare goes; two replacements to hear (`choices-sound-snare.html`).
 - 2026-10-25 · "B, the tight snare." · Final sound: S2 Glass Lobby, mallet snaps, tight snare.
+- 2026-10-25 · "Build plan approved. OK to download Poppins and a monospace font from Google Fonts and the PLTW logo from pltw.org. Start with the rough playable loop." · Stage 2 begins.
+- 2026-10-25 · "I did like C. S3. Maker Bench, the harsh electrical sound was just kind of avant-garde for this project, but at the end ... maybe we can also remake the player with that as the sound design pathway, just to see if it works ... worry about that dead last." · Extra, dead last: a second player with S3 (same timing), the harsh electrical sound (likely the car's 16th-note tick) softened.
