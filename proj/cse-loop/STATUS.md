@@ -2,7 +2,7 @@
 
 _Last updated: Oct 25, 2026._
 
-- **Stage:** concepts (brief approved Oct 25). Full creative mode. Three directions in `concepts.md` and `choices-concepts.html`; waiting for Bryan's pick.
+- **Stage:** concepts (brief approved Oct 25). Full creative mode. Bryan picked A + C (Snap + One Line). Next: storyboard, stills, sound concept. Blocks must match the real editors (`MakeCode/`, local only).
 - **What it is:** a 30–60 s looping HTML player about PLTW's Computer Science Essentials for the Information
   Technology & Cybersecurity Academy hallway TVs at Danbury High School; also shared with CS educators via GitHub Pages.
 - **Sources:** `sources/CSE_CourseOutline_CS.pdf` (PLTW course outline, BR015.06.2026), `sources/itc-academy-badge.webp`

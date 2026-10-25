@@ -40,4 +40,6 @@ gears, brains, robots with antennas, "the future", "tomorrow's innovators", padl
 - **Trade-off:** the most elegant, but the most abstract: a passer-by sees a drawing more than "I could make this."
 
 ## Decision
-_Bryan's pick and words go here and in the brief's Decisions log._
+Oct 25, Bryan: "I like a combo of A and C, I feel like they could both work together." Notes on the sketches: blocks
+must look like the real editors (MakeCode references supplied); the line must grow smoothly (the sketch's stutter
+was a sketch bug); no blue box car; the SDV is a yellow, Lego-like build.

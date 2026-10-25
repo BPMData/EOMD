@@ -112,8 +112,8 @@ PLTW Blue on Dark Blue is only 2.6: glow and accent only. PLTW's own rule: "Avoi
 **Logos:** the official PLTW logo (Bryan, round 4), from PLTW's brand page, never stretched, rotated, tiny or low
 contrast. The Academy badge from Bryan's file (`sources/itc-academy-badge.webp`), or redrawn from its own shapes at
 one line weight (T22). **Tool logos:** allowed ("I don't care if you drop in the VEX, App Inventor, Python, etc. logos"); Claude's call.
-MIT App Inventor: lean on the **MIT** name ("MIT itself has great name recognition"), and skip the bee mascot (Bryan:
-"kind of sucks"). `sources/mit-app-inventor-site.webp` is a screenshot of MIT's site for reference only; its
+MIT App Inventor: lean on the **MIT** name ("MIT itself has great name recognition"); the bee may appear ("you can
+show the dumb bee if you want lmao"), Claude's call. `sources/mit-app-inventor-site.webp` is a screenshot of MIT's site for reference only; its
 claims aren't facts for this piece.
 **Brightness:** lots of light and lift; never a dark, heavy purple field from edge to edge.
 
@@ -196,3 +196,13 @@ None at approval. **DRAFT** lines (on-screen copy, ES/PT) get checked at the sto
   kind of sucks ... but MIT itself has great name recognition." · Tool logos allowed; no App Inventor bee.
 - 2026-10-25 · "I think the name on the badge is right." · "Information Technology & Cybersecurity Academy".
 - 2026-10-25 · "Yep, I approve the brief." · Stage: concepts.
+- 2026-10-25 · "I like a combo of A and C, I feel like they could both work together." · Concept: Snap + One Line.
+- 2026-10-25 · "The MakeCode-style blocks you used aren't the way they really look." · Blocks must match the real
+  editors; Bryan supplied MakeCode references in `MakeCode/` (local only, gitignored).
+- 2026-10-25 · "The drawing of the line as it trails the circle lagged BAD in demo C ... like 1 fps." · Cause: the
+  sketch grew the line one whole segment at a time (up to 1 s per jump), not a slow computer. The real line must
+  grow smoothly every frame.
+- 2026-10-25 · "That little blue rectangle for the self-driving car looks BAD, do NOT use that ... The actual SDVs
+  are more like weird yellow lego things." · No box car; the SDV is drawn as a yellow, studded build-kit robot car.
+  `sources/sdv-look-reference.webp` is a look reference only ("isn't them").
+- 2026-10-25 · "You can show the dumb bee if you want." · App Inventor bee allowed.
