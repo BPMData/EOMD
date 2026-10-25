@@ -49,7 +49,7 @@ polished and lost.
 | A new piece | `/new-piece`; `/toolbox` at its gate |
 | A change to an existing piece | Its folder: `proj/cdrom/` (CS Lab Screensaver), `academies-film/` (Academies hallway film), `living/` (SSR, CS and Exploration living posters), `proj/pltw/` (PLTW promo). Each folder's `CLAUDE.md` loads by itself when you open a file there; its `STATUS.md` holds the history |
 | Library or tool work | That folder: `gen/`, `audio/` + `score/`, `engine/`, `jukebox/`, `tools/` (each has a `CLAUDE.md`) |
-| How new pieces start | `brief/`: `INTERVIEW.md`, `TEMPLATE.md`, `CRAFT.md`, `example-academies.md`, `clients/` |
+| How new pieces start | `brief/`: `INTERVIEW.md`, `TEMPLATE.md`, `CRAFT.md`, `example-academies.md`, `taste/house.md` (default taste), `clients/` |
 | The public face | `README.md` (keep it true when tools or builds change), `CONTRIBUTING.md`, `LICENSE`, `index.html` (the Pages landing page; `.nojekyll` must stay) |
 | CI | `.github/workflows/ci.yml` |
 | Why context is staged | `notes/context-plan.md`; repo-wide history: `notes/history.md` |
@@ -61,4 +61,4 @@ polished and lost.
   of each stage or delivered change with a message that says what changed.
 - **Open only the files the task needs.** Don't read `dist/` builds unless the task is debugging a build.
 - **Verdicts are kept:** every client verdict ("approved", "looks cheesy") goes into the brief's Decisions log, in the
-  client's words.
+  client's words. A verdict that would hold for other pieces becomes or adjusts an item in `brief/taste/house.md`.

@@ -117,8 +117,9 @@ It works in any chat, not only in this repo: paste this file and `TEMPLATE.md` i
 
 **13. Taste references**
 - ★ One thing they love and one they hate (any medium), and why.
-- Past verdicts that apply? (PLTW r1, Oct 20: captions over unrelated visuals "looks bad"; more in STATUS.md and the
-  briefs' Decisions logs.)
+- The house taste (`brief/taste/house.md`) applies by default; don't read it out. Once "How it's watched" is
+  answered, list the items whose conditions apply in §13, and ask only about the ones this client might want
+  different ("Most pieces here avoid big drops in the music. Same for yours?").
 
 **14, 15, 17. Craft bar, technical, QA:** the template has defaults; ask only "anything to add or relax?"
 

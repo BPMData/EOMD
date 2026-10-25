@@ -20,3 +20,7 @@ Use these as the starting answer for "How it's watched"; confirm them per piece.
   make sense on its own.
 - Classroom loops: the same students hear them every day, so nothing harsh on repeat.
 
+
+## His taste
+The house taste profile (`brief/taste/house.md`) is distilled from his verdicts; it is the default for everyone, so
+there is no separate Bryan profile. His own words for each verdict stay in that piece's brief or `STATUS.md`.

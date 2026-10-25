@@ -54,7 +54,9 @@ from how and where it's heard (a client file in `brief/clients/` may have target
 _Claims, likenesses, photos, anything admin or legal won't allow._
 
 ## 13. Taste references
-_Loves and hates, with why; past verdicts that apply._
+`Taste: house. Applies: <the IDs from brief/taste/house.md whose condition this brief meets>. Overrides: <ID off or
+changed, with the reason>.`
+_Then the client's own loves and hates, with why._
 
 ## 14. Creative expectations
 Default craft bar (from the Academies brief); this piece adds or relaxes: _..._
@@ -88,6 +90,7 @@ Default checks; add the piece's own:
 - Audio: loudness, true peak and clipping measured (ffmpeg `ebur128`); nothing harsh on repeat.
 - Motion: smooth transitions, no dropped or duplicated frames.
 - Facts: everything on screen is in section 5 with a source.
+- Taste: every applicable `strong` item in `brief/taste/house.md` is honored, or overridden in section 13 with a reason.
 - A short report: what was verified, what wasn't, known limits.
 
 ## 18. Approval and success
