@@ -50,3 +50,4 @@ T30 · strong · process · A finished deliverable carries no tool UI: no galler
 T31 · strong · process · The final video comes from a one-click tool, not a manual procedure. — Oct 20: "that CANNOT be how we generate the final video"
 T32 · soft · process · A study stays a study: don't turn an experiment into a standalone product unless asked. — Dust Type: "it was never meant to be a standalone anything"
 T33 · soft · structure · when more than one language · Multilingual moments as a flourish: close cognates and greetings morphing across languages, Brazilian Portuguese spelling. — Academies brief
+T34 · soft · color · Punchy, saturated fields (primary and secondary colors) over pale tints and washed-out neutrals; when a brand palette is dull, keep it for the logo and accents. — CSE hallway loop concepts (Oct 25): pale purple and "washed out griege" backgrounds "bad", "choose something more punchy"

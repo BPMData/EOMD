@@ -117,6 +117,20 @@ show the dumb bee if you want lmao"), Claude's call. `sources/mit-app-inventor-s
 claims aren't facts for this piece.
 **Brightness:** lots of light and lift; never a dark, heavy purple field from edge to edge.
 
+**Color direction (Bryan, Oct 25, after the sketches):** "the background color being a pale purple like in A or a
+washed out griege like in C is bad, choose something more punchy and like primary/secondary color-ish ... TBH the
+danbury academies colorways are much better." So the fields are saturated Danbury colors (from
+`brief/example-academies.md`, the school's own list); PLTW's colors move to the logo and small accents.
+
+| Danbury color | Hex | Role here |
+|---|---|---|
+| Danbury Blue | #0033A0 | main field (white text 10.6:1) |
+| Information Technology & Cybersecurity Red | #D50032 | the Academy passage (micro:bit, drones); white text 5.4:1 |
+| Yellow | #FFD100 | punch field and the SDV build; dark text only (T20; PLTW Dark Blue 13.8:1) |
+| Others on the list (orange #DC4405, teal #009CA6, purple #5C068C, green #006341) | | accents only, if a beat needs one |
+
+The badge sample (#d60132) is a near match for the official red; use #D50032.
+
 ## 8. Visual language
 Motifs to build from (in the same spirit, never copy): PLTW's `<>` code-bracket badge and corner-bracket mark; the
 Academy badge's circle of three hexagons (code, lock, network). Signature idea and spine: **Claude's call**.
@@ -206,3 +220,6 @@ None at approval. **DRAFT** lines (on-screen copy, ES/PT) get checked at the sto
   are more like weird yellow lego things." · No box car; the SDV is drawn as a yellow, studded build-kit robot car.
   `sources/sdv-look-reference.webp` is a look reference only ("isn't them").
 - 2026-10-25 · "You can show the dumb bee if you want." · App Inventor bee allowed.
+- 2026-10-25 · "The background color being a pale purple like in A or a washed out griege like in C is bad, choose
+  something more punchy and like primary/secondary color-ish ... the danbury academies colorways are much better." ·
+  Saturated Danbury colors for the fields; PLTW colors to logo and accents. New house item T34.
