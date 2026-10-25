@@ -147,6 +147,7 @@ the project: the reusable parts are already here, so a new piece is mostly a sho
 | `score/` | Music cartridges (`*.json`) and `FORMAT.md`, which explains every field |
 | `audio/` | The music engine: instruments, the arranger and one file per arranger style |
 | `tools/` | The Python scripts you run (builds, MP4 export, music tools) |
+| `brief/` | How a new piece starts: the client interview, the brief template, and the brief behind the Academies film as the example |
 | `proj/<piece>/` | One piece's brief, copy and sources (`cdrom`, `pltw`, `cs`, `ex`, `ssr`, `academies`) |
 | `living/`, `jukebox/` | The living-poster engine and the jukebox page |
 | `engine/` | The starter timeline engine the Academies film grew from; `engine/src/audio/dsp.js` is the DSP everything uses |

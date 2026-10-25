@@ -21,6 +21,6 @@ A reusable engine for looping motion-design pieces: time-driven canvas animation
 - `src/audio`: DSP, music, SFX, master.
 - `src/player/runtime.js`: clock, audio, fitting.
 
-Read `PROJECT_INSTRUCTIONS.md` for the working rules.
+The working rules are in `CLAUDE.md` at the repo root; a new piece starts with the interview in `brief/INTERVIEW.md`.
 
 **Font:** Bricolage Grotesque (SIL OFL 1.1), license in `fonts/OFL.txt`.

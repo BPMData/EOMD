@@ -6,6 +6,8 @@ Thanks for wanting to add something. Contributions are welcome:
 - **Music scores.** A new `score/<name>.json` for the arranger (`score/FORMAT.md` explains every field).
 - **New gen layers** in `gen/layers/` (read `gen/API.md` first).
 - **Fixes** to anything: code, docs, typos, builds.
+- **A piece made for someone** (a promo, a poster, a screen loop): start with the interview in `brief/INTERVIEW.md`
+  and put the approved brief in `proj/<name>/brief.md` before designing anything.
 
 Not sure an idea fits? Open an issue first (there are forms for bugs and for cartridge ideas).
 

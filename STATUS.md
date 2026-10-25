@@ -2,9 +2,25 @@
 
 > **Visitors:** this is the project's working log (what's approved, what's untested, what's next), kept for the people and AI assistants working on it. For what EOMD is and how to use it, start with [README.md](README.md).
 
-_Last updated: Oct 20, 2026 (open-source pass in the cloud: real folders instead of `__` names, CI, CONTRIBUTING, regression baseline settled for Node 22. Before that: moved to Claude Code: git repo, spent patchers and Track 2 auditions deleted, CLAUDE.md + this file; gen dust layer wired in; `tools/html_to_mp4.py`. Earlier: Oct 15 Dust Type study; 9e Overclock long form; 9f airship parts; 9g PATCHES folded into the player source; 9h ambient screensaver + CD-ROM music in the jukebox (not yet run); living posters' time-left readout; Academies film heroes, icons and word blocks)_
+_Last updated: Oct 25, 2026 (new pieces start with a client interview and an approved brief: `brief/`). Before that, Oct 20 (open-source pass in the cloud: real folders instead of `__` names, CI, CONTRIBUTING, regression baseline settled for Node 22. Before that: moved to Claude Code: git repo, spent patchers and Track 2 auditions deleted, CLAUDE.md + this file; gen dust layer wired in; `tools/html_to_mp4.py`. Earlier: Oct 15 Dust Type study; 9e Overclock long form; 9f airship parts; 9g PATCHES folded into the player source; 9h ambient screensaver + CD-ROM music in the jukebox (not yet run); living posters' time-left readout; Academies film heroes, icons and word blocks)_
 
 ## Status
+- **New pieces start with a client interview (Oct 25, Claude Code in the cloud; branch `ccr-1a9f3c89-1xqwn8`).** Bryan's
+  worry: the cartridges made pieces cheaper, but the repo could no longer make another Academies film. Finding: the
+  Academies film came from Bryan's ~1,800-word prompt (Claude web UI, no project files), a blank page and a written craft
+  bar, not from a toolkit; PLTW had no brief at all, and a new-piece session here opens with ~8,500 words about other pieces.
+  New:
+  - `brief/INTERVIEW.md`: how to interview the client (rounds of 3–5 questions; ★ questions every time, both modes; ask
+    about the problem, in experience terms; vague words turned into choices; landmines; facts with sources; delegation
+    only for creative areas), then brief → approval → 2–3 concepts → design before tools (full creative mode).
+  - `brief/TEMPLATE.md`: 19 sections + a Decisions log; the default craft bar (§14) and QA list (§17) are generalized from
+    the Academies prompt.
+  - `brief/example-academies.md`: Bryan's Academies prompt, word for word.
+  - `/new-piece` skill (`.claude/skills/new-piece/SKILL.md`) starts the interview.
+  - CLAUDE.md "New pieces" rewritten (interview first; the efficient/full creative question is in round 1; full creative
+    designs before picking tools; type set in a layout designed with the visuals now counts as "words in the picture");
+    Process gains stage 0. README, CONTRIBUTING, `gen/API.md` and `engine/README.md` point to it.
+  Not yet tried on a real piece.
 - **Open-source pass (Oct 20, Claude Code in the cloud; branch `claude/loving-mccarthy-83ac1l`, one PR into main).**
   Bryan approved all four parts:
   - **Real folders.** The ~95 flat files moved with `git mv` (history follows: the rename commit changes no content):
@@ -279,6 +295,8 @@ Chips music (the plain `chip` style): Bryan Oct 9, "it's so bad lol"; kept as a 
    a per-letter colour palette from a brand file.
 10. **Real folders: DONE (Oct 20, open-source pass).** After merging: on the Mac, `git pull`; Thonny scripts are now `tools/<name>.py`.
 11. **Community cartridges: DONE (Oct 20):** CONTRIBUTING.md, issue forms, CI on every pull request. Left: a `community/` folder if many arrive; watch the first CI runs on GitHub.
+12. **Try the interview** (`/new-piece`) on the next new piece. A test of the idea: write a real brief for the PLTW promo
+    with Bryan, rebuild it from a blank page in full creative mode, and compare it with r2.
 
 ## Open taste questions
 - Clear sampler for the Chips music on Their Finest Duds too (Chips is approved music: Bryan's call).
