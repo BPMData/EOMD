@@ -238,3 +238,5 @@ None at approval. **DRAFT** lines (on-screen copy, ES/PT) get checked at the sto
   three." · Three sound directions in the storyboard.
 - 2026-10-25 · "Storyboard and stills approved. Open the toolbox, make 15-second samples of S1, S2 and S3, and I'll pick by ear." · Stage: build.
 - 2026-10-25 · On the first sound samples: B's snap "doesn't sound like [finger snapping], more like a sega genesis-era drum machine lol." Asked to hear B with A's wooden clicks or C's mallets as the snap. · `choices-sound-b.html`.
+- 2026-10-25 · "B of the submodifiers of option B works (Mallets)." · Sound: S2 Glass Lobby with mallet snaps.
+- 2026-10-25 · "What I didn't like ... is like the drum machine sound that sounds like ... hitting a drum with a brush." · The gated, noise-heavy snare goes; two replacements to hear (`choices-sound-snare.html`).
