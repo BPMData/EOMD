@@ -1,6 +1,6 @@
 # Brief: CSE hallway loop (working name)
 
-Status: DRAFT · Stage: brief · Mode: full creative · Client: Bryan Murphy · Sign-off: Bryan only ("Nope", round 5)
+Status: APPROVED 2026-10-25 by Bryan Murphy · Stage: concepts · Mode: full creative · Client: Bryan Murphy · Sign-off: Bryan only ("Nope", round 5)
 Usage: Opus 5.5, medium effort · interview + brief: **ASK** Bryan to note the share of a 5-hour limit the app shows
 
 _**ASK** = missing, **DRAFT** = Claude's draft, **Claude's call** = delegated by the client, **Assumed** = Claude's
@@ -33,10 +33,12 @@ clean confident type and motion; no "the future" slogans (T06 holds).
 ## 3. How it's watched
 - **Screen:** "your normal like 65–75 inch 1080 to cheap 4K HDTVs you see everywhere nowadays, like the menus at
   restaurants." Landscape 16:9. Designed at 1920×1080; must stay crisp when a cheap 4K set upscales it.
-- **Distance (Assumed, from the Academies hallway):** about 20 ft → body text ≥ 44 px, headlines ≥ 90 px at 1080p.
+- **Distance:** "The hallways are like, 12 feet wide tops, so they'll be viewing them from anywhere from like 12 to 2
+  feet away ... the text doesn't have to be HUGE." Sized for 12 ft on a 65" set: body ≥ 32 px, headlines ≥ 64 px at
+  1080p (Academies' 20-ft sizes scaled by distance, rounded up for a glance in passing).
 - **Room:** "kind of loud halls, so the audio should be able to hold its own" but "not be integral to the piece (okay
   if it's drowned out or muted)." The picture tells the whole story.
-- **Attention (Assumed):** students walk past and catch a few seconds; every beat must make sense on its own.
+- **Attention:** students walk past and catch a few seconds; every beat must make sense on its own.
 - **Repeats:** loops all day; the same students see it many times a day.
 - **Plays from:** the HTML player in a browser on the hallway TV. Educators get a link on Bryan's GitHub Pages.
 
@@ -74,9 +76,9 @@ is **Claude's call**, from this table only. Spellings follow each maker's own.
 | "an excellent entry point for new high school computer science (CS) learners" | outline p. 1 (word for word if quoted) |
 | BBC micro:bit: eases the move from blocks to Python; code that uses sensors and works with the real world | Bryan, round 4 (Danbury only); spelling from the Micro:bit Educational Foundation |
 | CoDrone EDU (drones by Robolink, coded in blocks or Python) | Bryan, round 4 (Danbury only); name from Robolink resellers |
-| Information Technology & Cybersecurity Academy, Danbury High School | Bryan, round 5 ("I think it's called"); badge text reads "INFORMATION TECHNOLOGY & CYBERSECURITY"; Bryan's pasted blurb says "Information & Cybersecurity Academy". **ASK**: exact name to show |
+| Information Technology & Cybersecurity Academy, Danbury High School | Bryan, round 6: "I think the name on the badge is right" (badge: "INFORMATION TECHNOLOGY & CYBERSECURITY") |
 | Pathways: Computer Programming & Gaming · Cybersecurity · Networking | Bryan's pasted blurb |
-| CSE is the 10th-grade prerequisite for all three pathways | Bryan, round 5 (the PLTW outline says 9th grade in general; show Danbury's only, or no grade) |
+| CSE is the 10th-grade prerequisite for all three pathways | Bryan, rounds 5–6 ("CSE is 10th grade class at danbury"); may be shown as Danbury's. (PLTW's outline says 9th grade in general.) |
 
 No fixed copy file. Every on-screen line will be drafted at the storyboard stage and marked **DRAFT** until approved.
 
@@ -109,8 +111,10 @@ PLTW Blue on Dark Blue is only 2.6: glow and accent only. PLTW's own rule: "Avoi
 **Font:** Poppins (the CSE outline's typeface), heavy weights (T21).
 **Logos:** the official PLTW logo (Bryan, round 4), from PLTW's brand page, never stretched, rotated, tiny or low
 contrast. The Academy badge from Bryan's file (`sources/itc-academy-badge.webp`), or redrawn from its own shapes at
-one line weight (T22). **Assumed:** VEX, MIT App Inventor, Python, micro:bit and Robolink appear as names in our type,
-not as their logos.
+one line weight (T22). **Tool logos:** allowed ("I don't care if you drop in the VEX, App Inventor, Python, etc. logos"); Claude's call.
+MIT App Inventor: lean on the **MIT** name ("MIT itself has great name recognition"), and skip the bee mascot (Bryan:
+"kind of sucks"). `sources/mit-app-inventor-site.webp` is a screenshot of MIT's site for reference only; its
+claims aren't facts for this piece.
 **Brightness:** lots of light and lift; never a dark, heavy purple field from edge to edge.
 
 ## 8. Visual language
@@ -136,14 +140,15 @@ to motion: Claude's call. Loudness −16 LUFS integrated, true peak ≤ −1.5 d
 
 ## 12. Hard limits
 - No "easy"; no "experience required"; no PLTW-branded micro:bit or drones (§4).
-- **Assumed:** no photos, faces or names of students or staff (none were supplied); no statistics, awards, salaries or
-  career promises.
+- No names of staff, "not even me" (Bryan). No photos or faces of students or staff (none supplied). No
+  statistics, awards, salaries or career promises.
 - Nothing flashes more than 3 times a second.
 
 ## 13. Taste references
 `Taste: house. Applies: T01–T06, T07–T09 (repeats), T10, T11, T13, T16 (walk-up), T17–T18 (repeats), T19 (sound
-unreliable), T20, T21 (far), T22, T23, T25, T26; soft T24, T27, T28. T29 off unless a retro look is chosen; T33 if
-the ES/PT lines morph. Overrides: none.`
+unreliable), T20, T22, T23, T25, T26; soft T24, T27, T28. T29 off unless a retro look is chosen; T33 if
+the ES/PT lines morph. Overrides: T21 relaxed: viewers stand 2–12 ft away, so text "doesn't have to be HUGE"; heavy weights
+still preferred.`
 Bryan gave no love/hate references; the house taste stands in. His own pointers: the Neo-New York glass-lobby
 terminal; "bounce"; not demoscene, nerdy, Jetsons, dreary or heavy.
 
@@ -171,8 +176,7 @@ Sign-off: Bryan only. Success (**Assumed**): Bryan says "that's it", and the loo
 the educators in his class and leave running in the Academy's halls.
 
 ## 19. Open questions
-1. The Academy's exact name on screen: "Information Technology & Cybersecurity Academy" (from the badge)?
-2. The approval of this brief, including every **Assumed** line.
+None at approval. **DRAFT** lines (on-screen copy, ES/PT) get checked at the storyboard.
 
 ## Decisions log
 - 2026-10-25 · "From scratch." · Full creative mode.
@@ -186,3 +190,9 @@ the educators in his class and leave running in the Academy's halls.
   use the Danbury HS Information Technology & Cybersecurity branding." · Two brand worlds.
 - 2026-10-25 · Buttons: a few ES/PT key lines; "Ask your counselor"; official PLTW logo; HTML player only.
 - 2026-10-25 · "Let's just... make it right now." Sign-off: "Nope" (Bryan only). Published on his GitHub Pages.
+- 2026-10-25 · "The hallways are like, 12 feet wide tops ... the text doesn't have to be HUGE." · Text sized for 12 ft.
+- 2026-10-25 · "No names of specific staff, not even me." · Hard limit.
+- 2026-10-25 · "I don't care if you drop in the VEX, App Inventor, Python, etc. logos ... the logo for MIT App Inventor
+  kind of sucks ... but MIT itself has great name recognition." · Tool logos allowed; no App Inventor bee.
+- 2026-10-25 · "I think the name on the badge is right." · "Information Technology & Cybersecurity Academy".
+- 2026-10-25 · "Yep, I approve the brief." · Stage: concepts.
