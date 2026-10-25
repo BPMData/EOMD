@@ -12,7 +12,7 @@ folder's `STATUS.md`; repo-wide history in `notes/history.md`._
 | CS Lab Screensaver ("CD-ROM") | Stage 4 on Bryan's Mac; extras through 9h built | Check the 9h builds; stage 5 extras | `proj/cdrom/STATUS.md` |
 | Academies hallway film | Done; Bryan rendered the MP4 (Oct 20) | Watch hero size and chip icons | `academies-film/STATUS.md` |
 | Living posters (SSR, CS, Exploration) | Done | Parked items (5-min timer, random vine entry); rebuild CS + SSR | `living/STATUS.md` |
-| CSE hallway loop (new, full creative) | Brief drafted Oct 25, awaiting approval | Concepts | `proj/cse-loop/STATUS.md` |
+| CSE hallway loop (new, full creative) | Brief approved Oct 25; 3 concepts pitched | Bryan picks a concept, then storyboard | `proj/cse-loop/STATUS.md` |
 | PLTW CSE promo | r2 published ("cheesy as hell, but exactly what I asked for") | The PLTW test below | `proj/pltw/STATUS.md` |
 | gen library (incl. Dust Type) | Working; `tools/gen_export.py` | Check Dust Type knobs | `gen/STATUS.md` |
 | Jukebox | 15 cartridges | Redesign its look | `jukebox/STATUS.md` |
