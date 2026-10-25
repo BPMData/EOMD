@@ -15,9 +15,11 @@ It works in any chat, not only in this repo: paste this file and `TEMPLATE.md` i
 ## How to run it
 - **Look before you ask.** Read what the repo already holds (`proj/<name>/`, brand files, copy files, an older brief)
   and ask the client to confirm it, not to re-type it.
-- **Rounds, not a form.** 3–5 numbered questions per message, most important first; the client may answer in
-  shorthand. Give a one-line example answer with each question so they see the level of detail you need.
-  Suggested order: sections 1–2, then 3–5, then 6–13, then 16–18; skip what's already answered.
+- **Small rounds.** 2–3 questions per message, tops, most important first; the client may answer in shorthand. Add
+  an example answer only when a question could be misread. Suggested order: sections 1–2, then 3–5, then 6–13, then
+  16–18; skip what's already answered.
+- **Confirm instead of asking** whatever the repo or earlier answers already imply: one line of assumptions and
+  "right?" covers several ★ questions at once.
 - **Ask about the problem, not the solution:** who, where, why, what should change. Not "which effects do you want?"
 - **Ask in experience terms.** Not "which easing?" but "snappy or floaty?"; not "what LUFS?" but "who hears it
   200 times a day?"
@@ -28,8 +30,8 @@ It works in any chat, not only in this repo: paste this file and `TEMPLATE.md` i
 - **Hunt the landmines:** words the piece must never say, promises it must never make, things it must never rank.
   (Academies: never "choose" or "pick" an academy, never promise placement, no academy above another.)
 - **Facts come from the client, with a source.** Never fill a gap yourself; keep a running list of what's missing.
-- **Reflect back** after each round in two or three sentences ("So: a 30-s loop for the cafeteria TV, sound off,
-  for 9th graders who've never heard of PLTW ..."). Misreadings surface while they're cheap.
+- **Reflect back** in one sentence per round ("So: a 30-s loop for the cafeteria TV, sound off, for 9th graders
+  who've never heard of PLTW."). Misreadings surface while they're cheap.
 - **Delegation must be explicit.** "You decide" is a fine answer for concept, design and music ("Concept, script,
   design system ... are all yours"). It is never an answer for the facts, the message, the audience or the landmines.
 - **Closed questions as buttons** where the tool allows (Claude Code: `AskUserQuestion`, up to 4 questions with

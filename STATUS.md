@@ -10,7 +10,7 @@ _Last updated: Oct 25, 2026 (new pieces start with a client interview and an app
   Academies film came from Bryan's ~1,800-word prompt (Claude web UI, no project files), a blank page and a written craft
   bar, not from a toolkit; PLTW had no brief at all, and a new-piece session here opens with ~8,500 words about other pieces.
   New:
-  - `brief/INTERVIEW.md`: how to interview the client (rounds of 3–5 questions; ★ questions every time, both modes; ask
+  - `brief/INTERVIEW.md`: how to interview the client (rounds of 2–3 questions; ★ questions every time, both modes; ask
     about the problem, in experience terms; vague words turned into choices; landmines; facts with sources; delegation
     only for creative areas), then brief → approval → 2–3 concepts → design before tools (full creative mode).
   - `brief/TEMPLATE.md`: 19 sections + a Decisions log; the default craft bar (§14) and QA list (§17) are generalized from
@@ -18,7 +18,7 @@ _Last updated: Oct 25, 2026 (new pieces start with a client interview and an app
   - `brief/example-academies.md`: Bryan's Academies prompt, word for word.
   - `/new-piece` skill (`.claude/skills/new-piece/SKILL.md`) starts the interview.
   - CLAUDE.md "New pieces" rewritten (interview first; the efficient/full creative question is in round 1; full creative
-    designs before picking tools; type set in a layout designed with the visuals now counts as "words in the picture");
+    designs before picking tools; the "words inside the picture" rule removed, Bryan: "should stay dead");
     Process gains stage 0. README, CONTRIBUTING, `gen/API.md` and `engine/README.md` point to it.
   Not yet tried on a real piece.
 - **Open-source pass (Oct 20, Claude Code in the cloud; branch `claude/loving-mccarthy-83ac1l`, one PR into main).**
@@ -297,6 +297,9 @@ Chips music (the plain `chip` style): Bryan Oct 9, "it's so bad lol"; kept as a 
 11. **Community cartridges: DONE (Oct 20):** CONTRIBUTING.md, issue forms, CI on every pull request. Left: a `community/` folder if many arrive; watch the first CI runs on GitHub.
 12. **Try the interview** (`/new-piece`) on the next new piece. A test of the idea: write a real brief for the PLTW promo
     with Bryan, rebuild it from a blank page in full creative mode, and compare it with r2.
+13. **Context that follows the stage** (design approved in direction Oct 25): implement `notes/context-plan.md`
+    (slim CLAUDE.md, split STATUS.md, nested per-folder CLAUDE.md, `brief/CRAFT.md`, `brief/TASTE.md`, `/toolbox`). Do it
+    before the PLTW test in item 12, so the test runs in the new setup.
 
 ## Open taste questions
 - Clear sampler for the Chips music on Their Finest Duds too (Chips is approved music: Bryan's call).

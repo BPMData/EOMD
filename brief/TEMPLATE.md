@@ -66,8 +66,6 @@ Default craft bar (from the Academies brief); this piece adds or relaxes: _..._
 - No slideshow logic, no repeated templates, no default easings.
 - Considered typography: strong hierarchy, a tight type system, kinetic type where it earns it, sized for the viewing
   distance; no thin weights or small text on a distant screen.
-- Words belong to the picture: set in a layout designed with the visuals, or formed by them; never captions laid
-  over an unrelated background.
 - A loop point that feels like a breath, not a restart.
 - None of the subject's clichés.
 
