@@ -99,9 +99,32 @@ subject and the tools are then fitted to it.
    - Anti-patterns with Bryan's verdicts: captions over unrelated wallpaper ("looks bad"); effects chosen because
      they exist ("cheesy as hell"); slideshow logic; default easings; template feel.
    - **The medium's envelope** (what's possible, without naming tools): anything drawn procedurally on Canvas 2D in
-     real time; synthesized audio; no photos, footage or remote assets; OFL fonts embedded; school PCs and smart
-     boards as the slowest target; MP4 export exists. This lets concepts be ambitious *and* buildable before the
+     real time; synthesized audio; no photos, footage or remote assets; OFL fonts embedded; an ordinary laptop or
+     office PC as the slowest target; MP4 export exists. This lets concepts be ambitious *and* buildable before the
      toolbox is opened.
+   **Writing brief for `brief/CRAFT.md`** (for the session that writes it):
+   - **Job:** make the model a good creative director for the stretch from the approved brief to approved
+     storyboard and stills, before any tool is in view. It's read by the model, not the client.
+   - **Read only:** `brief/INTERVIEW.md`, `brief/TEMPLATE.md` (§14 craft bar, §17 QA), `brief/example-academies.md`,
+     and this file (the tiers, "Who it's for", this step). Don't open STATUS.md, `gen/`, `score/`, `audio/`,
+     `engine/`, `living/`, `players/`, `proj/` or `academies-film/`: CRAFT.md must not know what the toolbox holds.
+     Ignore CLAUDE.md's file maps.
+   - **Draw on your own expertise** in motion design, graphic design, typography, editing and sound. That's why the
+     strongest model writes it. Be specific and opinionated where craft is settled; give choices where it isn't.
+   - **Stay general:** any subject, client and format. Nothing assumes a loop, a school, a hallway or Bryan; where the
+     format matters, say "if it repeats", "if the sound may be off", etc. (the conditions in step 5).
+   - **No looks from this repo:** don't name its tools, layers, cartridges, scores, or the look of any past piece. The
+     Academies film may be cited for its process (brief, storyboard table, a signature idea with variations), never
+     as a style to copy. The direction vocabulary must reach well beyond what the repo already draws.
+   - **Not in it:** a textbook, history, tutorials, easing math, code, tool advice, the client's taste (that's
+     `brief/taste/`), or anything already in INTERVIEW.md or TEMPLATE.md (link to it instead).
+   - **Must include:** the outline above, plus how to pitch 2–3 concepts to a non-technical client in everyday words
+     (each a few lines: the idea, what they'd see, how it feels; one still or sketch each when possible), what a
+     storyboard row and a still frame must prove, and a short self-check to run before showing the client anything
+     (the anti-patterns as questions).
+   - **Form:** ≤ 1,500 words; headings and tight bullets; plain English, so a later, cheaper model can follow it.
+   - **Wire it in:** in `brief/INTERVIEW.md` "After the interview", read `brief/CRAFT.md` before step 4 (concepts);
+     add it to CLAUDE.md's file map row for `brief/`. Commit on a branch, open a PR, show Bryan the full text.
 5. **Taste as a profile with IDs, not prose** (tier 1; public). Most first prompts carry weak taste, so the house
    taste applies by default; a project may change it, but only item by item, with a reason.
    - `brief/taste/house.md`: the default profile, Bryan's, distilled from STATUS.md and the briefs' verdicts. One
