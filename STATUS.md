@@ -276,6 +276,14 @@ Chips music (the plain `chip` style): Bryan Oct 9, "it's so bad lol"; kept as a 
   A stepped render takes roughly the clip's length (music) plus about the same again (frames).
 
 ## Next
+**Pinned Oct 25 (where we stopped):** PR #2 is open (interview, brief template, Academies example, `/new-piece`,
+`notes/context-plan.md`). Order from here: (1) Bryan merges PR #2; (2) a new Fable chat writes `brief/CRAFT.md` with
+this prompt: "Write `brief/CRAFT.md` for this repo. Your instructions are the 'Writing brief for `brief/CRAFT.md`' in
+step 4 of `notes/context-plan.md`: read that first and follow it, including which files to read and which to leave
+closed. Skip the usual STATUS.md read for this task. When you're done, open a PR and show me the full text.";
+(3) another model implements the rest of `notes/context-plan.md` (item 13 below). Bryan had one more suggestion
+that he fell asleep before finishing ("the one other thing I was going to add ..."): ask him about it first.
+
 1. **Move to Claude Code: DONE (Oct 20).** git repo, cleanup, `CLAUDE.md` + `STATUS.md`, gen dust layer wired in.
 2. **Check the 9h builds (built Oct 20, in `players/`):** listen/watch: the jukebox's 10 new cartridges (levels next to the others) and a few minutes of
    `dist/cdrom-ambient.html` (Starfield should still go to hyperspace; the AMBIENT_VER stamp is unseen).
