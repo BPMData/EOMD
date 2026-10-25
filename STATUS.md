@@ -2,9 +2,29 @@
 
 > **Visitors:** this is the project's working log (what's approved, what's untested, what's next), kept for the people and AI assistants working on it. For what EOMD is and how to use it, start with [README.md](README.md).
 
-_Last updated: Oct 20, 2026 (open-source pass in the cloud: real folders instead of `__` names, CI, CONTRIBUTING, regression baseline settled for Node 22. Before that: moved to Claude Code: git repo, spent patchers and Track 2 auditions deleted, CLAUDE.md + this file; gen dust layer wired in; `tools/html_to_mp4.py`. Earlier: Oct 15 Dust Type study; 9e Overclock long form; 9f airship parts; 9g PATCHES folded into the player source; 9h ambient screensaver + CD-ROM music in the jukebox (not yet run); living posters' time-left readout; Academies film heroes, icons and word blocks)_
+_Last updated: Oct 25, 2026 (new pieces start with a client interview and an approved brief: `brief/`). Before that, Oct 20 (open-source pass in the cloud: real folders instead of `__` names, CI, CONTRIBUTING, regression baseline settled for Node 22. Before that: moved to Claude Code: git repo, spent patchers and Track 2 auditions deleted, CLAUDE.md + this file; gen dust layer wired in; `tools/html_to_mp4.py`. Earlier: Oct 15 Dust Type study; 9e Overclock long form; 9f airship parts; 9g PATCHES folded into the player source; 9h ambient screensaver + CD-ROM music in the jukebox (not yet run); living posters' time-left readout; Academies film heroes, icons and word blocks)_
 
 ## Status
+- **New pieces start with a client interview (Oct 25, Claude Code in the cloud; branch `ccr-1a9f3c89-1xqwn8`).** Bryan's
+  worry: the cartridges made pieces cheaper, but the repo could no longer make another Academies film. Finding: the
+  Academies film came from Bryan's ~1,800-word prompt (Claude web UI, no project files), a blank page and a written craft
+  bar, not from a toolkit; PLTW had no brief at all, and a new-piece session here opens with ~8,500 words about other pieces.
+  New:
+  - `brief/INTERVIEW.md`: how to interview the client (rounds of 2–3 questions; ★ questions every time, both modes; ask
+    about the problem, in experience terms; vague words turned into choices; landmines; facts with sources; delegation
+    only for creative areas), then brief → approval → 2–3 concepts → design before tools (full creative mode).
+  - `brief/TEMPLATE.md`: 19 sections + a Decisions log; the default craft bar (§14) and QA list (§17) are generalized from
+    the Academies prompt.
+  - `brief/example-academies.md`: Bryan's Academies prompt, word for word.
+  - `/new-piece` skill (`.claude/skills/new-piece/SKILL.md`) starts the interview.
+  - CLAUDE.md "New pieces" rewritten (interview first; the efficient/full creative question is in round 1; full creative
+    designs before picking tools; the "words inside the picture" rule removed, Bryan: "should stay dead");
+    Process gains stage 0. README, CONTRIBUTING, `gen/API.md` and `engine/README.md` point to it.
+  - Mode question for a non-technical Pro user, in usage terms (Bryan, Oct 25): ready-made styles ≈ 5–20% of one
+    5-hour limit; from scratch ≈ half to all of one, best started before the limit resets or before stepping away.
+    No dollar estimates (pay-per-use developers are on their own). Rough: each brief logs its real usage; replace the
+    ranges after three pieces per mode. Interview questions go in everyday words ("church tag sale" test).
+  Not yet tried on a real piece.
 - **Open-source pass (Oct 20, Claude Code in the cloud; branch `claude/loving-mccarthy-83ac1l`, one PR into main).**
   Bryan approved all four parts:
   - **Real folders.** The ~95 flat files moved with `git mv` (history follows: the rename commit changes no content):
@@ -256,6 +276,15 @@ Chips music (the plain `chip` style): Bryan Oct 9, "it's so bad lol"; kept as a 
   A stepped render takes roughly the clip's length (music) plus about the same again (frames).
 
 ## Next
+**Pinned Oct 25 (where we stopped):** PR #2 is open (interview, brief template, Academies example, `/new-piece`,
+`notes/context-plan.md`). Order from here: (1) Bryan merges PR #2; (2) a new Fable chat writes `brief/CRAFT.md` with
+this prompt: "Write `brief/CRAFT.md` for this repo. Your instructions are the 'Writing brief for `brief/CRAFT.md`' in
+step 4 of `notes/context-plan.md`: read that first and follow it, including which files to read and which to leave
+closed. Skip the usual STATUS.md read for this task. When you're done, open a PR and show me the full text.";
+(3) another model implements the rest of `notes/context-plan.md` (item 13 below). Bryan's last idea that night,
+choice panels (the demo-sheet pickers: one simple page, up to six options in a 3 × 2 grid), is in the plan and in
+the CRAFT.md writing brief. Don't ask him about the unfinished suggestion; he doesn't remember it.
+
 1. **Move to Claude Code: DONE (Oct 20).** git repo, cleanup, `CLAUDE.md` + `STATUS.md`, gen dust layer wired in.
 2. **Check the 9h builds (built Oct 20, in `players/`):** listen/watch: the jukebox's 10 new cartridges (levels next to the others) and a few minutes of
    `dist/cdrom-ambient.html` (Starfield should still go to hyperspace; the AMBIENT_VER stamp is unseen).
@@ -279,6 +308,11 @@ Chips music (the plain `chip` style): Bryan Oct 9, "it's so bad lol"; kept as a 
    a per-letter colour palette from a brand file.
 10. **Real folders: DONE (Oct 20, open-source pass).** After merging: on the Mac, `git pull`; Thonny scripts are now `tools/<name>.py`.
 11. **Community cartridges: DONE (Oct 20):** CONTRIBUTING.md, issue forms, CI on every pull request. Left: a `community/` folder if many arrive; watch the first CI runs on GitHub.
+12. **Try the interview** (`/new-piece`) on the next new piece. A test of the idea: write a real brief for the PLTW promo
+    with Bryan, rebuild it from a blank page in full creative mode, and compare it with r2.
+13. **Context that follows the stage** (design approved in direction Oct 25): implement `notes/context-plan.md`
+    (slim CLAUDE.md, split STATUS.md, nested per-folder CLAUDE.md, `brief/CRAFT.md`, `brief/taste/`, `/toolbox`, the peeking audit). Do it
+    before the PLTW test in item 12, so the test runs in the new setup.
 
 ## Open taste questions
 - Clear sampler for the Chips music on Their Finest Duds too (Chips is approved music: Bryan's call).

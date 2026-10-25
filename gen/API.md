@@ -6,10 +6,8 @@ harmonographs, halftone screens, and kinetic typography synced to a track. A pie
 a small JSON file.
 Making a new piece means writing or editing one cartridge, not code.
 
-**Before a new piece, ask Bryan "efficient or full creative mode?" (CLAUDE.md, "New pieces").** The cartridges in
+**Before a new piece, interview the client and get a brief approved (`brief/INTERVIEW.md`; the "efficient or full creative mode?" question is in round 1).** The cartridges in
 `carts/` are examples, not templates to reuse; a new piece may need new layers.
-
-**Make the words part of the picture** (swarm / tunnel / truchet / dust words), not captions over a background; see `carts/pltw-cse.json`.
 
 **Cheapest workflow for Claude:** read this file and `KNOBS.md` (generated, lists every knob with range).
 Write `carts/<name>.json`. Run `python3 gen/build.py` then `node gen/tests/smoke.js`. Bryan tunes by eye in

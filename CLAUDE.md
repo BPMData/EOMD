@@ -11,13 +11,13 @@ Read `STATUS.md` at the start of every session (what's approved, what's unheard,
 - **Never invent facts:** names, dates, programs, campuses, pathways, numbers. If it isn't in a brief, copy file or config, ask.
 - **Edit in place, commit per stage:** change the source files directly (no patcher scripts), and commit at the end of each stage or delivered change with a message that says what changed.
 
-## New pieces: ask the mode first
-Before starting any NEW piece (a new video, poster or player; not a change to an existing one), ask Bryan one question and wait for the answer:
-**"Efficient mode (build from the existing gen layers and music, lowest token cost) or full creative mode (design this piece from scratch)?"**
+## New pieces: interview first
+Before starting any NEW piece (a new video, poster or player; not a change to an existing one), interview the client and get a brief approved: follow `brief/INTERVIEW.md` (`/new-piece` starts it). A one-line request is the start of the interview, not the brief: most of the job is finding out what the client actually needs.
+- **Order:** interview in rounds (the ★ questions every time) → `proj/<name>/brief.md` from `brief/TEMPLATE.md` → the client approves it → 2–3 concepts → storyboard + stills → build. No design work before the brief is approved.
+- **The mode question is in round 1:** ready-made parts (efficient mode) or from scratch (full creative mode), asked in everyday words with rough Claude-usage estimates (share of a 5-hour limit); the wording is in `brief/INTERVIEW.md`. The client is usually non-technical: no jargon in anything they read.
 - **The existing cartridges, scores, styles and palettes are examples of what the tools can do, not a menu.** None of them is the default or the expected answer for a new piece. Take ideas from them; never reach for one just because it's there.
 - **Efficient mode** still means fitting the subject: pick (or tune) visuals and music that suit the piece's topic and audience. Never reuse music written for another piece (e.g. the hallway film's music, built around the seven academies) unless Bryan asks for it.
-- **Full creative mode** sets the bar at the Academies film: a one-off design made for its subject. New gen layers, new music (a new score, or a new `audio/style-*.js`), or a player written from scratch are all fair game; spend the tokens.
-- **Words belong inside the picture, not on top of it.** Bryan's verdict on captions laid over unrelated backgrounds (PLTW promo r1, Oct 20): "looks bad". Make the visuals form the words: dots that fly into letters (`swarm`), words flying down the tunnel (`tunnel` `words`), tiles that spell them (`truchet` `words`), dust that settles into them (`dust`). The `type` layer is for lyric/kinetic-type pieces where the words ARE the piece.
+- **Full creative mode designs before it picks tools.** Concept, storyboard and stills come from the brief alone, before opening `gen/`, the cartridges or other pieces' code. The craft bar is section 14 of `brief/TEMPLATE.md` (taken from the Academies brief, `brief/example-academies.md`). New gen layers, new music (a new score, or a new `audio/style-*.js`), the timeline engine (`engine/`) or a player written from scratch are all fair game; spend the tokens. Reuse the plumbing (DSP, render and export tools), never another piece's look.
 - **Music for a one-off piece is scored to its picture.** Write a `proj/<name>/music.js` (fixed length, hits on the cartridge's moments; `proj/pltw/music.js` is the model) and render it with `tools/render_piece.py`; don't borrow another piece's score.
 
 ## Working rules
@@ -40,7 +40,7 @@ Before starting any NEW piece (a new video, poster or player; not a change to an
 - **Any piece, video:** `tools/html_to_mp4.py`
 
 ## Folder layout
-Real folders (the flat `__` file names were turned into folders on Oct 20, 2026; old notes may still use them: `audio__style-lounge.js` = `audio/style-lounge.js`): `audio/` (instruments, arranger, styles), `score/` (music cartridges + `FORMAT.md`), `tools/` (the Python scripts Bryan runs; each resolves paths from the repo root, its parent folder), `proj/<piece>/` (one piece's brief, copy and sources), `living/` (living-poster engine), `jukebox/`, `engine/` (starter engine, a real tree: `engine/src/audio/dsp.js`), `fonts/` (OFL TTFs `tools/build_cdrom.py` downloads + every `OFL-*.txt` license), `notes/`, `tests/` (regression baseline), `academies-film/`, `gen/`, `players/` (published copies of the finished builds, in git, so a clone plays out of the box), `media/` (README images, e.g. `pltw-cse-preview.jpg` cut from the MP4), `.github/` (CI workflow, issue templates), `dist/` (builds, git-ignored), `font_cache/` (`tools/build.py`'s font cache, git-ignored).
+Real folders (the flat `__` file names were turned into folders on Oct 20, 2026; old notes may still use them: `audio__style-lounge.js` = `audio/style-lounge.js`): `audio/` (instruments, arranger, styles), `score/` (music cartridges + `FORMAT.md`), `tools/` (the Python scripts Bryan runs; each resolves paths from the repo root, its parent folder), `proj/<piece>/` (one piece's brief, copy and sources), `brief/` (how a new piece starts: the client interview, the brief template, the Academies brief as the example), `.claude/skills/new-piece/` (`/new-piece`), `living/` (living-poster engine), `jukebox/`, `engine/` (starter engine, a real tree: `engine/src/audio/dsp.js`), `fonts/` (OFL TTFs `tools/build_cdrom.py` downloads + every `OFL-*.txt` license), `notes/`, `tests/` (regression baseline), `academies-film/`, `gen/`, `players/` (published copies of the finished builds, in git, so a clone plays out of the box), `media/` (README images, e.g. `pltw-cse-preview.jpg` cut from the MP4), `.github/` (CI workflow, issue templates), `dist/` (builds, git-ignored), `font_cache/` (`tools/build.py`'s font cache, git-ignored).
 
 ### academies-film/
 - **`danbury-academies-player.html` is the MASTER for the Academies film.** It has the 8 animated hero marks, the 21 redrawn pathway icons and the trilingual word blocks on all 7 academies. Edit this file directly. Its config sits in it TWICE (the visuals' copy and the audio worker's copy in `<script type="text/plain" id="dhs-audio-src">`); a config edit must change both.
@@ -57,6 +57,7 @@ Generative motion graphics as small JSON cartridges (Truchet, 3D dot meshes, flo
 | `.github/workflows/ci.yml` | CI on every push and PR: gen build + smoke test, and the audio regression CHECK (Node 22) | Changing what CI checks |
 | `README.md`, `LICENSE` | The public face of the repo (github.com/BPMData/EOMD): what EOMD is, how to try it, build, make an MP4; MIT. Keep the README true when tools or builds change | Changing how people use or build it |
 | `STATUS.md` | Current status, music direction, known limits, next steps, open taste questions | Start of every session |
+| `brief/INTERVIEW.md`, `brief/TEMPLATE.md`, `brief/example-academies.md` | The client interview (questions, how to ask, what happens after), the fill-in brief with the default craft bar and QA, and Bryan's Academies prompt as the model brief | Starting any new piece |
 | `proj/<name>/*` | One piece's brief, decisions, source copy | Working on that piece |
 | `audio/instruments.js` | Shared instrument library, reading-room voices (rhodes, vibes, pad, bass, piano, flute, chime, stream) | Changing or adding sounds |
 | `audio/instruments-film.js` | The hallway film's voices, added to the same `INSTR` (kick, snap, shaker, woodblock, tine, marimba, pluck, pulse, keys, mallet, voice, whistle, filmBass/filmPad/filmChime). Load right after `audio/instruments.js` | Changing film24/rounds sounds |
@@ -109,6 +110,7 @@ Generative motion graphics as small JSON cartridges (Truchet, 3D dot meshes, flo
 
 ## Process
 Stages, each ending in a delivered file and a commit:
+0. Interview and approved brief (`brief/INTERVIEW.md`)
 1. Sketches or stills
 2. Playable visuals
 3. Music samples
