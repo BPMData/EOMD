@@ -48,18 +48,22 @@
   const { D, N, stmt, hat, cblock, rep, bool, opts, COL } = B;
   const appHat = (kids) => hat(COL.BASIC, 'when', D('Button1'), '.Click', opts({ stack: kids }));
   const appKids = [() => stmt(COL.VAR, 'set', D('Ball1'), '.PaintColor to', D('red')), () => stmt(COL.INPUT, 'call', D('Sound1'), '.Play')];
-  const vexHat = (kids, sel) => hat(COL.BASIC, 'when started', opts({ stack: kids }));
+  const vexHat = (kids) => hat(COL.BASIC, 'when started', opts({ stack: kids }));
   const vexKids = (sel = -1) => [() => stmt(COL.LOOPS, 'drive', D('forward'), 'for', N('200'), D('mm'), opts({ selected: sel === 0 })),
-    () => stmt(COL.LOOPS, 'turn', D('right'), 'for', N('90'), 'degrees', opts({ selected: sel === 1 }))];
+    () => stmt(COL.LOOPS, 'set drive velocity to', N('100'), '%', opts({ selected: sel === 1 })),
+    () => stmt(COL.LOOPS, 'drive', D('forward'), 'for', N('400'), D('mm'), opts({ selected: sel === 2 }))];
   const PINS = '#b5292c';   // MakeCode's Pins category is a deep red (approximate)
   const bitHat = (kids) => hat(COL.BASIC, 'forever', opts({ stack: kids }));
-  const bitKids = [() => cblock(COL.LOGIC, 'if', bool(COL.LOGIC, rep(PINS, 'analog read pin', D('P0')), D('<'), N('300')), 'then', opts({ stack: [stmt(PINS, 'digital write pin', D('P1'), 'to', N('1'))] }))];
+  // water for 2 s when the soil is dry, then check again in 5 minutes (Bryan: "you don't sample 60 times a second")
+  const bitKids = [() => cblock(COL.LOGIC, 'if', bool(COL.LOGIC, rep(PINS, 'analog read pin', D('P0')), D('<'), N('300')), 'then', opts({ stack: [
+      stmt(PINS, 'digital write pin', D('P1'), 'to', N('1')), stmt(COL.BASIC, 'pause (ms)', N('2000')), stmt(PINS, 'digital write pin', D('P1'), 'to', N('0'))] })),
+    () => stmt(COL.BASIC, 'pause (ms)', N('300000'))];
 
   // ---------------- paths ----------------
   const ROAD = [['M', -40, 900], ['C', 400, 900, 600, 760, 900, 760], ['C', 1250, 760, 1350, 620, 1560, 560], ['C', 1700, 520, 1800, 520, 1980, 540]];
   const TO_PHONE = [['M', 930, 470], ['L', 1150, 470], ['Q', 1180, 470, 1180, 440], ['L', 1180, 330], ['Q', 1180, 300, 1210, 300],
     ['L', 1564, 300], ['Q', 1610, 300, 1610, 346], ['L', 1610, 954], ['Q', 1610, 1000, 1564, 1000], ['L', 1256, 1000], ['Q', 1210, 1000, 1210, 954], ['L', 1210, 346], ['Q', 1210, 300, 1256, 300]];
-  const TO_PLANT = [['M', 1278, 640], ['C', 1330, 640, 1380, 560, 1480, 600], ['C', 1560, 630, 1600, 650, 1646, 690]];
+  const TO_PLANT = [['M', 1408, 640], ['C', 1480, 640, 1520, 580, 1600, 610], ['C', 1680, 640, 1740, 660, 1793, 732]];
 
   // ---------------- scenes ----------------
   const scenes = [];
@@ -85,7 +89,10 @@
     } });
 
   // B. self-driving cars on Danbury Blue (row 3). The line comes back along the road, right to left.
-  const carU = (t) => t < 13.5 ? -0.2 : t < 16.0 ? lerp(-0.05, 0.55, inOut(prog(t, 13.5, 16.0))) : t < 17.6 ? lerp(0.55, 0.7, inOut(prog(t, 16.2, 17.6))) : lerp(0.7, 1.15, M.inCubic(prog(t, 17.8, 18.9)));
+  // The car runs the blocks: drives, stalls on the hill (wheels spin), a velocity block snaps in, it climbs.
+  const carU = (t) => t < 13.2 ? -0.2 : t < 14.8 ? lerp(-0.05, 0.5, inOut(prog(t, 13.2, 14.8))) : t < 16.0 ? lerp(0.5, 0.58, outCubic(prog(t, 14.8, 15.5)))
+    : t < 17.6 ? lerp(0.58, 0.86, inOut(prog(t, 16.0, 17.4))) : lerp(0.86, 1.15, M.inCubic(prog(t, 17.6, 18.9)));
+  const carSel = (t) => t >= 13.2 && t < 15.6 ? 0 : t >= 15.6 && t < 16.0 ? 1 : t >= 16.0 && t < 17.6 ? 2 : -1;
   S({ t0: 9.6, t1: 19.0, bg: C.BLUE, wipe: { t0: 9.6, t1: 11.2, dir: 'road' },
     draw(ctx, t) {
       const P = LN.get('road', ROAD);
@@ -93,81 +100,83 @@
       const back = smooth(prog(t, 9.6, 11.2)); LN.draw(ctx, P, 1 - back, 1, { color: '#fff', head: back < 1 });
       rise(ctx, 'Program self-driving cars.', 96, 170, 96, C.WHITE, t, 10.9);
       rise(ctx, 'VEXcode VR  ·  VEXcode EXP', 100, 236, 44, C.YELLOW, t, 11.3, 700);
-      snapStack(ctx, t, 120, 320, 1.8, vexHat, vexKids(), [12.0, 12.5, 13.0]);
-      // the car does what the blocks say: forward, then a right turn (a little nose-dip), then off
+      snapStack(ctx, t, 120, 290, 1.6, vexHat, vexKids(carSel(t)), [12.0, 12.6, 15.6, 16.0]);
       const u = carU(t);
-      if (u > -0.15 && u < 1.15) { const p = LN.at(P, clamp(u, 0, 1)), ext = u < 0 ? u * P.len : u > 1 ? (u - 1) * P.len : 0;
-        const turn = Math.sin(Math.PI * prog(t, 16.2, 17.2)) * 0.12, s = 0.95;
-        ctx.save(); ctx.translate(p.x + Math.cos(p.a) * ext, p.y + Math.sin(p.a) * ext); ctx.rotate(p.a + turn); A.sdv(ctx, 0, -128 * s, s, u * P.len / 60); ctx.restore(); }
+      if (u > -0.15 && u < 1.15) { const p = LN.at(P, clamp(u, 0, 1)), ext = u < 0 ? u * P.len : u > 1 ? (u - 1) * P.len : 0, s = 0.95;
+        const stallSpin = t > 14.8 ? (Math.min(t, 16.0) - 14.8) * 9 : 0;     // wheels keep turning while the car barely moves
+        const shake = t > 15.1 && t < 16.0 ? Math.sin(t * 60) * 1.5 : 0;
+        ctx.save(); ctx.translate(p.x + Math.cos(p.a) * ext, p.y + Math.sin(p.a) * ext + shake); ctx.rotate(p.a); A.sdv(ctx, 0, -128 * s, s, u * P.len / 60 + stallSpin); ctx.restore(); }
       pltwLock(ctx, C.WHITE);
     } });
 
   // C. the same program as Python, on PLTW Blue (row 4)
-  const PY = ['drivetrain.drive_for(FORWARD, 200, MM)', 'drivetrain.turn_for(RIGHT, 90, DEGREES)'];
+  const PY = ['drivetrain.drive_for(FORWARD, 200, MM)', 'drivetrain.set_drive_velocity(100, PERCENT)', 'drivetrain.drive_for(FORWARD, 400, MM)'];
   S({ t0: 18.0, t1: 24.9, bg: C.PLTW_BLUE, wipe: { t0: 18.0, t1: 18.8, dir: 'right', line: '#fff' },
     draw(ctx, t) {
       rise(ctx, 'Then write it in Python.', 96, 170, 96, C.WHITE, t, 18.7);
       rise(ctx, 'Python', 100, 236, 44, C.YELLOW, t, 19.1, 700);
-      const sel = t > 19.6 && t < 20.9 ? 0 : t > 21.0 && t < 22.3 ? 1 : -1, fade = 1 - smooth(prog(t, 22.6, 23.3));
-      if (fade > 0) { ctx.save(); ctx.globalAlpha = fade; B.drawStack(ctx, [vexHat(vexKids(sel).map((f) => f()))], 120, 320, 1.8); ctx.restore(); }
-      // typing, one line per block; then the Python slides into the blocks' place
-      const slide = inOut(prog(t, 22.9, 23.7)), px = lerp(950, 120, slide);
-      PY.forEach((s, i) => { const t0 = 19.6 + i * 1.4, n = Math.floor(s.length * prog(t, t0, t0 + 1.2)); if (n <= 0) return;
-        const y = 470 + i * 84; mono(ctx, s.slice(0, n), px, y, 40, C.WHITE);
-        if (t < t0 + 1.4 || (i === PY.length - 1 && t < 24.2)) { ctx.font = `500 40px ${DHS.type.MONO}`; const w = ctx.measureText(s.slice(0, n)).width; edgeLine(ctx, px, y + 18, px + w, y + 18, '#fff'); } });
+      const typing = (i) => [19.4 + i * 1.1, 19.4 + i * 1.1 + 1.0];
+      let sel = -1; PY.forEach((s, i) => { const [a, b] = typing(i); if (t >= a && t < b + 0.1) sel = i; });
+      const fade = 1 - smooth(prog(t, 22.6, 23.3));
+      if (fade > 0) { ctx.save(); ctx.globalAlpha = fade; B.drawStack(ctx, [vexHat(vexKids(sel).map((f) => f()))], 120, 290, 1.6); ctx.restore(); }
+      const slide = inOut(prog(t, 22.9, 23.7)), px = lerp(910, 120, slide);
+      PY.forEach((s, i) => { const [a, b] = typing(i), n = Math.floor(s.length * prog(t, a, b)); if (n <= 0) return;
+        const y = 440 + i * 70; mono(ctx, s.slice(0, n), px, y, 36, C.WHITE);
+        if (t < b + 0.1 || (i === PY.length - 1 && t < 24.2)) { ctx.font = `500 36px ${DHS.type.MONO}`; const w = ctx.measureText(s.slice(0, n)).width; edgeLine(ctx, px, y + 16, px + w, y + 16, '#fff'); } });
       pltwLock(ctx, C.WHITE);
     } });
 
   // D. Academy red: sensing (row 5), then flying (row 6). Red rises from the bottom.
   const SMILE = '0000001010000001000101110';
-  const dronePos = (t) => {   // the drone does each line of code as it lands
-    const x = t < 33.0 ? 1350 : t < 34.0 ? lerp(1350, 1650, inOut(prog(t, 33.0, 34.0))) : 1650;
-    const yUp = lerp(860, 420, inOut(prog(t, 31.0, 32.4))), yDown = lerp(420, 860, inOut(prog(t, 37.0, 38.0)));
-    const y = (t < 37.0 ? yUp : yDown) + (t > 35.0 && t < 37.0 ? Math.sin((t - 35) * 4) * 6 : 0);
-    const tilt = t > 32.5 && t < 34.0 ? 0.12 * Math.sin(Math.PI * prog(t, 32.5, 34.0)) : 0;
-    return { x, y, tilt };
+  const CENTER = [960, 470];
+  const dronePos = (t) => {   // the drone does each line of code as it lands, then flies into the middle of the end card
+    let x = t < 32.6 ? 1350 : t < 33.6 ? lerp(1350, 1650, inOut(prog(t, 32.6, 33.6))) : 1650;
+    let y = lerp(860, 420, inOut(prog(t, 31.0, 32.2))) + (t > 33.8 && t < 35.8 ? Math.sin((t - 33.8) * 4) * 6 : 0);
+    let tilt = t > 32.3 && t < 33.6 ? 0.12 * Math.sin(Math.PI * prog(t, 32.3, 33.6)) : 0, s = 0.8;
+    if (t > 36.2) { const u = inOut(prog(t, 36.2, 38.6)); x = lerp(1650, CENTER[0], u); y = lerp(420, CENTER[1], u) - Math.sin(Math.PI * u) * 60; tilt = -0.16 * Math.sin(Math.PI * u); s = lerp(0.8, 1.0, u); }
+    return { x, y, tilt, s };
   };
-  S({ t0: 24.0, t1: 39.2, bg: C.RED, wipe: { t0: 24.0, t1: 24.8, dir: 'up', line: '#fff' },
+  const TO_DRONE = [['M', 690, 369], ['C', 940, 369, 1000, 900, 1350, 892]];
+  S({ t0: 24.0, t1: 38.6, bg: C.RED, wipe: { t0: 24.0, t1: 24.8, dir: 'up', line: '#fff' },
     draw(ctx, t) {
       const row6 = smooth(prog(t, 29.9, 30.5));
-      // row 5 words
       if (row6 < 1) { const a = 1 - row6;
         ctx.save(); ctx.globalAlpha = a; rise(ctx, 'Build things that sense', 96, 150, 88, C.WHITE, t, 24.6); rise(ctx, 'the world around them.', 96, 246, 88, C.WHITE, t, 24.8);
         rise(ctx, 'BBC micro:bit', 100, 306, 40, C.WHITE, t, 25.1, 600);
-        snapStack(ctx, t, 96, 420, 1.5, bitHat, bitKids, [25.4, 26.0]);
+        snapStack(ctx, t, 96, 335, 1.35, bitHat, bitKids, [25.4, 25.9, 26.4]);
         ctx.restore(); }
-      // micro:bit (slides up, then moves aside for the drone)
-      const mbIn = outCubic(prog(t, 24.6, 25.2)), mx = lerp(1150, 940, row6), my = lerp(640, 720, row6) + (1 - mbIn) * 500, ms = lerp(0.85, 0.75, row6);
-      const rows = Math.floor(prog(t, 28.6, 30.6) * 5 + 1e-6), pat = SMILE.split('').map((c, i) => (Math.floor(i / 5) < rows ? c : '0')).join('');
-      A.microbit(ctx, mx, my, ms, pat);
-      // the wire to the plant's sensor, and the plant
-      if (row6 < 1) { const P = LN.get('toPlant', TO_PLANT), u = smooth(prog(t, 25.2, 26.0)), pa = 1 - row6;
-        ctx.save(); ctx.globalAlpha = pa; if (u > 0) LN.draw(ctx, P, 0, u, { color: '#fff', head: u < 1, width: 10 });
-        const dry = smooth(prog(t, 26.3, 27.3)) * (1 - smooth(prog(t, 28.0, 28.8)));
-        const drops = []; if (t > 27.5 && t < 28.7) for (let k = 0; k < 3; k++) { const d = M.mod((t - 27.5) * 2.5 + k / 3, 1); drops.push(d); }
-        A.plant(ctx, 1650 + row6 * 400, 800, 1.0, dry, drops); ctx.restore(); }
+      // micro:bit, wire and plant: in for row 5, out (down) for row 6, so nothing suggests the micro:bit flies the drone
+      const mbIn = outCubic(prog(t, 24.6, 25.2)), drop = M.inCubic(row6) * 700, my = 640 + (1 - mbIn) * 500 + drop;
+      const rows = Math.floor(prog(t, 29.0, 29.6) * 5 + 1e-6), pat = SMILE.split('').map((c, i) => (Math.floor(i / 5) < rows ? c : '0')).join('');
+      if (row6 < 1) {
+        const P = LN.get('toPlant', TO_PLANT), u = smooth(prog(t, 25.2, 26.0));
+        ctx.save(); ctx.translate(0, drop); if (u > 0) LN.draw(ctx, P, 0, u, { color: '#fff', head: u < 1, width: 10 });
+        const dry = smooth(prog(t, 26.4, 27.2)) * (1 - smooth(prog(t, 28.4, 29.2)));
+        const drops = []; if (t > 27.4 && t < 29.4) for (let k = 0; k < 3; k++) drops.push(M.mod((t - 27.4) * 2.5 + k / 3, 1));
+        A.plant(ctx, 1720, 800, 1.0, dry, drops); ctx.restore();
+        A.microbit(ctx, 1280, my, 0.85, pat);
+      }
       // row 6: Python strips snap like blocks, and the drone does each one
       if (row6 > 0) {
         rise(ctx, 'Code things that fly.', 96, 170, 96, C.WHITE, t, 30.2);
         rise(ctx, 'CoDrone EDU  ·  Python', 100, 236, 44, C.WHITE, t, 30.5, 600);
-        const code = ['drone.takeoff()', 'drone.set_roll(50)', 'drone.move(1)', 'drone.hover(2)', 'drone.land()'], ts = [31.0, 32.5, 33.0, 35.0, 37.0];
+        const code = ['drone.takeoff()', 'drone.set_roll(50)', 'drone.move(1)', 'drone.hover(2)'], ts = [31.0, 32.3, 32.6, 33.8];
         code.forEach((s, i) => { const f = flyIn(t, ts[i], 0.45); if (t < ts[i] - 0.45) return; const x = 120 - f * 700, y = 330 + i * 92;
           ctx.save(); ctx.globalAlpha = clamp(1 - f); A.rr(ctx, x, y, 560, 78, 10); ctx.fillStyle = C.INK; ctx.fill(); ctx.fillStyle = C.YELLOW; ctx.fillRect(x, y, 12, 78);
-          const on = t >= ts[i] && t < (ts[i + 1] || 38.0); if (on) { ctx.strokeStyle = C.YELLOW; ctx.lineWidth = 4; A.rr(ctx, x, y, 560, 78, 10); ctx.stroke(); }
+          const on = t >= ts[i] && t < (ts[i + 1] || 36.0); if (on) { ctx.strokeStyle = C.YELLOW; ctx.lineWidth = 4; A.rr(ctx, x, y, 560, 78, 10); ctx.stroke(); }
           ctx.font = `500 34px ${DHS.type.MONO}`; ctx.fillStyle = C.YELLOW; ctx.fillText('drone', x + 36, y + 51); const w = ctx.measureText('drone').width; ctx.fillStyle = '#fff'; ctx.fillText(s.slice(5), x + 36 + w, y + 51); ctx.restore(); });
-        // the flight path: the line from the micro:bit's edge, then wherever the drone has been
-        const pts = [[mx, my + 90], [1100, 880], [1350, 860]]; for (let tt = 31.0; tt <= Math.min(t, 38.0); tt += 1 / 30) { const p = dronePos(tt); pts.push([p.x, p.y + 30]); }
-        const p = dronePos(Math.min(t, 38.0)); pts.push([p.x, p.y + 30]);
-        const lead = clamp(prog(t, 30.4, 31.0));
-        if (lead > 0) { ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round'; const n = lead < 1 ? 3 : pts.length; ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]);
-          for (let i = 1; i < n; i++) { const q = i === n - 1 && lead < 1 ? [lerp(pts[i - 1][0], pts[i][0], lead), lerp(pts[i - 1][1], pts[i][1], lead)] : pts[i]; ctx.lineTo(q[0], q[1]); }
+        // the line runs from the code to the drone, then becomes its flight path
+        const L0 = LN.get('toDrone', TO_DRONE), lead = smooth(prog(t, 30.5, 31.0));
+        if (lead > 0) LN.draw(ctx, L0, 0, lead, { color: '#fff', head: lead < 1, width: 13 });
+        if (t > 31.0) { ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.beginPath(); ctx.moveTo(1350, 892);
+          for (let tt = 31.0; tt < t; tt += 1 / 30) { const q = dronePos(tt); ctx.lineTo(q.x, q.y + 30 * q.s); } const q = dronePos(t); ctx.lineTo(q.x, q.y + 30 * q.s);
           ctx.strokeStyle = '#fff'; ctx.globalAlpha = 0.28; ctx.lineWidth = 34; ctx.stroke(); ctx.globalAlpha = 1; ctx.lineWidth = 13; ctx.stroke(); ctx.restore(); }
-        ctx.save(); ctx.globalAlpha = row6; A.drone(ctx, p.x, p.y, 0.8, p.tilt, t * 30); ctx.restore();
+        const p = dronePos(t); ctx.save(); ctx.globalAlpha = row6; A.drone(ctx, p.x, p.y, p.s, p.tilt, t * 30); ctx.restore();
       }
       academyLock(ctx, enter(t, 24.7));
     } });
 
-  // E. end card on Danbury Blue (row 7): dots gather into the course name, then the message
+  // E. end card on Danbury Blue (row 7): the drone flies in, bursts into dots, they swirl and form the course name
   let DOTS = null;
   function makeDots() {
     const cv = document.createElement('canvas'); cv.width = W; cv.height = 300; const c = cv.getContext('2d');
@@ -175,23 +184,30 @@
     const d = c.getImageData(0, 0, W, 300).data, pts = [];
     for (let y = 0; y < 300; y += 7) for (let x = 0; x < W; x += 7) if (d[(y * W + x) * 4 + 3] > 128) pts.push([x, y + 430 - 200]);
     let s = 7; const rnd = () => { s = (s * 16807) % 2147483647; return s / 2147483647; };
-    DOTS = pts.map(([x, y]) => ({ x, y, sx: 1500 + rnd() * 600, sy: rnd() * 1080, z: rnd(), d: rnd() * 0.5 }));
+    DOTS = pts.map(([x, y]) => ({ x, y, th: rnd() * 6.283, R: 120 + rnd() * 520, z: rnd(), d: rnd() * 0.45, spin: 1.4 + rnd() * 1.2 }));
   }
-  S({ t0: 38.0, t1: 49.3, bg: C.BLUE, wipe: { t0: 38.0, t1: 39.0, dir: 'left', line: '#fff' },
+  const BURST = 38.7, GATHER = 39.6, SETTLE = 40.9;
+  S({ t0: 37.4, t1: 49.3, bg: C.BLUE, wipe: { t0: 37.4, t1: 38.4, dir: 'left', line: '#fff' },
     draw(ctx, t) {
       if (!DOTS) makeDots();
-      const out = smooth(prog(t, 46.0, 46.8)), ox = out * 600, oa = 1 - out;
-      ctx.save(); ctx.translate(ox, 0); ctx.globalAlpha = oa;
-      const typeIn = smooth(prog(t, 40.4, 40.9));
-      if (t > 38.8 && typeIn < 1) { ctx.fillStyle = '#fff';
-        for (const p of DOTS) { const u = inOut(prog(t, 39.0 + p.d, 40.4)), x = lerp(p.sx, p.x, u), y = lerp(p.sy, p.y, u) - Math.sin(Math.PI * u) * 120 * p.z, r = lerp(1.5 + p.z * 4, 3.4, u);
-          ctx.globalAlpha = oa * (1 - typeIn) * clamp(prog(t, 38.8, 39.3)); ctx.beginPath(); ctx.arc(x, y, r, 0, 6.283); ctx.fill(); } }
+      if (t < BURST) { const p = dronePos(t), k = 1 - M.inCubic(prog(t, BURST - 0.15, BURST)); A.drone(ctx, p.x, p.y, p.s * k, p.tilt, t * 30); }
+      const out = smooth(prog(t, 46.0, 46.8)), oa = 1 - out;
+      ctx.save(); ctx.translate(out * 600, 0); ctx.globalAlpha = oa;
+      // a soft ring where the drone was (one gentle pulse, no flash)
+      const rp = prog(t, BURST, BURST + 0.6); if (rp > 0 && rp < 1) { ctx.save(); ctx.globalAlpha = 0.45 * (1 - rp); ctx.strokeStyle = '#fff'; ctx.lineWidth = 10; ctx.beginPath(); ctx.arc(CENTER[0], CENTER[1], 40 + rp * 360, 0, 6.283); ctx.stroke(); ctx.restore(); }
+      const typeIn = smooth(prog(t, SETTLE - 0.1, SETTLE + 0.35));
+      if (t > BURST && typeIn < 1) { ctx.fillStyle = '#fff';
+        for (const p of DOTS) {
+          const b = outCubic(prog(t, BURST, BURST + 1.0)), g = inOut(prog(t, GATHER + p.d, SETTLE)), ang = p.th + p.spin * (b + 1.2 * g);
+          const r = p.R * b, bx = CENTER[0] + Math.cos(ang) * r, by = CENTER[1] + Math.sin(ang) * r * 0.55;
+          const x = lerp(bx, p.x, g), y = lerp(by, p.y, g), rad = lerp(1.6 + p.z * 3.6, 3.4, g);
+          ctx.globalAlpha = oa * (1 - typeIn); ctx.beginPath(); ctx.arc(x, y, rad, 0, 6.283); ctx.fill(); } }
       ctx.globalAlpha = oa; T(ctx, 'Computer Science Essentials', W / 2, 430, 110, C.WHITE, typeIn, 800, 'center');
-      ctx.globalAlpha = oa * enter(t, 40.6); A.pltwLogo(ctx, W / 2 - 400.36 * 70 / 99.89 / 2, 220, 70, '#fff'); ctx.globalAlpha = oa;
-      rise(ctx, 'No coding experience needed.', W / 2, 560, 64, C.YELLOW, t, 41.2, 800, 'center');
-      rise(ctx, 'No necesitas experiencia previa.', W / 2, 628, 40, C.WHITE, t, 41.8, 600, 'center');
-      rise(ctx, 'Não precisa de experiência prévia.', W / 2, 682, 40, C.WHITE, t, 42.2, 600, 'center');
-      rise(ctx, 'Ask your counselor about Computer Science Essentials.', W / 2, 840, 44, C.WHITE, t, 43.0, 700, 'center');
+      ctx.globalAlpha = oa * enter(t, 41.1); A.pltwLogo(ctx, W / 2 - 400.36 * 70 / 99.89 / 2, 220, 70, '#fff'); ctx.globalAlpha = oa;
+      rise(ctx, 'No coding experience needed.', W / 2, 560, 64, C.YELLOW, t, 41.5, 800, 'center');
+      rise(ctx, 'No necesitas experiencia previa.', W / 2, 628, 40, C.WHITE, t, 42.0, 600, 'center');
+      rise(ctx, 'Não precisa de experiência prévia.', W / 2, 682, 40, C.WHITE, t, 42.4, 600, 'center');
+      rise(ctx, 'Ask your counselor about Computer Science Essentials.', W / 2, 840, 44, C.WHITE, t, 43.1, 700, 'center');
       ctx.restore();
     } });
 
