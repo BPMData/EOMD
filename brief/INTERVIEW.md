@@ -43,9 +43,10 @@ It works in any chat, not only in this repo: paste this file and `TEMPLATE.md` i
 ★ = every piece, both modes. The rest: full creative pieces, where they apply. Numbers = sections of `TEMPLATE.md`.
 
 **1. The ask**
-- ★ What is it, where will it play, and by when? *"A 60-s loop for the hallway TVs by the main office, by Nov 15."*
-- ★ "Efficient mode (build from the existing gen layers and music, lowest token cost) or full creative mode
-  (design this piece from scratch)?"
+- ★ What is it, where will it be seen, and by when? *"A 90-second video for the robotics club's open-house night,
+  shown once on a projector, by Nov 15."*
+- ★ The mode, in the client's terms: "Quick and low-cost, built from ready-made parts (efficient mode), or a one-off
+  design made from scratch, slower and costlier (full creative mode)?"
 
 **2. Purpose and tone**
 - ★ After watching, what should a viewer know, feel and do? One line each.
@@ -56,9 +57,10 @@ It works in any chat, not only in this repo: paste this file and `TEMPLATE.md` i
 **3. How it's watched** (this drives every design decision)
 - ★ Which screen: size, landscape or portrait, how far away, how bright the room, what speakers?
 - ★ Do people sit and watch, or walk past and catch three seconds? Will anyone see it from the start?
-- ★ Is the sound on, off, or drowned out? Who hears it on repeat, and how often?
-- Loop forever or play once? Part of a playlist with other content? What plays it (kiosk PC, smart board, USB
-  stick, a Zoom share), and who presses start?
+- ★ Does it play once, or repeat (a loop on a screen, a playlist, a social feed)? If it repeats, who sees and hears it
+  over and over? Never assume either until the client says.
+- ★ Is the sound on, off, or unreliable (a noisy room, a feed that autoplays muted)?
+- What plays it (a laptop, a TV, a phone, a projector, a video upload), and who presses start?
 
 **4. How the subject works**
 - What's the system or story behind it that the piece must get right? *(Academies: every 9th grader starts in
@@ -92,7 +94,8 @@ It works in any chat, not only in this repo: paste this file and `TEMPLATE.md` i
 - ★ Is there a next step for the viewer? What is it? (Never invent URLs, deadlines, QR codes or contacts.)
 
 **11. Music and sound**
-- What should it sound like, and what would drive people mad on the 200th play (bells, alarms, piercing tones, big drops)?
+- What should it sound like? If it repeats: what would drive people mad on the 200th play (bells, alarms, piercing
+  tones, big drops)?
 - Sound effects synced to the motion, or music only?
 
 **12. Hard limits**

@@ -56,6 +56,13 @@ subject and the tools are then fitted to it.
    - commit/STATUS rules.
    Move everything else to the folder it describes (step 3). Acceptance: a fresh session's start-up context names no
    cartridge, layer, chip or score.
+   **Tier 0 is client-neutral.** The repo is for anyone who wants a video made, not only Bryan, and most clients
+   don't assume a loop, a hallway or a school. Bryan's own context (Danbury HS, English learners, hallway and
+   classroom screens, −16/−23 LUFS by room, 44/90 px for 20 ft) moves to `brief/clients/bryan.md`, read once the
+   interview shows the client is Bryan. Tier 0 keeps only what holds for every piece (offline single file, time-based
+   motion, flashing limit, never invent facts) and says that legibility and loudness targets come from the brief's
+   "How it's watched". The maintainer rules for the repo itself (Thonny-friendly scripts, edit in place, commit per
+   stage) stay in tier 0, labeled as such.
 2. **Split `STATUS.md`.** Root STATUS.md becomes a short index (≤ 400 words): one line per piece (state + next step,
    linking to its folder), cross-cutting items (CI, regression baseline, open repo-wide questions). Each piece's
    history, known limits and open taste questions move to a separate `STATUS.md` in its folder (never inside the
@@ -79,9 +86,10 @@ subject and the tools are then fitted to it.
      variations, designing for the viewing context first.
    - Storyboard and style-frame formats (the Academies `SCRIPT.md` table as the model), what a still must prove.
    - Motion craft: anticipation, overshoot, follow-through, stagger, match cuts and shape morphs, camera moves,
-     rhythm locked to music, holds long enough to read, loops that breathe.
-   - Type for screens at distance; hierarchy; contrast in bright rooms; bilingual lines.
-   - Sound for repeated public playback.
+     rhythm locked to music, holds long enough to read, endings that land (or, if it repeats, loops that breathe).
+   - Type for the actual screen and distance (a phone in hand to a TV across a hall); hierarchy; contrast; more than
+     one language when the audience needs it.
+   - Sound for where it plays: a single showing, a feed that may be muted, or repeated public playback.
    - A vocabulary of directions to choose from deliberately (Swiss/editorial type, flat illustration, 2.5D paper,
      isometric, collage, data-graphic, generative, retro-computing ...), so the default isn't whatever the toolkit
      happens to draw.
@@ -99,10 +107,16 @@ subject and the tools are then fitted to it.
      Fields: ID (never reused) · strength (`strong` = default, an override needs a reason; `soft` = a lean) · area
      (motion, type, color, music, sound, structure, process) · the preference · the verdict it came from. Hard rules
      stay in CLAUDE.md, not here. Target ≤ 40 items.
-   - `brief/taste/audiences.md`: presets for recurring settings (hallway loop, classroom reading, promo, lab
-     screensaver), a few lines each: which items it raises, lowers or adds. Read only when the brief names one.
-   - In the brief, §13 becomes `Taste: house + hallway-loop. Overrides: T07 off (a 20-s promo has no room for
-     breathers).` §17 QA adds: every `strong` item is honored or overridden in §13.
+   - **Nothing about the format is assumed.** Items that depend on how a piece is seen carry a condition, and they
+     apply only once the interview has answered it. Conditions come from the brief's "How it's watched" answers:
+     `plays once | repeats`, `sound on | off | unreliable`, `walk-up | seated | scrolling`, `short (< 30 s) | medium
+     | long (> 5 min)`, `distance far | near`. Example:
+     `T07 · strong · music · when long or repeats · Breathers beat repetition ...`
+     Items with no condition hold for every piece. No named presets ("hallway loop"): a preset is a format guessed
+     in advance, which is exactly what the interview is for.
+   - In the brief, §13 becomes `Taste: house. Applies: T01–T05, T07 (repeats), T12 (sound unreliable). Overrides:
+     T09 off (the client wants a hard-cut ending).` §17 QA adds: every applicable `strong` item is honored or
+     overridden in §13.
    - Why a file and not a database (the IndexedDB idea): browser storage lives in one viewer's browser and never
      reaches Claude, a cloud session or another user. A line-per-item file in git is the shared database: versioned,
      readable by any model, parseable by a script (`^T\d+ · (strong|soft) ·`). A settings page could be generated
@@ -141,9 +155,38 @@ subject and the tools are then fitted to it.
    - **Decision rule:** if peeks show up in 2 of the next 3 new pieces, or once in a way that shaped the design (a
      concept or storyboard echoing a cartridge's look), make it a blocking `PreToolUse` hook on those paths during
      design stages. Record the count and the call in STATUS.md.
-   - **Repeatable test (optional, costs tokens):** `tools/eval_new_piece.py` runs a headless session (`claude -p`)
-     with a canned one-line request ("make a promo for the robotics club") and reports which files it opened before
-     its first question. Run it after any change to CLAUDE.md, the skills or `brief/`.
+10. **First-question eval, with a cost guard** (measured Oct 25 before any of this plan was built).
+   - **What it does:** `tools/eval_new_piece.py` runs `claude -p "Make a promo video for the robotics club."` in the
+     repo with Sonnet (the model most clients use), read-only tools, `--max-turns 15` and `--max-budget-usd 0.50`, and
+     `--output-format stream-json`. From the stream it reports: the files opened before the first question; whether it
+     asked questions instead of designing; the context size at the first question; the run's cost.
+   - **Measured baseline (Claude Code 2.1.310, Sonnet, this cloud container):**
+     | Run | Context at start | Context at first question | Cost | Behavior |
+     |---|---|---|---|---|
+     | Empty folder (control) | 32.1k tokens | ~50k | $0.28 | Designed a promo at once, planned slides around facts it didn't have |
+     | Repo today | 42.8k | 63.4k | $0.28 | `/new-piece`, read STATUS.md (all ~5,500 words), INTERVIEW.md, grep; then 3 questions |
+     Claude Code's own overhead (~32k here, less without this container's extra tools) is fixed and isn't ours to
+     cut. The repo's share is ~31k: ~11k at start (CLAUDE.md) plus ~20k read before the first question, mostly
+     STATUS.md. After steps 1–2 the expected share is ~6–8k (CLAUDE.md ≤ 900 words, a 400-word STATUS index,
+     INTERVIEW.md). The run also showed the mode question was jargon to a client; it's now in plain words.
+   - **So it's cheap only if the slimming works:** ~$0.25 per run with Sonnet, more with Opus. Not "a few tokens",
+     but fine when it runs only on pushes that change `CLAUDE.md`, any nested `CLAUDE.md`, `.claude/`, `brief/` or
+     `STATUS.md`, plus a manual button.
+   - **Pass/fail budget** (checked against the control's context, re-measured whenever the Claude Code version
+     changes, so harness growth isn't blamed on the repo):
+     - repo share of context at the first question ≤ 12k tokens;
+     - files opened before the first question only from `brief/`, `.claude/skills/`, the root STATUS index, and the new
+       piece's own `proj/<name>/`;
+     - it asks before it designs (no Write or Edit attempts, ends on a question);
+     - cost ≤ $0.35.
+   - **When it fails, it switches itself off:** the workflow opens a GitHub issue labeled `eval-over-budget` with the
+     numbers, the files it opened and the first 200 lines of the stream (the full log attached to the run as an
+     artifact). Its first step on every later run is "is an `eval-over-budget` issue open?"; if so, it skips. Closing
+     the issue after a fix turns it back on. No repo writes, no settings to flip.
+   - **Who pays:** CI needs an `ANTHROPIC_API_KEY` repo secret (API billing, separate from a Claude subscription).
+     Without one, the same script runs locally on the subscription and prints the same verdict; Bryan's call.
+   - The empty-folder run is also the best argument for the interview: with no repo rules, the model started
+     designing and filled the gaps with guesses.
 
 ## Decisions (Bryan, Oct 25)
 - Per-piece status: a separate `STATUS.md` in each folder, never inside the folder's CLAUDE.md. General rule: lazy by
@@ -151,3 +194,6 @@ subject and the tools are then fitted to it.
 - Taste: public and on by default for everyone, since most first prompts carry weak taste; a project overrides it
   item by item, with a reason (step 5).
 - Hooks: record and measure first (step 9); block only if the numbers say so.
+- No format is assumed: no loop, hallway or school until the client says so; taste items carry conditions instead of
+  named presets (step 5), and tier 0 is client-neutral, with Bryan's context in `brief/clients/bryan.md` (step 1).
+- The first-question eval runs only if it stays cheap, and it switches itself off with an issue when it doesn't (step 10).

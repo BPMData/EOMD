@@ -66,7 +66,7 @@ Default craft bar (from the Academies brief); this piece adds or relaxes: _..._
 - No slideshow logic, no repeated templates, no default easings.
 - Considered typography: strong hierarchy, a tight type system, kinetic type where it earns it, sized for the viewing
   distance; no thin weights or small text on a distant screen.
-- A loop point that feels like a breath, not a restart.
+- If it loops: a loop point that feels like a breath, not a restart.
 - None of the subject's clichés.
 
 ## 15. Technical
@@ -79,7 +79,7 @@ the Pages site)._
 
 ## 17. QA
 Default checks; add the piece's own:
-- Loop seam: the last second and the first second back to back show no jump and no click, gap or loudness change.
+- If it loops: the last second and the first second back to back show no jump and no click, gap or loudness change.
 - Legibility: hero text readable with the frame at 25% scale; supporting text legible on pause.
 - Walk-up test: every beat makes sense to someone who just arrived (if viewers walk past).
 - Sound-off test: the story holds with the audio drowned out (if it plays somewhere noisy).
