@@ -134,7 +134,8 @@ It works in any chat, not only in this repo: paste this file and `TEMPLATE.md` i
 2. **Draft the brief:** copy `TEMPLATE.md` to `proj/<name>/brief.md` and fill it in, in the client's words where
    possible, with the reasons kept. Mark gaps **ASK** and Claude's drafts (translations, suggested copy) **DRAFT**. Commit.
 3. **Approval.** The client reads it and approves or edits it. No design work before this.
-4. **Concepts:** 2–3 distinct directions, a few lines each (signature idea, structure, look, sound). The client
+4. **Concepts:** read `brief/CRAFT.md` first (brief to concept, how to pitch, storyboard and still formats, the
+   self-check). Then 2–3 distinct directions, a few lines each (signature idea, structure, look, sound). The client
    picks or mixes. In efficient mode the directions come from what the existing tools can do.
 5. **Design before tools (full creative mode):** a storyboard (a table: time | on screen | sound;
    `brief/CRAFT.md` has the format), 2–3 still frames and a written sound concept (what sound does, pulse,
