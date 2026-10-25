@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pick one</title>
+<!--
+  Choice panel: one offline page, up to six options in a 3 x 2 grid. The client answers with a letter ("B, but slower").
+  Copy to proj/<name>/choices-<topic>.html and fill in PANEL below; nothing else needs editing.
+  Each option is ONE of:
+    img:   'still-a.png' or a data: URI            (a still or a sketch)
+    video: 'clip-b.mp4'                            (~15 s; loops, muted until clicked)
+    audio: 'sound-c.mp3'                           (a sound sample; the tile shows a play button)
+    draw:  function (ctx, w, h, t) { ... }         (a sketch drawn live on a 16:9 canvas; t = seconds)
+  Media files sit beside this page (or inline as data: URIs), so it works with no internet.
+-->
+<style>
+  :root { --bg:#f4f2ee; --card:#fff; --ink:#1c1c1e; --dim:#5d5d63; --line:#d9d6cf; --accent:#2f5bd3; --tile:#e7e4dd; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#141416; --card:#1f1f23; --ink:#f2f0ea; --dim:#a4a4ab; --line:#34343a; --accent:#8fb0ff; --tile:#2a2a30; } }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:17px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width:1500px; margin:0 auto; padding:28px 16px 40px; }
+  h1 { font-size:clamp(24px, 3vw, 34px); margin:0 0 6px; line-height:1.2; }
+  .ask { color:var(--dim); margin:0 0 22px; max-width:70ch; }
+  .grid { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:18px; }
+  @media (max-width:900px) { .grid { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
+  @media (max-width:560px) { .grid { grid-template-columns:1fr; } }
+  .opt { background:var(--card); border:1px solid var(--line); border-radius:14px; overflow:hidden; display:flex; flex-direction:column; }
+  .media { position:relative; aspect-ratio:16 / 9; background:var(--tile); cursor:zoom-in; }
+  .media > img, .media > video, .media > canvas { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; display:block; }
+  .letter { position:absolute; left:10px; top:10px; z-index:2; width:44px; height:44px; border-radius:50%; background:var(--ink); color:var(--bg);
+            display:grid; place-items:center; font-weight:800; font-size:24px; }
+  .play { position:absolute; inset:0; margin:auto; width:88px; height:88px; border-radius:50%; border:0; background:var(--accent); color:#fff;
+          font-size:34px; cursor:pointer; }
+  .play[aria-pressed="true"] { background:var(--ink); color:var(--bg); }
+  .text { padding:12px 14px 16px; }
+  .label { font-weight:700; font-size:19px; }
+  .note { color:var(--dim); margin-top:2px; }
+  .how { margin-top:24px; color:var(--dim); }
+  .zoom { position:fixed; inset:0; background:rgba(0,0,0,.92); display:none; align-items:center; justify-content:center; z-index:10; cursor:zoom-out; padding:16px; }
+  .zoom.on { display:flex; }
+  .zoom .media { width:min(100%, calc((100vh - 32px) * 16 / 9)); cursor:zoom-out; background:#000; }
+</style>
+</head>
+<body>
+<main>
+  <h1 id="title"></h1>
+  <p class="ask" id="ask"></p>
+  <div class="grid" id="grid"></div>
+  <p class="how" id="how"></p>
+</main>
+<div class="zoom" id="zoom" aria-hidden="true"></div>
+<script>
+// ===================== PANEL (fill this in) =====================
+const PANEL = {
+  title: 'Which opening feels right?',
+  ask: 'A few ways the video could start. Click any picture to see it big. Answer with a letter, and add anything you like ("B, but slower").',
+  options: [
+    { label: 'Calm and slow', note: 'Shapes drift in one by one.', draw: (c, w, h, t) => sketch(c, w, h, t, 0.4) },
+    { label: 'Punchy', note: 'Everything lands on the beat.', draw: (c, w, h, t) => sketch(c, w, h, t, 2.0) },
+    { label: 'A still', note: 'An image: a file beside this page, or inline like this one.',
+      img: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 90"><rect width="160" height="90" fill="#eae3d2"/><text x="80" y="52" font-family="sans-serif" font-size="16" font-weight="700" text-anchor="middle" fill="#2b2b2b">STILL</text></svg>') },
+    // { label: 'A clip', note: '15 seconds.', video: 'clip-d.mp4' },
+    // { label: 'A sound', note: 'The music for the ending.', audio: 'sound-e.mp3' },
+  ],
+};
+// Placeholder sketch for the example options above; delete it when you fill in PANEL.
+function sketch(c, w, h, t, speed) {
+  c.fillStyle = '#20232a'; c.fillRect(0, 0, w, h);
+  for (let i = 0; i < 5; i++) {
+    const p = Math.min(1, Math.max(0, (t * speed - i * 0.35) % 4));
+    c.fillStyle = ['#f2c14e', '#f78154', '#4d9078', '#b4436c', '#5fad56'][i];
+    c.beginPath(); c.arc(w * (0.18 + i * 0.16), h * 0.5 + (1 - p) * h * 0.4, h * 0.08, 0, Math.PI * 2); c.fill();
+  }
+}
+// ================================================================
+
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const opts = PANEL.options.slice(0, 6);
+if (PANEL.options.length > 6) console.warn('Choice panel: only the first six options are shown.');
+document.title = PANEL.title;
+document.getElementById('title').textContent = PANEL.title;
+document.getElementById('ask').textContent = PANEL.ask;
+document.getElementById('how').textContent = 'Reply with the letter of the one you like: ' + opts.map((_, i) => 'ABCDEF'[i]).join(', ') + '.';
+const draws = [];      // live canvases: { cv, fn }
+let current = null;    // playing <audio>
+
+function makeMedia(o, i, big) {
+  const m = document.createElement('div'); m.className = 'media';
+  const L = document.createElement('div'); L.className = 'letter'; L.textContent = 'ABCDEF'[i]; m.appendChild(L);
+  if (o.draw) {
+    const cv = document.createElement('canvas'); m.appendChild(cv); draws.push({ cv, fn: o.draw, big });
+  } else if (o.video) {
+    const v = document.createElement('video'); v.src = o.video; v.loop = true; v.muted = true; v.playsInline = true;
+    if (!reduced) v.autoplay = true; if (big) { v.controls = true; v.muted = false; v.play().catch(() => {}); }
+    m.appendChild(v);
+  } else if (o.audio) {
+    const a = new Audio(o.audio); a.preload = 'auto';
+    const b = document.createElement('button'); b.className = 'play'; b.textContent = '▶'; b.setAttribute('aria-pressed', 'false');
+    b.setAttribute('aria-label', 'Play option ' + 'ABCDEF'[i]);
+    b.onclick = (e) => {
+      e.stopPropagation();
+      if (current && current !== a) { current.pause(); document.querySelectorAll('.play').forEach((x) => { x.textContent = '▶'; x.setAttribute('aria-pressed', 'false'); }); }
+      if (a.paused) { a.currentTime = a.ended ? 0 : a.currentTime; a.play(); current = a; b.textContent = '❚❚'; b.setAttribute('aria-pressed', 'true'); }
+      else { a.pause(); b.textContent = '▶'; b.setAttribute('aria-pressed', 'false'); }
+    };
+    a.onended = () => { b.textContent = '▶'; b.setAttribute('aria-pressed', 'false'); };
+    m.appendChild(b); m.style.cursor = 'default';
+    return m;
+  } else if (o.img) {
+    const im = document.createElement('img'); im.src = o.img; im.alt = o.label || ''; m.appendChild(im);
+  }
+  return m;
+}
+
+const grid = document.getElementById('grid'), zoom = document.getElementById('zoom');
+opts.forEach((o, i) => {
+  const card = document.createElement('section'); card.className = 'opt';
+  const m = makeMedia(o, i, false);
+  if (!o.audio) m.onclick = () => openZoom(o, i);
+  const tx = document.createElement('div'); tx.className = 'text';
+  tx.innerHTML = '<div class="label"></div><div class="note"></div>';
+  tx.querySelector('.label').textContent = 'ABCDEF'[i] + '. ' + (o.label || '');
+  tx.querySelector('.note').textContent = o.note || '';
+  card.append(m, tx); grid.appendChild(card);
+});
+
+function openZoom(o, i) {
+  zoom.innerHTML = ''; zoom.appendChild(makeMedia(o, i, true)); zoom.classList.add('on'); zoom.setAttribute('aria-hidden', 'false');
+}
+function closeZoom() {
+  for (let k = draws.length - 1; k >= 0; k--) if (draws[k].big) draws.splice(k, 1);
+  zoom.querySelectorAll('video').forEach((v) => v.pause());
+  zoom.innerHTML = ''; zoom.classList.remove('on'); zoom.setAttribute('aria-hidden', 'true');
+}
+zoom.onclick = closeZoom;
+addEventListener('keydown', (e) => { if (e.key === 'Escape') closeZoom(); });
+
+const t0 = performance.now();
+function frame(now) {
+  const t = reduced ? 3 : (now - t0) / 1000;    // reduced motion: one held frame
+  for (const d of draws) {
+    const r = d.cv.getBoundingClientRect(), dpr = Math.min(2, devicePixelRatio || 1);
+    const w = Math.max(1, Math.round(r.width * dpr)), h = Math.max(1, Math.round(r.height * dpr));
+    if (d.cv.width !== w || d.cv.height !== h) { d.cv.width = w; d.cv.height = h; }
+    const c = d.cv.getContext('2d'); c.setTransform(1, 0, 0, 1, 0, 0);
+    try { d.fn(c, w, h, t); } catch (err) { console.error(err); }
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

@@ -30,7 +30,8 @@ mixes; the verdict goes into the brief's Decisions log in their words.
 **Choice panels.** Whenever the client chooses between things (concepts, a look, a hero moment, a sound), show, don't
 describe: one offline HTML page, up to six options in a 3 × 2 grid, each a still, a ~15-second clip or a sound
 sample, with a short plain-words label and a letter to answer with ("B, but slower"). During design the options are
-stills or sketches made for this piece; clips and sound samples come once the tools open.
+stills or sketches made for this piece; clips and sound samples come once the tools open. The page template is
+`.claude/skills/toolbox/choice-panel.html` (open only that file, not the toolbox).
 
 ## 3. Storyboard and stills
 **The storyboard** lives in `proj/<name>/storyboard.md`: one table, one row per beat.
