@@ -47,8 +47,22 @@ subject and the tools are then fitted to it.
   "Efficient" in EOMD), and it keeps the model unbiased until it has made its own first top-level design.
 - **Pointers, not copies:** every fact lives in one file; the tiers above link to it. (Bryan dislikes redundant
   instruction sets.)
-- Optional, not recommended yet: a PreToolUse hook that blocks reads of `gen/`, `score/`, `audio/` while a piece's
+- Optional, not recommended yet: a PreToolUse hook that blocks reads of the restricted list (below) while a piece's
   brief says `Stage: design`. Try the instructions alone first; add the hook only if the model keeps peeking.
+
+## The restricted list (design stages)
+One list, used by the craft writing brief, the peeking audit, the first-question eval and any future hook. During
+the design stages these paths stay closed; they open at the toolbox gate (efficient mode: brief approved; full
+creative: storyboard, stills and sound concept approved). Picture and sound are treated the same.
+- **Picture:** `gen/`, `living/`, `engine/`, `academies-film/`, `players/`, `dist/`, `media/`.
+- **Sound and music:** `audio/`, `score/`, `jukebox/`, `engine/src/audio/` and `gen/audio/` (inside the folders
+  above), `tests/hashes.json`, `notes/audio-ports.md`, every `proj/*/music.js`, `proj/cdrom/track2-r2.js`,
+  `proj/cdrom/intro-motif.md`. (MIDI export is `tools/midi.py`, which logs the arranger's notes through Node; there
+  is no other MIDI code in the repo.)
+- **Tools:** `tools/` (builds, renderers, calibrate, midi, porter, regress, MP4 export).
+- **Other pieces:** every `proj/<piece>/` except the new piece's own, and the per-piece STATUS files.
+- **Open during design:** root `CLAUDE.md`, the root STATUS index, `brief/`, `.claude/skills/new-piece/`, the new
+  piece's `proj/<name>/`, and files the client supplied (logo, copy, brand guide).
 
 ## Changes, in order (each one a commit)
 1. **Slim root `CLAUDE.md` to tier 0 (target ≤ 900 words).** Keep: the intro, Bryan's rules, "New pieces" as a short
@@ -87,7 +101,7 @@ subject and the tools are then fitted to it.
    strongest model, from the Academies prompt's "Creative expectations" outward). Contents:
    - How a designer gets from brief to concept: the single-minded message, the signature idea, a system with
      variations, designing for the viewing context first.
-   - Storyboard and style-frame formats (the Academies `SCRIPT.md` table as the model), what a still must prove.
+   - Storyboard and style-frame formats (a time | on screen | sound table, one row per beat), what a still must prove.
    - Motion craft: anticipation, overshoot, follow-through, stagger, match cuts and shape morphs, camera moves,
      rhythm locked to music, holds long enough to read, endings that land (or, if it repeats, loops that breathe).
    - Type for the actual screen and distance (a phone in hand to a TV across a hall); hierarchy; contrast; more than
@@ -106,8 +120,8 @@ subject and the tools are then fitted to it.
    - **Job:** make the model a good creative director for the stretch from the approved brief to approved
      storyboard and stills, before any tool is in view. It's read by the model, not the client.
    - **Read only:** `brief/INTERVIEW.md`, `brief/TEMPLATE.md` (§14 craft bar, §17 QA), `brief/example-academies.md`,
-     and this file (the tiers, "Who it's for", this step). Don't open STATUS.md, `gen/`, `score/`, `audio/`,
-     `engine/`, `living/`, `players/`, `proj/` or `academies-film/`: CRAFT.md must not know what the toolbox holds.
+     and this file (the tiers, "Who it's for", this step). Don't open STATUS.md or anything on the restricted list (above): CRAFT.md must
+     not know what the toolbox holds.
      Ignore CLAUDE.md's file maps.
    - **Draw on your own expertise** in motion design, graphic design, typography, editing and sound. That's why the
      strongest model writes it. Be specific and opinionated where craft is settled; give choices where it isn't.
@@ -148,12 +162,20 @@ subject and the tools are then fitted to it.
      readable by any model, parseable by a script (`^T\d+ · (strong|soft) ·`). A settings page could be generated
      from it later if one is ever wanted.
    - New verdicts flow in: when a brief's Decisions log records a verdict that generalizes, add or adjust an item.
+5b. **A written sound concept before any audio code** (full creative mode; part of the storyboard stage). Written
+   from a blank slate, in the piece's `proj/<name>/storyboard.md`, before anything on the restricted list opens:
+   what sound does for this piece (music, effects, silence, or none); pulse or tempo and why it suits the edit; the
+   instruments and textures, described as sound, not as patch names; how it meets the picture's key moments; how it
+   ends (or, if it repeats, how it loops and stays bearable); which taste items apply (brief §13). The client hears
+   about it in everyday words with the concepts. In efficient mode it's written right after the toolbox opens, as
+   a choice among existing sounds made for this piece's fit (still never another piece's score).
 6. **Tier 2 `/toolbox` skill** (`.claude/skills/toolbox/SKILL.md`). Description: "Use only after the brief is
    approved (efficient mode) or the storyboard and stills are approved (full creative mode)." Body: a one-page index
    **by need**, describing mechanisms, not looks:
    - timeline film with cuts and choreography → `engine/`;
    - generative layers → `gen/` (each layer as a mechanism, e.g. "swarm: N points tweened between point sets");
-   - scored one-off music → `proj/<name>/music.js` + `tools/render_piece.py`;
+   - scored one-off music → `proj/<name>/music.js` + `tools/render_piece.py` (`proj/pltw/music.js` as the worked
+     example: today CLAUDE.md names it in always-loaded rules; step 1 moves that pointer here);
    - endless or streaming music → the arranger;
    - MP4 → `tools/html_to_mp4.py` / `tools/gen_export.py`;
    - fonts, DSP, loudness checks, publishing.
@@ -174,8 +196,8 @@ subject and the tools are then fitted to it.
      (the newest `proj/*/brief.md` whose stage isn't `build`) and, while that stage is interview, brief, concepts or
      storyboard, appends one JSON line to `proj/<name>/access.jsonl`: time, stage, tool, paths touched. It never
      blocks anything. The log is committed with each stage commit.
-   - **Check on push:** `tools/check_stage_reads.py`, run by CI. For every piece, it lists reads of toolbox paths
-     (`gen/`, `score/`, `audio/`, `living/`, `engine/`, `players/`, other pieces' folders) made before the toolbox
+   - **Check on push:** `tools/check_stage_reads.py`, run by CI. For every piece, it lists reads of paths on the restricted
+     list (picture, sound and music, tools, other pieces) made before the toolbox
      gate (efficient mode: brief approved; full creative: storyboard approved). It reports them as a warning
      annotation, never a failure, so it can't block a push. Bash calls are matched by path substrings in the command.
    - **Decision rule:** if peeks show up in 2 of the next 3 new pieces, or once in a way that shaped the design (a
@@ -222,4 +244,7 @@ subject and the tools are then fitted to it.
 - Hooks: record and measure first (step 9); block only if the numbers say so.
 - No format is assumed: no loop, hallway or school until the client says so; taste items carry conditions instead of
   named presets (step 5), and tier 0 is client-neutral, with Bryan's context in `brief/clients/bryan.md` (step 1).
+- Sound gets the same lockout as picture (Gemini's suggestion, adopted with two changes): it follows the mode gate,
+  so in efficient mode sound opens with the toolbox like everything else; and the sound concept is written at the
+  storyboard stage, after the picture's concept exists, so the sound is scored to it.
 - The first-question eval runs only if it stays cheap, and it switches itself off with an issue when it doesn't (step 10).
