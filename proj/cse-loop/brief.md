@@ -1,6 +1,6 @@
 # Brief: CSE hallway loop (working name)
 
-Status: APPROVED 2026-10-25 by Bryan Murphy · Stage: storyboard · Mode: full creative · Client: Bryan Murphy · Sign-off: Bryan only ("Nope", round 5)
+Status: APPROVED 2026-10-25 by Bryan Murphy · Stage: build · Mode: full creative · Client: Bryan Murphy · Sign-off: Bryan only ("Nope", round 5)
 Usage: Opus 5.5, medium effort · interview + brief: **ASK** Bryan to note the share of a 5-hour limit the app shows
 
 _**ASK** = missing, **DRAFT** = Claude's draft, **Claude's call** = delegated by the client, **Assumed** = Claude's
@@ -236,3 +236,4 @@ None at approval. **DRAFT** lines (on-screen copy, ES/PT) get checked at the sto
   work.' IDK." · micro:bit beat hero becomes a sensing line (**DRAFT** wording), shown with a self-watering plant.
 - 2026-10-25 · "Give me 3 different soundways methods to choose from. I like your current idea as one of those
   three." · Three sound directions in the storyboard.
+- 2026-10-25 · "Storyboard and stills approved. Open the toolbox, make 15-second samples of S1, S2 and S3, and I'll pick by ear." · Stage: build.

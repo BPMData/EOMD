@@ -1,6 +1,6 @@
 # Storyboard: CSE hallway loop
 
-Stage: storyboard · DRAFT (waiting for Bryan's approval)
+Stage: storyboard · APPROVED 2026-10-25 by Bryan Murphy (sound: S1–S3 picked by ear after the toolbox opens)
 
 Concept: **Snap + One Line** (Bryan: "a combo of A and C"). Written from the brief alone; no tool folders opened.
 All on-screen words and block labels are **DRAFT**.
