@@ -7,7 +7,7 @@ import os, sys, subprocess, math
 
 # ============================ SETTINGS (edit these) ============================
 BLOCK_SCALE = 1.8          # MakeCode blocks at 1.8x -> 34 px block text at 1080p (brief: body >= 32 px)
-MAKE_PNGS   = True         # also save PNGs with headless Chrome
+MAKE_PNGS   = True         # also save PNGs with headless Chrome (mock keychain, throwaway profile)
 CHROME      = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 # ===============================================================================
 
@@ -164,12 +164,15 @@ p2 = frame(BLUE, "".join(s2), "still-2-cars")
 # ---------------- Still 3: row 5 (0:35) -- drones, Academy red ----------------
 s3 = []
 s3.append(text(96, 170, "Code things that fly.", 96, WHITE))
-s3.append(text(100, 236, "BBC micro:bit  ·  CoDrone EDU", 44, WHITE, 600))
-fly = [hat(BASIC, "on start", stack=[
-       stmt(LOGIC, "take off"),
-       stmt(LOGIC, "move", D("forward"), N("50"), "cm"),
-       stmt(LOGIC, "land")])]
-s3.append(stack(fly, 120, 320))
+s3.append(text(100, 236, "CoDrone EDU  ·  Python", 44, WHITE, 600))
+# Python on dark strips that snap like blocks (Robolink's own example code, from Bryan)
+code = ["drone.takeoff()", "drone.set_roll(50)", "drone.move(1)", "drone.hover(2)", "drone.land()"]
+for i, ln in enumerate(code):
+    y = 330 + i * 92
+    s3.append(f'<rect x="120" y="{y}" width="560" height="78" rx="10" fill="{INK}"/>')
+    s3.append(f'<rect x="120" y="{y}" width="12" height="78" rx="4" fill="{YELLOW}"/>')
+    s3.append(f'<text x="156" y="{y+51}" font-family="Menlo, Monaco, monospace" font-size="34" fill="{WHITE}">'
+              f'<tspan fill="{YELLOW}">drone</tspan>{ln[5:]}</text>')
 path = "M 1000 640 C 1060 520 1180 560 1260 470 C 1340 380 1360 310 1480 300 C 1700 280 1800 420 1960 380"
 s3.append(line(path, WHITE))
 s3.append(microbit(940, 720, 0.75))
@@ -182,9 +185,12 @@ p3 = frame(RED, "".join(s3), "still-3-fly")
 
 print("wrote", p1, p2, p3, sep="\n")
 if MAKE_PNGS and os.path.exists(CHROME):
+    import tempfile
+    profile = tempfile.mkdtemp(prefix="stills-chrome-")   # throwaway profile; mock keychain avoids macOS prompts
     for p in (p1, p2, p3):
         out = p[:-4] + ".png"
-        subprocess.run([CHROME, "--headless=new", "--disable-gpu", "--hide-scrollbars", f"--window-size={W},{H}",
-                        f"--screenshot={out}", "--allow-file-access-from-files", "file://" + p],
-                       capture_output=True, timeout=60)
+        subprocess.run([CHROME, "--headless=new", "--disable-gpu", "--hide-scrollbars", "--use-mock-keychain",
+                        "--password-store=basic", "--no-first-run", "--no-default-browser-check",
+                        f"--user-data-dir={profile}", f"--window-size={W},{H}", f"--screenshot={out}",
+                        "--allow-file-access-from-files", "file://" + p], capture_output=True, timeout=60)
         print("png:", out, os.path.exists(out))

@@ -76,6 +76,8 @@ is **Claude's call**, from this table only. Spellings follow each maker's own.
 | "an excellent entry point for new high school computer science (CS) learners" | outline p. 1 (word for word if quoted) |
 | BBC micro:bit: eases the move from blocks to Python; code that uses sensors and works with the real world | Bryan, round 4 (Danbury only); spelling from the Micro:bit Educational Foundation |
 | CoDrone EDU (drones by Robolink, coded in blocks or Python) | Bryan, round 4 (Danbury only); name from Robolink resellers |
+| CoDrone EDU Python, shown verbatim: `drone.takeoff()`, `drone.set_roll(50)`, `drone.move(1)`, `drone.hover(2)`, `drone.land()` | Bryan, Oct 25, quoting github.com/RobolinkInc/codrone-edu-python-examples ("Hopefully I'm on python by the time we get to them") |
+| micro:bit projects that sense the world and solve a real problem, e.g. "a self-watering planting system with the bbc microbit, or a working polygraph" | Bryan, Oct 25 (examples of the kind of project, not a claim about a specific student's work) |
 | Information Technology & Cybersecurity Academy, Danbury High School | Bryan, round 6: "I think the name on the badge is right" (badge: "INFORMATION TECHNOLOGY & CYBERSECURITY") |
 | Pathways: Computer Programming & Gaming · Cybersecurity · Networking | Bryan's pasted blurb |
 | CSE is the 10th-grade prerequisite for all three pathways | Bryan, rounds 5–6 ("CSE is 10th grade class at danbury"); may be shown as Danbury's. (PLTW's outline says 9th grade in general.) |
@@ -227,3 +229,10 @@ None at approval. **DRAFT** lines (on-screen copy, ES/PT) get checked at the sto
 - 2026-10-25 · "The PLTW colors aren't TOO ugly if they're like the base background color with white or yellow text on
   top. But black on top of dark purple does feel sluggish and ugly." · PLTW Blue used as one field (the Python beat)
   with white text; never dark text on PLTW's dark colors.
+- 2026-10-25 · Drones: "I do know that the drones actually I think just use base python ... Hopefully I'm on python by
+  the time we get to them." · The drone beat shows Robolink's own Python, not blocks.
+- 2026-10-25 · "One line I'd like to keep is 'Build things that sense the world around themselves,' or something like
+  that. I like sensors and hands-on stuff. 'Build things that solve a real-world problem' ... 'Build things that
+  work.' IDK." · micro:bit beat hero becomes a sensing line (**DRAFT** wording), shown with a self-watering plant.
+- 2026-10-25 · "Give me 3 different soundways methods to choose from. I like your current idea as one of those
+  three." · Three sound directions in the storyboard.
