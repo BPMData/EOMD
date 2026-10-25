@@ -138,9 +138,11 @@ It works in any chat, not only in this repo: paste this file and `TEMPLATE.md` i
 4. **Concepts:** read `brief/CRAFT.md` first (brief to concept, how to pitch, storyboard and still formats, the
    self-check). Then 2–3 distinct directions, a few lines each (signature idea, structure, look, sound). The client
    picks or mixes. In efficient mode the directions come from what the existing tools can do.
-5. **Design before tools (full creative mode):** a storyboard (a table: time | on screen | sound;
-   `brief/CRAFT.md` has the format), 2–3 still frames and a written sound concept (what sound does, pulse,
-   instruments and textures as sounds, how it meets the key moments, how it ends), made from the brief alone. Don't open `gen/`, the
+5. **Design before tools (full creative mode):** copy `STORYBOARD.md` to `proj/<name>/storyboard.md`: the table
+   (time | on screen | sound; `brief/CRAFT.md` has the format), 2–3 still frames and the written sound concept (what
+   sound does, pulse, instruments and textures as sounds, how it meets the key moments, how it ends, which taste
+   items apply), made from the brief alone. In efficient mode the sound concept is written right after `/toolbox`
+   opens. Don't open `gen/`, the
    cartridges or other pieces' code until the client has seen them. Then pick tools: reuse the plumbing (the DSP,
    `tools/render_piece.py`, `tools/html_to_mp4.py`, `tools/gen_export.py`, the loudness checks), never a look
    borrowed from another piece.

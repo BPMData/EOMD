@@ -49,7 +49,7 @@ polished and lost.
 | A new piece | `/new-piece`; `/toolbox` at its gate |
 | A change to an existing piece | Its folder: `proj/cdrom/` (CS Lab Screensaver), `academies-film/` (Academies hallway film), `living/` (SSR, CS and Exploration living posters), `proj/pltw/` (PLTW promo). Each folder's `CLAUDE.md` loads by itself when you open a file there; its `STATUS.md` holds the history |
 | Library or tool work | That folder: `gen/`, `audio/` + `score/`, `engine/`, `jukebox/`, `tools/` (each has a `CLAUDE.md`) |
-| How new pieces start | `brief/`: `INTERVIEW.md`, `TEMPLATE.md`, `CRAFT.md`, `example-academies.md`, `taste/house.md` (default taste), `clients/` |
+| How new pieces start | `brief/`: `INTERVIEW.md`, `TEMPLATE.md`, `CRAFT.md`, `STORYBOARD.md`, `example-academies.md`, `taste/house.md` (default taste), `clients/` |
 | The public face | `README.md` (keep it true when tools or builds change), `CONTRIBUTING.md`, `LICENSE`, `index.html` (the Pages landing page; `.nojekyll` must stay) |
 | CI | `.github/workflows/ci.yml` |
 | Why context is staged | `notes/context-plan.md`; repo-wide history: `notes/history.md` |
