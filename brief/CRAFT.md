@@ -30,7 +30,8 @@ mixes; the verdict goes into the brief's Decisions log in their words.
 **Choice panels.** Whenever the client chooses between things (concepts, a look, a hero moment, a sound), show, don't
 describe: one offline HTML page, up to six options in a 3 × 2 grid, each a still, a ~15-second clip or a sound
 sample, with a short plain-words label and a letter to answer with ("B, but slower"). During design the options are
-stills or sketches made for this piece; clips and sound samples come once the tools open.
+stills or sketches made for this piece; clips and sound samples come once the tools open. The page template is
+`.claude/skills/toolbox/choice-panel.html` (open only that file, not the toolbox).
 
 ## 3. Storyboard and stills
 **The storyboard** lives in `proj/<name>/storyboard.md`: one table, one row per beat.
@@ -48,7 +49,7 @@ with its roles (background, hero, support, accent), the signature idea at its be
 At 25% scale the hero line must still read. Nothing is lifted from earlier work.
 
 **The sound concept** is written at the same stage, after the picture exists, so it is scored to the picture
-(contents: `INTERVIEW.md`, "After the interview", step 5).
+(its parts are in `STORYBOARD.md`, the storyboard template).
 
 ## 4. Motion craft
 - **Everything moves for a reason:** to lead the eye, to reveal in reading order, to show how things relate. Motion

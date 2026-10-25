@@ -1,0 +1,82 @@
+# First-question eval (notes/context-plan.md step 10): asks Claude Code for a new piece in one sentence and checks
+# what it opens, how much context it uses and what it costs before its first question (tools/eval_new_piece.py).
+# Runs only on pushes that change the context files, or by hand (Actions -> First-question eval -> Run workflow).
+# Needs an ANTHROPIC_API_KEY repo secret (API billing); without one it skips.
+# When it fails it opens an issue labeled eval-over-budget and switches itself off until that issue is closed.
+name: First-question eval
+
+on:
+  push:
+    paths:
+      - 'CLAUDE.md'
+      - '**/CLAUDE.md'
+      - '.claude/**'
+      - 'brief/**'
+      - 'STATUS.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: first-question-eval
+  cancel-in-progress: true
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      HAS_KEY: ${{ secrets.ANTHROPIC_API_KEY != '' }}
+    steps:
+      - name: Skip if switched off or no API key
+        id: gate
+        run: |
+          if [ "$HAS_KEY" != "true" ]; then
+            echo "::notice::No ANTHROPIC_API_KEY secret: skipping (run tools/eval_new_piece.py locally instead)."
+            echo "run=false" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          open=$(gh issue list -R "$GITHUB_REPOSITORY" --label eval-over-budget --state open --json number --jq length 2>/dev/null || echo 0)
+          if [ "${open:-0}" != "0" ]; then
+            echo "::notice::An eval-over-budget issue is open: the eval is switched off until it's closed."
+            echo "run=false" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          echo "run=true" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v4
+        if: steps.gate.outputs.run == 'true'
+      - uses: actions/setup-node@v4
+        if: steps.gate.outputs.run == 'true'
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        if: steps.gate.outputs.run == 'true'
+        with:
+          python-version: '3.12'
+      - name: Install Claude Code
+        if: steps.gate.outputs.run == 'true'
+        run: npm install -g @anthropic-ai/claude-code
+      - name: Run the eval
+        id: eval
+        if: steps.gate.outputs.run == 'true'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          EVAL_OUT: eval-out
+        run: python tools/eval_new_piece.py
+      - name: Keep the logs
+        if: always() && steps.gate.outputs.run == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: first-question-eval
+          path: eval-out/
+          if-no-files-found: ignore
+      - name: Open an eval-over-budget issue (switches the eval off)
+        if: failure() && steps.eval.outcome == 'failure'
+        run: |
+          gh label create eval-over-budget -R "$GITHUB_REPOSITORY" --color B60205 \
+            --description "First-question eval failed; the eval is off until this is closed" 2>/dev/null || true
+          [ -f eval-out/issue.md ] || echo "The eval crashed before writing a report. See the run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > eval-out/issue.md
+          echo "" >> eval-out/issue.md
+          echo "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" >> eval-out/issue.md
+          gh issue create -R "$GITHUB_REPOSITORY" --label eval-over-budget \
+            --title "First-question eval over budget ($(date -u +%Y-%m-%d))" --body-file eval-out/issue.md

@@ -4,6 +4,8 @@
 #   audio   the audio regression CHECK (tools/regress.py): renders fixed sections of every score/*.json
 #           and compares them with tests/hashes.json (0 mismatches = no music changed).
 #           Pinned to Node 22, the version the baseline was made with (Node 26 does the math slightly differently).
+#   stage-reads  the peeking audit (tools/check_stage_reads.py): reads of restricted paths made by a new piece's session
+#           before its toolbox gate, from proj/*/access.jsonl. Warnings only, never a failure.
 name: CI
 
 on:
@@ -50,3 +52,14 @@ jobs:
           node-version: '22'
       - name: tools/regress.py CHECK
         run: python -c "import sys; sys.path.insert(0, 'tools'); import regress; sys.exit(1 if regress.check() else 0)"
+
+  stage-reads:
+    name: stage-read audit (warnings only)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: tools/check_stage_reads.py (never fails; reports peeks as warnings)
+        run: python tools/check_stage_reads.py || true

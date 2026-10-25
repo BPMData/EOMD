@@ -34,8 +34,8 @@ git clone https://github.com/BPMData/EOMD.git
 ```
 
 The repo is set up for that:
-- **`CLAUDE.md`** is the map: what every file does, when to open it, the house rules and how to build. Claude Code reads it
-  automatically; with any other assistant, tell it "read CLAUDE.md and STATUS.md first".
+- **`CLAUDE.md`** is the map: the house rules and where to go; each folder has its own `CLAUDE.md` with its files and how to build. Claude Code reads them
+  automatically; with any other assistant, tell it "read CLAUDE.md and STATUS.md first" (STATUS.md is an index; each piece has its own STATUS.md in its folder).
 - **`STATUS.md`** is the working state: what's finished, what's untested, what's next.
 - **Pieces are small JSON "cartridges"** (see below), so asking an AI for a new piece costs a short JSON file instead of
   a new 600-line program, and the math (noise, 3D, physics, the music arranger) never has to be rewritten.

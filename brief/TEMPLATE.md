@@ -1,9 +1,9 @@
 # Brief: <piece name>
 
-Status: DRAFT | APPROVED <date> by <name> · Mode: efficient | full creative · Client: <name> · Sign-off: <names>
+Status: DRAFT | APPROVED <date> by <name> · Stage: interview | brief | concepts | storyboard | build · Mode: efficient | full creative · Client: <name> · Sign-off: <names>
 Usage: <model, effort> · <share of a 5-hour limit, per stage, as the Claude app or Claude Code shows it>
 
-_Copy to `proj/<name>/brief.md` after the interview (`brief/INTERVIEW.md`). Write it in the client's words where
+_Copy to `proj/<name>/brief.md` once round 1 of the interview is answered (`brief/INTERVIEW.md`) and update `Stage:` at each gate. Write it in the client's words where
 possible and keep the reasons. **ASK** = missing, **DRAFT** = Claude's draft (translations, suggested copy),
 **Claude's call** = delegated by the client. `brief/example-academies.md` shows the level of detail to aim for._
 
@@ -48,13 +48,15 @@ _The next step. Nothing invented: no URL, deadline, QR code or contact that isn'
 
 ## 11. Music and sound
 _Feel; where it plays and how often people hear it; what to avoid; sound effects synced to motion or not; loudness
-(CLAUDE.md Defaults: hallway −16 LUFS, classroom −23)._
+from how and where it's heard (a client file in `brief/clients/` may have targets that held before)._
 
 ## 12. Hard limits
 _Claims, likenesses, photos, anything admin or legal won't allow._
 
 ## 13. Taste references
-_Loves and hates, with why; past verdicts that apply._
+`Taste: house. Applies: <the IDs from brief/taste/house.md whose condition this brief meets>. Overrides: <ID off or
+changed, with the reason>.`
+_Then the client's own loves and hates, with why._
 
 ## 14. Creative expectations
 Default craft bar (from the Academies brief); this piece adds or relaxes: _..._
@@ -71,8 +73,8 @@ Default craft bar (from the Academies brief); this piece adds or relaxes: _..._
 - None of the subject's clichés.
 
 ## 15. Technical
-Repo defaults (CLAUDE.md "Bryan's rules" and "Defaults": a single offline HTML file, time-based motion, synthesized
-audio, nothing flashing more than 3×/s, legibility and loudness targets). Exceptions for this piece: _..._
+Repo defaults (CLAUDE.md "Rules for every piece": a single offline HTML file, time-based motion, synthesized
+audio, nothing flashing more than 3×/s; legibility and loudness targets from sections 3 and 11). Exceptions for this piece: _..._
 
 ## 16. Deliverables
 _Files (HTML player, MP4 with and without sound, portrait version, ZIP), length, where it's published (`players/`,
@@ -88,6 +90,7 @@ Default checks; add the piece's own:
 - Audio: loudness, true peak and clipping measured (ffmpeg `ebur128`); nothing harsh on repeat.
 - Motion: smooth transitions, no dropped or duplicated frames.
 - Facts: everything on screen is in section 5 with a source.
+- Taste: every applicable `strong` item in `brief/taste/house.md` is honored, or overridden in section 13 with a reason.
 - A short report: what was verified, what wasn't, known limits.
 
 ## 18. Approval and success
