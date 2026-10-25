@@ -1,6 +1,6 @@
 # Plan: context that follows the stage (progressive disclosure)
 
-Status: DESIGN, approved in direction by Bryan (Oct 25), open questions decided the same day; not yet implemented. Written to be handed to the model
+Status: IMPLEMENTED Oct 25 (steps 1–10; step 8's PLTW rebuild waits for Bryan, see `notes/context-check.md`). Approved in direction by Bryan (Oct 25), open questions decided the same day. Written to be handed to the model
 that implements it.
 
 ## The goal, in Bryan's words
