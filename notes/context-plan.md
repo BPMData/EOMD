@@ -1,6 +1,6 @@
 # Plan: context that follows the stage (progressive disclosure)
 
-Status: DESIGN, approved in direction by Bryan (Oct 25); not yet implemented. Written to be handed to the model
+Status: DESIGN, approved in direction by Bryan (Oct 25), open questions decided the same day; not yet implemented. Written to be handed to the model
 that implements it.
 
 ## The goal, in Bryan's words
@@ -39,6 +39,9 @@ subject and the tools are then fitted to it.
   `proj/cdrom/CLAUDE.md` ... appear exactly when that work starts, and never during a new piece's design.
 - **Skills:** only the one-line description is always in context; the body loads when invoked. `/new-piece`
   (tier 1, exists) and a new `/toolbox` (tier 2; its description says when it may be used).
+- **Lazy by default (Bryan, Oct 25):** anything not needed on every touch of a folder lives in a separate file that
+  the folder's CLAUDE.md links to (history, status, decisions, long references). Two reasons: it saves context (the
+  "Efficient" in EOMD), and it keeps the model unbiased until it has made its own first top-level design.
 - **Pointers, not copies:** every fact lives in one file; the tiers above link to it. (Bryan dislikes redundant
   instruction sets.)
 - Optional, not recommended yet: a PreToolUse hook that blocks reads of `gen/`, `score/`, `audio/` while a piece's
@@ -55,8 +58,8 @@ subject and the tools are then fitted to it.
    cartridge, layer, chip or score.
 2. **Split `STATUS.md`.** Root STATUS.md becomes a short index (≤ 400 words): one line per piece (state + next step,
    linking to its folder), cross-cutting items (CI, regression baseline, open repo-wide questions). Each piece's
-   history, known limits and open taste questions move to its folder (`proj/<piece>/STATUS.md`, or the brief's
-   Decisions log where the item is a decision). Change the rule to "read the root STATUS index at session start; read
+   history, known limits and open taste questions move to a separate `STATUS.md` in its folder (never inside the
+   folder's CLAUDE.md, which loads on every file touch), or to the brief's Decisions log where the item is a decision. Change the rule to "read the root STATUS index at session start; read
    a piece's status when working on it." Nothing is deleted, only moved.
 3. **Nested `CLAUDE.md` per folder** (tier 3 / piece), built from today's CLAUDE.md sections:
    | New file | Takes from today's CLAUDE.md |
@@ -88,10 +91,23 @@ subject and the tools are then fitted to it.
      real time; synthesized audio; no photos, footage or remote assets; OFL fonts embedded; school PCs and smart
      boards as the slowest target; MP4 export exists. This lets concepts be ambitious *and* buildable before the
      toolbox is opened.
-5. **Client taste notes: `brief/TASTE.md`** (Bryan's; ≤ 400 words, one section per client if others arrive):
-   distilled verdicts across pieces (what landed, what didn't, in his words), e.g. breathers beat repetition,
-   strings over flute/horn, the Kells look, "cheesy" demoscene. Tier 1: lessons, not looks. Kept up to date from
-   briefs' Decisions logs.
+5. **Taste as a profile with IDs, not prose** (tier 1; public). Most first prompts carry weak taste, so the house
+   taste applies by default; a project may change it, but only item by item, with a reason.
+   - `brief/taste/house.md`: the default profile, Bryan's, distilled from STATUS.md and the briefs' verdicts. One
+     line per item, so it's cheap to load and easy to parse:
+     `T07 · strong · music · Breathers beat repetition: long pieces need sections that drop out and come back. — CD-ROM 9c: "the breather periods really do break up the samey-sameyness"`
+     Fields: ID (never reused) · strength (`strong` = default, an override needs a reason; `soft` = a lean) · area
+     (motion, type, color, music, sound, structure, process) · the preference · the verdict it came from. Hard rules
+     stay in CLAUDE.md, not here. Target ≤ 40 items.
+   - `brief/taste/audiences.md`: presets for recurring settings (hallway loop, classroom reading, promo, lab
+     screensaver), a few lines each: which items it raises, lowers or adds. Read only when the brief names one.
+   - In the brief, §13 becomes `Taste: house + hallway-loop. Overrides: T07 off (a 20-s promo has no room for
+     breathers).` §17 QA adds: every `strong` item is honored or overridden in §13.
+   - Why a file and not a database (the IndexedDB idea): browser storage lives in one viewer's browser and never
+     reaches Claude, a cloud session or another user. A line-per-item file in git is the shared database: versioned,
+     readable by any model, parseable by a script (`^T\d+ · (strong|soft) ·`). A settings page could be generated
+     from it later if one is ever wanted.
+   - New verdicts flow in: when a brief's Decisions log records a verdict that generalizes, add or adjust an item.
 6. **Tier 2 `/toolbox` skill** (`.claude/skills/toolbox/SKILL.md`). Description: "Use only after the brief is
    approved (efficient mode) or the storyboard and stills are approved (full creative mode)." Body: a one-page index
    **by need**, describing mechanisms, not looks:
@@ -112,9 +128,26 @@ subject and the tools are then fitted to it.
    (should be only `brief/` and the brand/copy files). Then the real test: brief the PLTW promo properly and rebuild
    it in full creative mode; compare with r2.
 
-## Open questions for Bryan
-- Per-piece status: a separate `proj/<piece>/STATUS.md`, or fold it into the piece's `CLAUDE.md`? (Recommended:
-  separate. The CLAUDE.md loads on every file touch in the folder; the history only needs reading when the work
-  depends on it.)
-- Should `brief/TASTE.md` be public? It's his taste, in his words; the Academies prompt set the precedent.
-- Enforce the gates with a hook, or trust the instructions first? (Recommended: instructions first.)
+9. **Measure peeking before deciding on a blocking hook.**
+   - **Record:** a non-blocking `PostToolUse` hook in `.claude/settings.json` (it runs in cloud sessions too, since it
+     lives in the repo). After every Read, Grep, Glob or Bash call it reads the `Stage:` line of the piece in progress
+     (the newest `proj/*/brief.md` whose stage isn't `build`) and, while that stage is interview, brief, concepts or
+     storyboard, appends one JSON line to `proj/<name>/access.jsonl`: time, stage, tool, paths touched. It never
+     blocks anything. The log is committed with each stage commit.
+   - **Check on push:** `tools/check_stage_reads.py`, run by CI. For every piece, it lists reads of toolbox paths
+     (`gen/`, `score/`, `audio/`, `living/`, `engine/`, `players/`, other pieces' folders) made before the toolbox
+     gate (efficient mode: brief approved; full creative: storyboard approved). It reports them as a warning
+     annotation, never a failure, so it can't block a push. Bash calls are matched by path substrings in the command.
+   - **Decision rule:** if peeks show up in 2 of the next 3 new pieces, or once in a way that shaped the design (a
+     concept or storyboard echoing a cartridge's look), make it a blocking `PreToolUse` hook on those paths during
+     design stages. Record the count and the call in STATUS.md.
+   - **Repeatable test (optional, costs tokens):** `tools/eval_new_piece.py` runs a headless session (`claude -p`)
+     with a canned one-line request ("make a promo for the robotics club") and reports which files it opened before
+     its first question. Run it after any change to CLAUDE.md, the skills or `brief/`.
+
+## Decisions (Bryan, Oct 25)
+- Per-piece status: a separate `STATUS.md` in each folder, never inside the folder's CLAUDE.md. General rule: lazy by
+  default (Mechanisms), to save context and to keep the model unbiased until its first top-level design.
+- Taste: public and on by default for everyone, since most first prompts carry weak taste; a project overrides it
+  item by item, with a reason (step 5).
+- Hooks: record and measure first (step 9); block only if the numbers say so.

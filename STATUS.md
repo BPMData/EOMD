@@ -298,7 +298,7 @@ Chips music (the plain `chip` style): Bryan Oct 9, "it's so bad lol"; kept as a 
 12. **Try the interview** (`/new-piece`) on the next new piece. A test of the idea: write a real brief for the PLTW promo
     with Bryan, rebuild it from a blank page in full creative mode, and compare it with r2.
 13. **Context that follows the stage** (design approved in direction Oct 25): implement `notes/context-plan.md`
-    (slim CLAUDE.md, split STATUS.md, nested per-folder CLAUDE.md, `brief/CRAFT.md`, `brief/TASTE.md`, `/toolbox`). Do it
+    (slim CLAUDE.md, split STATUS.md, nested per-folder CLAUDE.md, `brief/CRAFT.md`, `brief/taste/`, `/toolbox`, the peeking audit). Do it
     before the PLTW test in item 12, so the test runs in the new setup.
 
 ## Open taste questions
