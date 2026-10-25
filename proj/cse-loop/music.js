@@ -5,20 +5,23 @@
      S1 Snap Groove  - bouncy: round plucked bass, FM electric piano, mallet melody doubled by the piano, light kit
      S2 Glass Lobby  - smooth late-80s fusion pop: slap-style bass, lush keys, clean guitar chops and hook, airy pad
      S3 Maker Bench  - interlocking mallets and plucked strings; the picture's own sounds tuned into the rhythm
-   Style: globalThis.CSE_STYLE ('S1' | 'S2' | 'S3'). Sample mode (globalThis.CSE_SAMPLE): bars 1-8 only (0:00-0:16),
-   rendered as a seamless 16-s loop. The full 48-s loop is written once Bryan picks a direction.
+   Style: globalThis.CSE_STYLE ('S1' | 'S2' | 'S3'). Sample mode (globalThis.CSE_SAMPLE): bars 1-8 only (0:00-0:16).
+   Bryan picked S2 + mallet snaps + tight snare (Oct 25); S2 is written for all 24 bars (48 s). S1 and S3 are still the
+   8-bar samples (S3 gets its full version last, as a second player).
    Render: proj/cse-loop/render_samples.py (uses tools/render_piece.py). */
 (function (G) {
   'use strict';
   const P = G.DHS.dsp, TAU = Math.PI * 2, ex = Math.exp, sin = Math.sin;
-  const STYLE = G.CSE_STYLE || 'S2', SAMPLE = G.CSE_SAMPLE !== false, SNAP = G.CSE_SNAP || 'mallet', SNARE = G.CSE_SNARE || 'tight';   // defaults = Bryan's pick (Oct 25): S2 + mallet snaps + tight snare   // SNARE (S2): 'gated' (brushy; rejected) | 'stick' | 'tight'   // SNAP: 'wood' | 'mallet' | 'finger' overrides a style's snap sound
+  const STYLE = G.CSE_STYLE || 'S2', SAMPLE = G.CSE_SAMPLE === true, SNAP = G.CSE_SNAP || 'mallet', SNARE = G.CSE_SNARE || 'tight';   // defaults = Bryan's pick (Oct 25): S2 + mallet snaps + tight snare   // SNARE (S2): 'gated' (brushy; rejected) | 'stick' | 'tight'   // SNAP: 'wood' | 'mallet' | 'finger' overrides a style's snap sound
   const BPM = 120, BEAT = 60 / BPM, BAR = 4 * BEAT, BARS = SAMPLE ? 8 : 24, LEN = BARS * BAR;
   const tb = (bar, beat = 0) => (bar * 4 + beat) * BEAT;
   // picture cues from storyboard.md (seconds): block snaps, the ball turning red, where the line is drawing
+  // picture cues (seconds), from src/film.js: keep them in step when the film's timing changes
   const CUES = {
-    snaps: [2.0, 4.0, 5.0, 12.0, 12.5, 13.0],   // event block lands; two app blocks; three VEXcode blocks
-    ballRed: 8.0, roadWipe: 10.0, carRolls: 13.5,
-    lineDraws: [[0.0, 1.6], [5.2, 8.0], [9.6, 11.2]],
+    snaps: [2.0, 4.0, 5.0, 12.0, 12.6, 15.6, 16.0, 25.4, 25.9, 26.4, 31.0, 32.3, 32.6, 33.8],  // every block or code strip that snaps in
+    ballRed: 8.0, carRolls: 13.2, stall: [15.0, 16.0], carOff: [17.6, 18.9], typing: [19.4, 22.7], redRise: 24.0,
+    drips: [27.4, 29.4], smile: [29.0, 29.6], takeoff: 31.0, burst: 38.75, settle: 41.0, cardOut: 46.0,
+    lineDraws: [[5.2, 7.4], [9.6, 11.2], [18.0, 18.8], [25.2, 26.0], [30.5, 31.0], [46.8, 49.2]],
   };
   const TITLES = { S1: 'CSE loop: S1 Snap Groove', S2: 'CSE loop: S2 Glass Lobby', S3: 'CSE loop: S3 Maker Bench' };
   G.PIECE = { title: TITLES[STYLE] + (SNAP ? ' + ' + SNAP + ' snaps' : '') + (G.CSE_SNARE ? ' + ' + SNARE + ' snare' : '') + (SAMPLE ? ' (sample)' : ''), length: LEN, bpm: BPM, cues: CUES, render };
@@ -72,7 +75,7 @@
     const slap = (m, dur, pop = false) => { const f = P.mtof(m), lp = P.svf(); let ph = 0; return fadeTail(gen(dur + 0.06, (t) => { ph = (ph + f / sr) % 1;
       const a = Math.min(1, t / 0.0015) * ex(-t / (pop ? 0.25 : 0.4)) * (t < dur ? 1 : ex(-(t - dur) / 0.02));
       const cut = pop ? 400 + 3800 * ex(-t / 0.05) : 200 + 2400 * ex(-t / 0.035);
-      return a * (0.6 * sin(TAU * ph) + 0.55 * lp(P.saw(ph, f / sr), cut, 1.2, sr) + (t < 0.003 ? 0.3 * rnd() : 0)); })); };
+      return a * (0.45 * sin(TAU * ph) + 0.55 * lp(P.saw(ph, f / sr), cut, 1.2, sr) + (t < 0.003 ? 0.3 * rnd() : 0)); })); };   // sub trimmed for TV speakers (Oct 25)
     // plucked string (Karplus-Strong with a fractional delay): clean guitar, pizzicato
     const ks = (m, dur, o = {}) => { const f = P.mtof(m), L = sr / f, size = Math.ceil(L) + 4, b = new Float32Array(size), exc = P.onepole(), damp = P.onepole();
       const fb = o.fb ?? 0.997, bright = o.bright ?? 5000, rel = o.rel ?? 0.06, dc = P.rbjHighpass(40, 0.7, sr); let w = 0;
@@ -117,15 +120,21 @@
         for (let s = 0; s < 16; s++) put(SH[s % 2], tb(bar, s / 4), 0.16, 0.35);
       }
       for (const [bar, b, m, d] of MEL) { put(mallet(m, 0.9), tb(bar, b), 0.32, 0.25, { rv: 0.2 }); put([ep(m - 12, d * BEAT, 0.6, -3), ep(m - 12, d * BEAT, 0.6, 3)], tb(bar, b), 0.1, 0, { rv: 0.2, width: 0.4 }); }
-      CUES.snaps.forEach((t, i) => put(woodClick([79, 84, 81, 79, 84, 86][i]), t, 0.32, -0.1, { rv: 0.1 }));
+      CUES.snaps.forEach((t, i) => { if (t < LEN) put(woodClick([79, 84, 81, 79, 84, 86][i % 6]), t, 0.32, -0.1, { rv: 0.1 }); });
       epChord([69, 72, 76, 79], CUES.ballRed, 0.2, 0.45, 1, { bright: 1.4 }); put(mallet(84), CUES.ballRed, 0.25, 0.3);
-      glide(...CUES.lineDraws[0], [72, 77, 74], 0.05); glide(...CUES.lineDraws[1], [69, 72, 74, 77, 76, 72], 0.05); glide(...CUES.lineDraws[2], [77, 74, 72, 69], 0.05);
+      glide(...CUES.lineDraws[0], [69, 72, 74, 77, 76, 72], 0.05); glide(...CUES.lineDraws[1], [77, 74, 72, 69], 0.05);
     }
 
     if (STYLE === 'S2') {
-      // D major, laid back. Gmaj9 | F#m9 | Em9 | A13sus A13 | Dmaj9 | Bm9 | Em11 | A9sus
-      const CH = [[59, 62, 66, 69], [57, 61, 64, 68], [55, 59, 62, 66], [[55, 59, 62, 66], [55, 59, 61, 66]], [54, 57, 61, 64], [57, 61, 62, 66], [55, 57, 62, 66], [55, 59, 62, 64]];
-      const ROOT = [31, 30, 28, 33, 38, 35, 28, 33];
+      // D major, laid back; lifts to E for the Academy part (bars 12-18), back to D for the end card.
+      const P8 = [[59, 62, 66, 69], [57, 61, 64, 68], [55, 59, 62, 66], [[55, 59, 62, 66], [55, 59, 61, 66]], [54, 57, 61, 64], [57, 61, 62, 66], [55, 57, 62, 66], [55, 59, 62, 64]];
+      const R8 = [31, 30, 28, 33, 38, 35, 28, 33];
+      const tr = (c, k) => Array.isArray(c[0]) ? c.map((h) => h.map((m) => m + k)) : c.map((m) => m + k);
+      const PIVOT_B = [[57, 61, 64, 66], [57, 61, 63, 68]], A9SUS = [55, 59, 62, 64];
+      const CH = [...P8, P8[0], P8[1], P8[2], PIVOT_B, ...P8.slice(0, 6).map((c) => tr(c, 2)), A9SUS, P8[0], P8[1], P8[2], P8[3], P8[7]];
+      const ROOT = [...R8, R8[0], R8[1], R8[2], 35, ...R8.slice(0, 6).map((r) => r + 2), 33, R8[0], R8[1], R8[2], R8[3], R8[7]];
+      // per bar: drums 'full' | 'stall' | 'half' | 'breath' | 'fill'
+      const DR = (b) => b === 7 ? 'stall' : b === 15 || b === 16 ? 'half' : b >= 19 && b <= 22 ? 'breath' : b === 23 ? 'fill' : 'full';
       const HOOK = [[0, 2.5, 69, .5], [0, 3, 71, .5], [0, 3.5, 74, .5],
         [1, 0, 73, 1.5], [1, 1.5, 71, .5], [1, 2, 69, 1], [1, 3, 66, 1],
         [2, 0, 67, .5], [2, .5, 71, .5], [2, 1, 74, 1], [2, 2, 76, .75], [2, 2.75, 74, .75], [2, 3.5, 71, .5],
@@ -133,32 +142,79 @@
         [4, 0, 78, 1.5], [4, 1.5, 76, .5], [4, 2, 73, 1], [4, 3, 69, .5], [4, 3.5, 71, .5],
         [5, 0, 74, .75], [5, .75, 73, .75], [5, 1.5, 69, 1], [5, 2.5, 66, .5], [5, 3, 69, 1],
         [6, 0, 71, .5], [6, .5, 74, .5], [6, 1, 76, .5], [6, 1.5, 79, 1], [6, 2.5, 78, .5], [6, 3, 76, 1],
-        [7, 0, 74, 1], [7, 1, 76, .5], [7, 1.5, 73, 1], [7, 2.5, 71, .5], [7, 3, 69, 1]];
+        [7, 0, 74, 1], [7, 1, 76, .5]];                                   // bar 7 stops short: the car stalls
+      const COUNTER = [[8, 0, 62, 1], [8, 1, 64, .5], [8, 1.5, 66, 1], [8, 2.5, 69, 1.5], [9, 0, 68, 1], [9, 1, 66, .5], [9, 1.5, 64, 1], [9, 2.5, 61, 1.5],
+        [10, 0, 62, .5], [10, .5, 64, .5], [10, 1, 67, 1], [10, 2, 66, .5], [10, 2.5, 64, .5], [10, 3, 62, 1], [11, 0, 63, 1.5], [11, 1.5, 64, .5]];
+      const LIFT = HOOK.filter((n) => n[0] <= 3).map(([b, bt, m, d]) => [b + 12, bt, m + 2, d]);   // the hook again, a step up
+      const SOLO = [[16, 0, 76], [16, .25, 78], [16, .5, 80], [16, .75, 83], [16, 1, 85], [16, 1.25, 88], [16, 1.5, 85], [16, 1.75, 83],
+        [16, 2, 80], [16, 2.25, 83], [16, 2.5, 85], [16, 2.75, 88], [16, 3, 90], [16, 3.25, 88], [16, 3.5, 85], [16, 3.75, 83]].map((n) => [...n, 0.3])
+        .concat([[17, 0, 85, 1], [17, 1, 83, .5], [17, 1.5, 80, .5], [17, 2, 78, 1], [17, 3, 76, 1]]);
       const K = kick(1.1, 46), SN = SNARE === 'stick' ? crossStick() : SNARE === 'tight' ? tightSnare() : snare(), SNRV = SNARE === 'gated' ? 0.55 : 0.18, HH = [hat(1), hat(0.45)], SNAPF = fingerSnap();
+      const inStall = (t) => t >= 15.0 && t < 16.0;
       for (let bar = 0; bar < BARS; bar++) {
-        const ch = CH[bar], r = ROOT[bar], v2 = Array.isArray(ch[0]) ? ch : [ch, ch];
-        epChord(v2[0], tb(bar, 0), 1.75 * BEAT, 0.42, 0.75, { strum: 0.012, bright: 0.8 }); epChord(v2[1], tb(bar, 2.5), 1.3 * BEAT, 0.34, 0.65, { strum: 0.012, bright: 0.8 });
-        put(pad(v2[0].map((m) => m + 12), BAR), tb(bar), 0.09, 0, { rv: 0.5 });
-        for (const b of [0.5, 1.75, 2.5, 3.5]) { const top = (b < 2 ? v2[0] : v2[1]).slice(1).map((m) => m + 12);
+        const ch = CH[bar], r = ROOT[bar], v2 = Array.isArray(ch[0]) ? ch : [ch, ch], dr = DR(bar), breath = dr === 'breath';
+        const keep = (t) => !inStall(t);
+        // keys and pad
+        if (keep(tb(bar, 0))) epChord(v2[0], tb(bar, 0), (bar === 7 ? 3 : 1.75) * BEAT, breath ? 0.36 : 0.42, 0.75, { strum: 0.012, bright: 0.8 });
+        if (keep(tb(bar, 2.5))) epChord(v2[1], tb(bar, 2.5), 1.3 * BEAT, breath ? 0.3 : 0.34, 0.65, { strum: 0.012, bright: 0.8 });
+        put(pad(v2[0].map((m) => m + 12), BAR), tb(bar), breath || bar === 7 ? 0.17 : 0.09, 0, { rv: 0.5 });
+        // clean guitar chops (out for the breather)
+        if (!breath) for (const b of [0.5, 1.75, 2.5, 3.5]) { if (!keep(tb(bar, b))) continue; const top = (b < 2 ? v2[0] : v2[1]).slice(1).map((m) => m + 12);
           top.forEach((m, k) => put(ks(m, 0.1, { bright: 4500, fb: 0.995, rel: 0.03 }), tb(bar, b) + k * 0.006, 0.13, 0.55 - k * 0.1, { rv: 0.15, dl: 0.12 })); }
-        for (const [b, m, d, p] of [[0, r, .7, 0], [.75, r, .15, 0], [1.5, r + 12, .3, 1], [2, r, .5, 0], [2.75, r + 7, .3, 0], [3.5, r + 12, .3, 1]])
-          put(slap(m, d * BEAT, !!p), tb(bar, b), p ? 0.42 : 0.62, 0);
-        for (const b of [0, 1.75, 2.5]) put(K, tb(bar, b), b ? 0.7 : 0.95);
-        for (const b of [1, 3]) put(SN, tb(bar, b), SNARE === 'stick' ? 0.32 : 0.4, 0.05, { rv: SNRV });
-        for (let s = 0; s < 16; s++) put(HH[s % 2 ? 1 : 0], tb(bar, s / 4) + (s % 2 ? 0.012 : 0), 0.09, -0.3);
+        // bass: the groove; held through the stall; simple in the breather
+        const BASS = breath ? [[0, r, 1.8, 0], [2, r + 7, 1.8, 0]] : bar === 7 ? [[0, r, .7, 0], [.75, r, .15, 0], [1.5, r + 12, .3, 1], [2, r, 2, 0]]
+          : [[0, r, .7, 0], [.75, r, .15, 0], [1.5, r + 12, .3, 1], [2, r, .5, 0], [2.75, r + 7, .3, 0], [3.5, r + 12, .3, 1]];
+        for (const [b, m, d, p] of BASS) put(slap(m, d * BEAT, !!p), tb(bar, b), p ? 0.42 : 0.62, 0);
+        // drums
+        const kicks = dr === 'half' ? [0] : dr === 'breath' ? [] : dr === 'fill' ? [0, 1.75, 2.5, 3, 3.5] : [0, 1.75, 2.5];
+        const snares = dr === 'half' ? [2] : dr === 'breath' ? [] : dr === 'fill' ? [1, 3, 3.25, 3.5, 3.75] : [1, 3];
+        for (const b of kicks) if (keep(tb(bar, b))) put(K, tb(bar, b), b ? 0.7 : 0.95);
+        for (const b of snares) if (keep(tb(bar, b))) put(SN, tb(bar, b), b % 1 ? 0.28 : 0.4, 0.05, { rv: SNRV });
+        for (let s = 0; s < 16; s++) { const tt = tb(bar, s / 4); if (!keep(tt)) continue; if (dr === 'half' && s % 2) continue; if (breath && s % 2) continue;
+          put(HH[s % 2 ? 1 : 0], tt + (s % 2 ? 0.012 : 0), breath ? 0.06 : 0.09, -0.3); }
       }
-      for (const [bar, b, m, d] of HOOK) {
-        put(ks(m + 12, d * BEAT, { bright: 6500, fb: 0.998, rel: 0.12 }), tb(bar, b), 0.3, 0.2, { rv: 0.3, dl: 0.2 });
-        put([ep(m, d * BEAT, 0.7, -5, 0.9), ep(m, d * BEAT, 0.7, 5, 0.9)], tb(bar, b), 0.14, 0, { rv: 0.3, width: 0.5 });
-      }
-      // the snap sound: finger snap (original), or Bryan's Oct 25 asks: S1's wooden click or S3's mallet, tuned to D major
-      const SNAPNOTES = [81, 83, 86, 81, 83, 86];
-      CUES.snaps.forEach((t, i) => {
-        if (SNAP === 'wood') put(woodClick(SNAPNOTES[i]), t, 0.34, 0.15, { rv: 0.15 });
-        else if (SNAP === 'mallet') { put(mallet(SNAPNOTES[i], 1), t, 0.4, 0.2, { rv: 0.25 }); put(mallet(SNAPNOTES[i] + 12, 0.5), t + 0.004, 0.12, 0.3); }
+      // the stall's way out: a short fill into bar 9 as the velocity block snaps
+      for (const [b, g] of [[3.0, 0.22], [3.25, 0.26], [3.5, 0.3], [3.75, 0.34]]) put(SN, tb(7, b), g, 0.1, { rv: SNRV });
+      // melodies: hook (guitar + soft keys an octave down), counter-line, the hook a step up, a short solo
+      const lead = (list, gGtr, gKeys, bright = 6500) => { for (const [bar, b, m, d] of list) { if (bar >= BARS) continue;
+        put(ks(m + 12, d * BEAT, { bright, fb: 0.998, rel: 0.12 }), tb(bar, b), gGtr, 0.2, { rv: 0.3, dl: 0.2 });
+        if (gKeys) put([ep(m, d * BEAT, 0.7, -5, 0.9), ep(m, d * BEAT, 0.7, 5, 0.9)], tb(bar, b), gKeys, 0, { rv: 0.3, width: 0.5 }); } };
+      lead(HOOK, 0.3, 0.14); lead(COUNTER, 0.24, 0.16, 4500); lead(LIFT, 0.3, 0.14); lead(SOLO, 0.26, 0, 7000);
+      // ---- the picture's moments ----
+      const chordAt = (t) => { const bar = Math.floor(t / BAR) % BARS, c = CH[bar]; return Array.isArray(c[0]) ? c[(t % BAR) < BAR / 2 ? 0 : 1] : c; };
+      CUES.snaps.forEach((t, i) => { if (t >= LEN) return; const c = chordAt(t), m = c[(i % 3) + 1] + 12;
+        if (SNAP === 'wood') put(woodClick(m), t, 0.34, 0.15, { rv: 0.15 });
+        else if (SNAP === 'mallet') { put(mallet(m, 1), t, 0.4, 0.2, { rv: 0.25 }); put(mallet(m + 12, 0.5), t + 0.004, 0.12, 0.3); }
         else put(SNAPF, t, 0.35, 0.3, { rv: 0.35 }); });
-      epChord([66, 69, 73, 76], CUES.ballRed, 0.5, 0.35, 0.9, { strum: 0.02 });
-      glide(...CUES.lineDraws[0], [74, 78, 76], 0.04); glide(...CUES.lineDraws[1], [69, 73, 76, 78, 74], 0.04); glide(...CUES.lineDraws[2], [76, 73, 71, 69], 0.04);
+      if (CUES.ballRed < LEN) epChord([66, 69, 73, 76], CUES.ballRed, 0.5, 0.35, 0.9, { strum: 0.02 });
+      // the car: a low hum far back, straining a little in the stall
+      if (!SAMPLE) {
+        const hum = (() => { const n = at(CUES.carOff[1] - CUES.carRolls), b = new Float32Array(n), lp = P.onepole(); let ph = 0;
+          for (let i = 0; i < n; i++) { const t = CUES.carRolls + i / sr, strain = t > 14.8 && t < 16.0 ? 1 + 0.12 * Math.sin((t - 14.8) * 22) : t >= 16.0 ? 1.25 : 1;
+            ph = (ph + 62 * strain / sr) % 1; const env = Math.min(1, i / (0.4 * sr)) * Math.min(1, (n - i) / (0.6 * sr));
+            b[i] = env * lp(Math.sin(TAU * ph) + 0.35 * Math.sin(2 * TAU * ph) + 0.15 * Math.sin(3 * TAU * ph), 600, sr); } return b; })();
+        put(hum, CUES.carRolls, 0.07, -0.1);
+        // typing: soft ticks on the eighths while the Python types
+        for (let t = CUES.typing[0]; t < CUES.typing[1]; t += BEAT / 2) put(tick(91 + (Math.round(t * 4) % 3) * 2), Math.round(t / (BEAT / 2)) * (BEAT / 2), 0.06, 0.4);
+        // the pump: water-drop plucks on the eighths, falling
+        let k = 0; for (let t = CUES.drips[0]; t < CUES.drips[1]; t += BEAT / 2, k++) { const m = [88, 85, 83, 80][k % 4];
+          put(ks(m, 0.15, { bright: 6000, fb: 0.99, rel: 0.05 }), Math.round(t / (BEAT / 2)) * (BEAT / 2), 0.12, 0.3, { rv: 0.3 }); }
+        // the smile: one soft pop per row of lights
+        for (let i = 0; i < 5; i++) put(mallet(76 + [0, 2, 4, 7, 9][i] + 2, 0.5), CUES.smile[0] + i * 0.12, 0.14, 0.35, { rv: 0.3 });
+        // the drone: a soft whir that rises at takeoff and fades as it bursts
+        const whir = (() => { const t0 = CUES.takeoff, n = at(CUES.burst - t0 + 0.3), b = new Float32Array(n), bp = P.svf(); let ph = 0;
+          for (let i = 0; i < n; i++) { const t = t0 + i / sr, rise = 0.85 + 0.3 * Math.min(1, (t - t0) / 1.2);
+            ph = (ph + 31 * rise / sr) % 1; const am = 0.75 + 0.25 * Math.sin(TAU * ph), env = Math.min(1, i / (0.5 * sr)) * (t > CUES.burst ? Math.max(0, 1 - (t - CUES.burst) / 0.3) : 1);
+            b[i] = env * am * bp(rnd(), 420 * rise, 2.2, sr, 'bp'); } return b; })();
+        put(whir, CUES.takeoff, 0.22, 0.25);
+        // the burst: a wide soft chord, then mallets swirling down as the dots swirl, landing as the title settles
+        epChord([62, 66, 69, 73, 76], CUES.burst, 1.4, 0.4, 0.8, { strum: 0.03, rv: 0.5 });
+        const swirl = [86, 83, 81, 78, 76, 74, 71, 69, 66, 69, 71, 74, 76, 78, 81];
+        swirl.forEach((m, i) => put(mallet(m, 0.7 - i * 0.02), CUES.burst + 0.1 + i * (CUES.settle - CUES.burst - 0.2) / swirl.length, 0.16, (i % 2 ? 0.5 : -0.5), { rv: 0.35, dl: 0.2 }));
+        epChord([59, 62, 66, 69, 74], CUES.settle, 1.6, 0.42, 0.85, { strum: 0.02, rv: 0.4 }); put(mallet(81, 0.9), CUES.settle, 0.22, 0, { rv: 0.4 });
+      }
+      // the line's voice while it draws
+      for (const [a, b] of CUES.lineDraws) if (a < LEN) { const c = chordAt(a).map((m) => m + 12); glide(a, b, [c[1], c[3], c[2], c[0] + 12].slice(0, 2 + Math.round((b - a) / 1.2)), 0.04); }
     }
 
     if (STYLE === 'S3') {
@@ -182,7 +238,7 @@
       }
       // the picture's sounds, tuned and kept: each snap's click comes back on beat 3.5 from then on (the beat gets built)
       const CLICK = [79, 83, 86, 79, 83, 86];
-      CUES.snaps.forEach((t, i) => { put(woodClick(CLICK[i]), t, 0.34, -0.15 + i * 0.06, { rv: 0.1 });
+      CUES.snaps.filter((t) => t < LEN).slice(0, 6).forEach((t, i) => { put(woodClick(CLICK[i]), t, 0.34, -0.15 + i * 0.06, { rv: 0.1 });
         for (let tt = t + 2; tt < LEN; tt += 2) put(woodClick(CLICK[i]), Math.floor(tt / BAR) * BAR + 3.5 * BEAT * (i % 2 ? 0.5 : 1) + (i > 2 ? BEAT * 0.25 : 0), 0.12, -0.15 + i * 0.06); });
       put(mallet(83, 1), CUES.ballRed, 0.3, 0.3); put(mallet(88, 0.8), CUES.ballRed + 0.125, 0.2, 0.4);
       // the car: a tuned sixteenth tick that follows it once it rolls
@@ -192,8 +248,9 @@
     // ---------------- mix: reverb + delay sends, run circularly so tails cross the loop point ----------------
     const R = P.circular(rv, P.reverb({ sr, size: 0.8, damp: 0.5, lp: 7000 }));
     const D = P.circular(dl, P.delay({ sr, time: BEAT * 0.75, fb: 0.3, lp: 3500 }));
-    const out = P.bus(N), hp = P.rbjHighpass(32, 0.7, sr), hp2 = P.rbjHighpass(32, 0.7, sr);
-    for (let i = 0; i < N; i++) { out.L[i] = hp(dry.L[i] + R.L[i] * 0.9 + D.L[i] * 0.5); out.R[i] = hp2(dry.R[i] + R.R[i] * 0.9 + D.R[i] * 0.5); }
-    return out;
+    const mix = P.bus(N);
+    for (let i = 0; i < N; i++) { mix.L[i] = dry.L[i] + R.L[i] * 0.9 + D.L[i] * 0.5; mix.R[i] = dry.R[i] + R.R[i] * 0.9 + D.R[i] * 0.5; }
+    // low cut, run round the loop too (a one-pass filter starts from silence and clicks at the loop point)
+    return P.circular(mix, () => { const a = P.rbjHighpass(32, 0.7, sr), b = P.rbjHighpass(32, 0.7, sr); return (l, r) => [a(l), b(r)]; });
   }
 })(globalThis);

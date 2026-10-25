@@ -1,5 +1,6 @@
 /* PLAYER RUNTIME, adapted for the CSE hallway loop from engine/src/player/runtime.js (Oct 2026):
-   default 60 fps cap and canvas up to 2x the 1920x1080 design (sharp on 4K sets). Otherwise unchanged.
+   default 60 fps cap; canvas up to 2x the 1920x1080 design (sharp on 4K sets); audio falls back to the main thread
+   when a blob Worker is blocked or fails (the engine's version only fell back when Workers didn't exist).
    Visual time is a pure function of a clock; the clock is the AudioContext once
    the synthesized loop is playing (sample-accurate A/V lock, seamless loop via
    AudioBufferSourceNode.loop), and performance.now() before that / when muted.
@@ -46,15 +47,22 @@
     };
 
     // ---- audio
+    // synthesize in a blob Worker; if workers are blocked or fail, run the same code on the main thread
+    const mainThread = (cues) => new Promise((resolve, reject) => setTimeout(() => {
+      try { const srcEl = document.getElementById('dhs-audio-src'); if (!(DHS.audio && DHS.audio.render) && srcEl) (0, eval)(srcEl.textContent);
+        const r = DHS.audio.render({ cues }); resolve({ L: r.master.L, R: r.master.R, sr: r.sr }); } catch (e) { reject(e); } }, 30));
     const synth = () => new Promise((resolve, reject) => {
       const cues = (DHS.film.tl || DHS.film.build()).cues;
       const srcEl = document.getElementById('dhs-audio-src');
+      const fallback = () => mainThread(cues).then(resolve, reject);
       if (srcEl && G.Worker && G.Blob) {
-        const code = srcEl.textContent + '\nself.onmessage=(e)=>{const r=DHS.audio.render({cues:e.data.cues});self.postMessage({L:r.master.L,R:r.master.R,sr:r.sr},[r.master.L.buffer,r.master.R.buffer]);};';
-        const w = new Worker(URL.createObjectURL(new Blob([code], { type: 'text/javascript' })));
-        w.onmessage = (e) => { resolve(e.data); w.terminate(); }; w.onerror = (e) => reject(e);
-        w.postMessage({ cues });
-      } else setTimeout(() => { try { const r = DHS.audio.render({ cues }); resolve({ L: r.master.L, R: r.master.R, sr: r.sr }); } catch (e) { reject(e); } }, 30);
+        try {
+          const code = srcEl.textContent + '\nself.onmessage=(e)=>{const r=DHS.audio.render({cues:e.data.cues});self.postMessage({L:r.master.L,R:r.master.R,sr:r.sr},[r.master.L.buffer,r.master.R.buffer]);};';
+          const w = new Worker(URL.createObjectURL(new Blob([code], { type: 'text/javascript' })));
+          w.onmessage = (e) => { resolve(e.data); w.terminate(); }; w.onerror = () => { w.terminate(); fallback(); };
+          w.postMessage({ cues });
+        } catch (e) { fallback(); }
+      } else fallback();
     });
     let buffer = null, synthP = null;
     const startSource = () => {
