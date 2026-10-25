@@ -194,6 +194,26 @@ the educators in his class and leave running in the Academy's halls.
 ## 19. Open questions
 None at approval. **DRAFT** lines (on-screen copy, ES/PT) get checked at the storyboard.
 
+## Build plan
+_Opened with `/toolbox` on 2026-10-25, after the storyboard, stills and sound were approved. Per storyboard row:
+**reuse plumbing**, **adapt a mechanism**, or **build new**._
+
+| Element | How |
+|---|---|
+| Player shell (fullscreen, controls fade after 3 s, Start sound, reduced motion, safe area, seamless loop, audio clock drives the picture, in-browser synthesis with a main-thread fallback) | **Adapt** the timeline engine's kiosk runtime and build script (`engine/src/player/runtime.js`, `engine/tools/build-player.js`) into `proj/cse-loop/` with this piece's own scenes, config and music. Canvas allowed up to 2× (3840×2160) so cheap 4K sets stay crisp; 60 fps where the machine allows |
+| Timeline: 7 rows, 48 s, every change on a bar line | **Adapt** the engine's scenes-as-pure-functions-of-time; new `film.js` for this piece |
+| The line (signature) | **Build new**: the path resampled evenly by length and drawn partway through a segment every frame (the fix for sketch C's stutter), glow, round head, field wipes that ride it |
+| MakeCode-style blocks | **Adapt** Bryan's `MakeCode/makecode_blocks.py` geometry (shapes, numbers, the locking tab, colors), ported to Canvas paths in this piece's code, since `MakeCode/` stays local |
+| Phone + app, yellow Lego-like car, Python text, micro:bit + plant + pump, CoDrone EDU | **Build new** vector drawings and their motion (from the stills) |
+| Dot-word accent at the end card ("Computer Science Essentials" gathering from the drone's path), maybe the Academy's three hexagons | **Adapt** gen's words-from-dots idea (`GEN.core.textPoints`, the `swarm` fly-in), written small into this piece; used at most twice |
+| Type | **Reuse plumbing**: embedded OFL fonts. Poppins (the PLTW outline's face) and a monospace for blocks and code are **not in the repo**; they need downloading from Google Fonts (ask Bryan) |
+| PLTW logo | Official file from pltw.org/about/brand-assets (ask Bryan before downloading); Academy badge from `sources/` |
+| Music: S2 Glass Lobby, mallet snaps, tight snare, 48 s | **Reuse plumbing** (`DHS.dsp`, `tools/render_piece.py` for the loudness check); **extend** `music.js` from 8 bars to all 24, scored to the full storyboard cues (key lift, half-time, end-card breather) |
+| Output | **Reuse**: one offline HTML in `players/`, linked from `index.html` for GitHub Pages; `README.md` kept true. No MP4 (not asked for) |
+
+**Stages (CLAUDE.md Process):** 2 playable visuals (the whole 48-s loop, rough, no sound) → 3 the full music →
+4 the full player (polish, logos, fonts, ES/PT lines, QA) → 5 publish. Commit at the end of each.
+
 ## Decisions log
 - 2026-10-25 · "From scratch." · Full creative mode.
 - 2026-10-25 · "I'm leaving it up to you ... you handle it!" · Concept, tools shown, length (30–60 s), music are
@@ -240,3 +260,4 @@ None at approval. **DRAFT** lines (on-screen copy, ES/PT) get checked at the sto
 - 2026-10-25 · On the first sound samples: B's snap "doesn't sound like [finger snapping], more like a sega genesis-era drum machine lol." Asked to hear B with A's wooden clicks or C's mallets as the snap. · `choices-sound-b.html`.
 - 2026-10-25 · "B of the submodifiers of option B works (Mallets)." · Sound: S2 Glass Lobby with mallet snaps.
 - 2026-10-25 · "What I didn't like ... is like the drum machine sound that sounds like ... hitting a drum with a brush." · The gated, noise-heavy snare goes; two replacements to hear (`choices-sound-snare.html`).
+- 2026-10-25 · "B, the tight snare." · Final sound: S2 Glass Lobby, mallet snaps, tight snare.

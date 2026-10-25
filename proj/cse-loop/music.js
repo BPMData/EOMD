@@ -11,7 +11,7 @@
 (function (G) {
   'use strict';
   const P = G.DHS.dsp, TAU = Math.PI * 2, ex = Math.exp, sin = Math.sin;
-  const STYLE = G.CSE_STYLE || 'S1', SAMPLE = G.CSE_SAMPLE !== false, SNAP = G.CSE_SNAP || null, SNARE = G.CSE_SNARE || 'gated';   // SNARE (S2): 'gated' (brushy; rejected) | 'stick' | 'tight'   // SNAP: 'wood' | 'mallet' | 'finger' overrides a style's snap sound
+  const STYLE = G.CSE_STYLE || 'S2', SAMPLE = G.CSE_SAMPLE !== false, SNAP = G.CSE_SNAP || 'mallet', SNARE = G.CSE_SNARE || 'tight';   // defaults = Bryan's pick (Oct 25): S2 + mallet snaps + tight snare   // SNARE (S2): 'gated' (brushy; rejected) | 'stick' | 'tight'   // SNAP: 'wood' | 'mallet' | 'finger' overrides a style's snap sound
   const BPM = 120, BEAT = 60 / BPM, BAR = 4 * BEAT, BARS = SAMPLE ? 8 : 24, LEN = BARS * BAR;
   const tb = (bar, beat = 0) => (bar * 4 + beat) * BEAT;
   // picture cues from storyboard.md (seconds): block snaps, the ball turning red, where the line is drawing
