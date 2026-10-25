@@ -276,14 +276,11 @@ Chips music (the plain `chip` style): Bryan Oct 9, "it's so bad lol"; kept as a 
   A stepped render takes roughly the clip's length (music) plus about the same again (frames).
 
 ## Next
-**Pinned Oct 25 (where we stopped):** PR #2 is open (interview, brief template, Academies example, `/new-piece`,
-`notes/context-plan.md`). Order from here: (1) Bryan merges PR #2; (2) a new Fable chat writes `brief/CRAFT.md` with
-this prompt: "Write `brief/CRAFT.md` for this repo. Your instructions are the 'Writing brief for `brief/CRAFT.md`' in
-step 4 of `notes/context-plan.md`: read that first and follow it, including which files to read and which to leave
-closed. Skip the usual STATUS.md read for this task. When you're done, open a PR and show me the full text.";
-(3) another model implements the rest of `notes/context-plan.md` (item 13 below). Bryan's last idea that night,
-choice panels (the demo-sheet pickers: one simple page, up to six options in a 3 × 2 grid), is in the plan and in
-the CRAFT.md writing brief. Don't ask him about the unfinished suggestion; he doesn't remember it.
+**Pinned Oct 25 (where we stopped):** PR #2 (interview, brief template, Academies example, `/new-piece`,
+`notes/context-plan.md`) and PR #3 (`brief/CRAFT.md`, plan step 4, wired into `brief/INTERVIEW.md` step 4 and
+CLAUDE.md's file map) are merged. Next: another model implements the rest of `notes/context-plan.md` (item 13 below):
+steps 1–3 first (slim CLAUDE.md, split STATUS.md, nested per-folder CLAUDE.md files), then 5, 5b, 6 (with the
+choice-panel template from 4b), 7, 8, 9 and 10. Then the PLTW test (item 12).
 
 1. **Move to Claude Code: DONE (Oct 20).** git repo, cleanup, `CLAUDE.md` + `STATUS.md`, gen dust layer wired in.
 2. **Check the 9h builds (built Oct 20, in `players/`):** listen/watch: the jukebox's 10 new cartridges (levels next to the others) and a few minutes of
@@ -311,7 +308,8 @@ the CRAFT.md writing brief. Don't ask him about the unfinished suggestion; he do
 12. **Try the interview** (`/new-piece`) on the next new piece. A test of the idea: write a real brief for the PLTW promo
     with Bryan, rebuild it from a blank page in full creative mode, and compare it with r2.
 13. **Context that follows the stage** (design approved in direction Oct 25): implement `notes/context-plan.md`
-    (slim CLAUDE.md, split STATUS.md, nested per-folder CLAUDE.md, `brief/CRAFT.md`, `brief/taste/`, `/toolbox`, the peeking audit). Do it
+    (slim CLAUDE.md, split STATUS.md, nested per-folder CLAUDE.md, `brief/taste/`, `/toolbox`, the peeking audit;
+    `brief/CRAFT.md` is DONE, Oct 25). Do it
     before the PLTW test in item 12, so the test runs in the new setup.
 
 ## Open taste questions
