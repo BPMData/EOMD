@@ -132,7 +132,9 @@ It works in any chat, not only in this repo: paste this file and `TEMPLATE.md` i
 
 ## After the interview
 The brief's status line carries `Stage:` (interview → brief → concepts → storyboard → build), so any session or
-model knows where the piece is and what it may open. Update it at each gate and commit.
+model knows where the piece is and what it may open. Update it at each gate and commit. While the stage is before
+`build`, a hook logs every read to `proj/<name>/access.jsonl` (it never blocks anything); commit that log with each
+stage commit.
 
 0. **At the start of the interview,** copy `TEMPLATE.md` to `proj/<name>/brief.md` with `Stage: interview` and fill
    it in as answers come. Once you know who the client is, read their file in `clients/` if there is one.

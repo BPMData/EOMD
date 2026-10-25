@@ -51,7 +51,7 @@ polished and lost.
 | Library or tool work | That folder: `gen/`, `audio/` + `score/`, `engine/`, `jukebox/`, `tools/` (each has a `CLAUDE.md`) |
 | How new pieces start | `brief/`: `INTERVIEW.md`, `TEMPLATE.md`, `CRAFT.md`, `STORYBOARD.md`, `example-academies.md`, `taste/house.md` (default taste), `clients/` |
 | The public face | `README.md` (keep it true when tools or builds change), `CONTRIBUTING.md`, `LICENSE`, `index.html` (the Pages landing page; `.nojekyll` must stay) |
-| CI | `.github/workflows/ci.yml` |
+| CI | `.github/workflows/ci.yml`; the stage-read hook is in `.claude/settings.json` |
 | Why context is staged | `notes/context-plan.md`; repo-wide history: `notes/history.md` |
 
 ## Maintainer rules (for working on this repo)

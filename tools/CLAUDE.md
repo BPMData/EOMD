@@ -18,6 +18,7 @@ Status, the regression history and known limits: `tools/STATUS.md`.
 | `render_piece.py` | Renders a one-off score (`proj/<name>/music.js` setting `PIECE.render(sr)`) to WAV + MP3 at `TARGET_LUFS`, true-peak limited, ffmpeg-checked |
 | `calibrate.py`, `porter.py`, `midi.py`, `regress.py` | Music library tools (`audio/CLAUDE.md`) |
 | `hershey_words.py` | Makes the `living/words*.json` files for any word list (`VARIANT`) |
+| `check_stage_reads.py` | The peeking audit: restricted reads before a new piece's toolbox gate, from the stage logs `proj/*/access.jsonl` (written by the hook `.claude/hooks/stage_log.py`). Warnings only; CI runs it |
 
 `engine/tools/html_to_mp4.py` is the starter engine's original MP4 script; `html_to_mp4.py` here replaces it.
 
