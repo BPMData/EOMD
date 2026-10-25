@@ -45,8 +45,16 @@ It works in any chat, not only in this repo: paste this file and `TEMPLATE.md` i
 **1. The ask**
 - ★ What is it, where will it be seen, and by when? *"A 90-second video for the robotics club's open-house night,
   shown once on a projector, by Nov 15."*
-- ★ The mode, in the client's terms: "Quick and low-cost, built from ready-made parts (efficient mode), or a one-off
-  design made from scratch, slower and costlier (full creative mode)?"
+- ★ How to build it, with rough costs (from "Cost estimates" below; say they are estimates):
+  "There are two normal ways to build this:
+  **Ready-made parts:** assembled from parts this kit already has. Roughly $2–8 if you pay per use, or one ordinary
+  session on a subscription.
+  **From scratch:** designed only for this piece, the way the Academies film was made. Roughly $15–80 for a
+  one-minute piece if you pay per use (the top model costs more), or a long session that can reach your plan's usage
+  limit; it's good to start it before a break. Each extra minute adds roughly a third.
+  Neither can surprise you: a subscription pauses at its limit, and with pay-per-use we set a spending cap first.
+  Which would you like?"
+  (Efficient mode = ready-made parts; full creative mode = from scratch.)
 
 **2. Purpose and tone**
 - ★ After watching, what should a viewer know, feel and do? One line each.
@@ -130,3 +138,20 @@ It works in any chat, not only in this repo: paste this file and `TEMPLATE.md` i
    borrowed from another piece.
 6. **Build** in the stages of CLAUDE.md's Process. Every verdict ("approved", "looks cheesy") goes into the
    brief's Decisions log, in the client's words.
+
+## Cost estimates
+Rough until measured: no full build in this repo has had its cost recorded yet. Every brief now logs its real cost
+(the status line's `Cost:`); after three pieces in a mode, replace that mode's range with what was measured.
+- **How a build spends:** every model call re-reads the whole conversation. Re-reading is cheap ($0.20 per million
+  tokens, cached, on Sonnet 5.5 and Opus 5.5; $0.25 on Fable 5.1); new text costs more (written into the cache at about
+  twice the input price: $4 per million on Sonnet, $8 on Opus, $20 on Fable; output $10 / $20 / $50 per million).
+  With a working context of ~60–150k tokens, one call costs about **$0.05 on Sonnet, $0.08 on Opus, $0.16 on Fable**.
+  Measured Oct 25: a 6-call interview start on Sonnet cost $0.28 (`notes/context-plan.md`, step 10).
+- **Ready-made parts:** ~40–150 calls (brief, a cartridge or score, builds, frame checks, export) ≈ $2–8 on Sonnet,
+  $3–12 on Opus.
+- **From scratch, one minute:** ~300–1,000 calls (concepts, storyboard, a new engine or layers, new music, QA rounds,
+  renders) ≈ $15–50 on Sonnet, $25–80 on Opus, $50–160 on Fable. Each extra minute adds new beats on the same
+  system: roughly a third more, not double.
+- **Subscriptions** don't bill per token; a long build spends the plan's usage allowance, and hitting the limit
+  means waiting for it to reset. On pay-per-use, start the session with a spending cap (`--max-budget-usd`, or the
+  workspace limit in the Anthropic Console).

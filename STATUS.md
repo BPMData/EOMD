@@ -20,6 +20,9 @@ _Last updated: Oct 25, 2026 (new pieces start with a client interview and an app
   - CLAUDE.md "New pieces" rewritten (interview first; the efficient/full creative question is in round 1; full creative
     designs before picking tools; the "words inside the picture" rule removed, Bryan: "should stay dead");
     Process gains stage 0. README, CONTRIBUTING, `gen/API.md` and `engine/README.md` point to it.
+  - Mode question in plain words with rough costs (ready-made parts ≈ $2–8 pay-per-use; from scratch ≈ $15–80 for one
+    minute on Sonnet/Opus), worked out in `brief/INTERVIEW.md` "Cost estimates". **Estimates**: each brief now logs its real
+    cost; replace the ranges after three pieces per mode.
   Not yet tried on a real piece.
 - **Open-source pass (Oct 20, Claude Code in the cloud; branch `claude/loving-mccarthy-83ac1l`, one PR into main).**
   Bryan approved all four parts:
