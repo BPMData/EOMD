@@ -32,6 +32,11 @@ one, copy it into `players/` and commit, so the public copies don't go stale. On
 script errors. Adding or renaming a player: update `index.html` (the Pages landing page; `.nojekyll` must stay, or Pages
 hides `gen/carts/_bundle.js`) and keep `README.md` true.
 
+## Folders the tools use
+`fonts/` (OFL TTFs `build_cdrom.py` downloads + every `OFL-*.txt` license; ship the licenses in any ZIP), `font_cache/`
+(`build.py`'s font cache, git-ignored), `dist/` (builds, git-ignored), `players/` (published copies), `media/` (README
+images, e.g. `pltw-cse-preview.jpg` cut from the MP4).
+
 ## Tools on the Mac
 Node via Homebrew (`/opt/homebrew/bin/node`), ffmpeg at `/opt/homebrew/bin/ffmpeg`. Thonny starts without Homebrew on
 its PATH, so a script with a `NODE_EXE` or `FFMPEG_EXE` setting may need the full path there (`regress.py` already has

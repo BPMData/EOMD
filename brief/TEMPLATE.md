@@ -48,7 +48,7 @@ _The next step. Nothing invented: no URL, deadline, QR code or contact that isn'
 
 ## 11. Music and sound
 _Feel; where it plays and how often people hear it; what to avoid; sound effects synced to motion or not; loudness
-(CLAUDE.md Defaults: hallway −16 LUFS, classroom −23)._
+from how and where it's heard (a client file in `brief/clients/` may have targets that held before)._
 
 ## 12. Hard limits
 _Claims, likenesses, photos, anything admin or legal won't allow._
@@ -71,8 +71,8 @@ Default craft bar (from the Academies brief); this piece adds or relaxes: _..._
 - None of the subject's clichés.
 
 ## 15. Technical
-Repo defaults (CLAUDE.md "Bryan's rules" and "Defaults": a single offline HTML file, time-based motion, synthesized
-audio, nothing flashing more than 3×/s, legibility and loudness targets). Exceptions for this piece: _..._
+Repo defaults (CLAUDE.md "Rules for every piece": a single offline HTML file, time-based motion, synthesized
+audio, nothing flashing more than 3×/s; legibility and loudness targets from sections 3 and 11). Exceptions for this piece: _..._
 
 ## 16. Deliverables
 _Files (HTML player, MP4 with and without sound, portrait version, ZIP), length, where it's published (`players/`,

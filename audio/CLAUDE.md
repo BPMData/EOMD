@@ -4,6 +4,8 @@ Every player's synthesized music: shared instruments, the arranger, one file per
 `score/`. **A new one-off piece doesn't borrow another piece's music:** it writes its own `proj/<name>/music.js`
 (see `/toolbox`).
 
+Streams are synthesized at 48 kHz in sections with overlapping tails. Loudness targets come from each piece's brief.
+
 ## The regression rule (shared audio files)
 A change to any file here, to `engine/src/audio/dsp.js`, or to the CD-ROM-born shared files (`audio/chips.js`,
 `audio/style-chip.js`, `score/cdrom-*.json`, `audio/instruments-cdrom.js`, `audio/style-lounge.js`,
