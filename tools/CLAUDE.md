@@ -19,6 +19,7 @@ Status, the regression history and known limits: `tools/STATUS.md`.
 | `calibrate.py`, `porter.py`, `midi.py`, `regress.py` | Music library tools (`audio/CLAUDE.md`) |
 | `hershey_words.py` | Makes the `living/words*.json` files for any word list (`VARIANT`) |
 | `check_stage_reads.py` | The peeking audit: restricted reads before a new piece's toolbox gate, from the stage logs `proj/*/access.jsonl` (written by the hook `.claude/hooks/stage_log.py`). Warnings only; CI runs it |
+| `eval_new_piece.py` | The first-question eval: a one-sentence new-piece request on a copy of the repo (Sonnet, read-only, capped at $0.50), checking files opened, context and cost before the first question; PASS/FAIL. CI runs it (`.github/workflows/eval.yml`) when the context files change and an `ANTHROPIC_API_KEY` secret exists |
 
 `engine/tools/html_to_mp4.py` is the starter engine's original MP4 script; `html_to_mp4.py` here replaces it.
 

@@ -136,8 +136,9 @@ model knows where the piece is and what it may open. Update it at each gate and 
 `build`, a hook logs every read to `proj/<name>/access.jsonl` (it never blocks anything); commit that log with each
 stage commit.
 
-0. **At the start of the interview,** copy `TEMPLATE.md` to `proj/<name>/brief.md` with `Stage: interview` and fill
-   it in as answers come. Once you know who the client is, read their file in `clients/` if there is one.
+0. **Ask round 1 first;** open nothing else before it. Once round 1 is answered, copy `TEMPLATE.md` to
+   `proj/<name>/brief.md` with `Stage: interview` and the mode, and fill it in as answers come. Once you know who the
+   client is, read their file in `clients/` if there is one.
 1. **Reflect back** the whole piece in one paragraph, plus the open questions.
 2. **Draft the brief** (`Stage: brief`), in the client's words where possible, with the reasons kept. Mark gaps
    **ASK** and Claude's drafts (translations, suggested copy) **DRAFT**. In §13 list the house taste items that apply

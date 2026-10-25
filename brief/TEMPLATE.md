@@ -3,7 +3,7 @@
 Status: DRAFT | APPROVED <date> by <name> · Stage: interview | brief | concepts | storyboard | build · Mode: efficient | full creative · Client: <name> · Sign-off: <names>
 Usage: <model, effort> · <share of a 5-hour limit, per stage, as the Claude app or Claude Code shows it>
 
-_Copy to `proj/<name>/brief.md` at the start of the interview (`brief/INTERVIEW.md`) and update `Stage:` at each gate. Write it in the client's words where
+_Copy to `proj/<name>/brief.md` once round 1 of the interview is answered (`brief/INTERVIEW.md`) and update `Stage:` at each gate. Write it in the client's words where
 possible and keep the reasons. **ASK** = missing, **DRAFT** = Claude's draft (translations, suggested copy),
 **Claude's call** = delegated by the client. `brief/example-academies.md` shows the level of detail to aim for._
 
