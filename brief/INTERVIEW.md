@@ -131,23 +131,30 @@ It works in any chat, not only in this repo: paste this file and `TEMPLATE.md` i
 - What would make them say "that's it"? How will we know it worked?
 
 ## After the interview
+The brief's status line carries `Stage:` (interview → brief → concepts → storyboard → build), so any session or
+model knows where the piece is and what it may open. Update it at each gate and commit.
+
+0. **At the start of the interview,** copy `TEMPLATE.md` to `proj/<name>/brief.md` with `Stage: interview` and fill
+   it in as answers come. Once you know who the client is, read their file in `clients/` if there is one.
 1. **Reflect back** the whole piece in one paragraph, plus the open questions.
-2. **Draft the brief:** copy `TEMPLATE.md` to `proj/<name>/brief.md` and fill it in, in the client's words where
-   possible, with the reasons kept. Mark gaps **ASK** and Claude's drafts (translations, suggested copy) **DRAFT**. Commit.
+2. **Draft the brief** (`Stage: brief`), in the client's words where possible, with the reasons kept. Mark gaps
+   **ASK** and Claude's drafts (translations, suggested copy) **DRAFT**. In §13 list the house taste items that apply
+   (`taste/house.md`). Commit.
 3. **Approval.** The client reads it and approves or edits it. No design work before this.
-4. **Concepts:** read `brief/CRAFT.md` first (brief to concept, how to pitch, storyboard and still formats, the
-   self-check). Then 2–3 distinct directions, a few lines each (signature idea, structure, look, sound). The client
-   picks or mixes. In efficient mode the directions come from what the existing tools can do.
-5. **Design before tools (full creative mode):** copy `STORYBOARD.md` to `proj/<name>/storyboard.md`: the table
-   (time | on screen | sound; `brief/CRAFT.md` has the format), 2–3 still frames and the written sound concept (what
-   sound does, pulse, instruments and textures as sounds, how it meets the key moments, how it ends, which taste
-   items apply), made from the brief alone. In efficient mode the sound concept is written right after `/toolbox`
-   opens. Don't open `gen/`, the
-   cartridges or other pieces' code until the client has seen them. Then pick tools: reuse the plumbing (the DSP,
-   `tools/render_piece.py`, `tools/html_to_mp4.py`, `tools/gen_export.py`, the loudness checks), never a look
-   borrowed from another piece.
-6. **Build** in the stages of CLAUDE.md's Process. Every verdict ("approved", "looks cheesy") goes into the
-   brief's Decisions log, in the client's words.
+   - **Efficient mode: the gate opens here.** Run `/toolbox` now: concepts are built from what exists, fitted to
+     this subject (never another piece's look or music).
+4. **Concepts** (`Stage: concepts`): read `CRAFT.md` first (brief to concept, how to pitch, choice panels, storyboard
+   and still formats, the self-check). Then 2–3 distinct directions, a few lines each (signature idea, structure,
+   look, sound). The client picks or mixes, ideally from a choice panel.
+5. **Storyboard, stills and sound concept** (`Stage: storyboard`; full creative mode): copy `STORYBOARD.md` to
+   `proj/<name>/storyboard.md`: the table (time | on screen | sound), 2–3 still frames and the written sound concept
+   (what sound does, pulse, instruments and textures as sounds, how it meets the key moments, how it ends, which
+   taste items apply), made from the brief alone. Until the client approves them, stay out of everything on the
+   restricted list (`notes/context-plan.md`): the picture, sound and tool folders and other pieces' folders.
+   - **Full creative mode: the gate opens here.** Once storyboard, stills and sound concept are approved, run
+     `/toolbox`. In efficient mode, the sound concept is written right after `/toolbox` opens.
+6. **Build** (`Stage: build`): the build plan from `/toolbox` first, then the stages of CLAUDE.md's Process. Every
+   verdict ("approved", "looks cheesy") goes into the brief's Decisions log, in the client's words.
 
 ## Usage estimates
 Written for the people this kit is for: someone with a Pro plan ($20/month) who has never made a video, not a
