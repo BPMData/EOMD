@@ -133,12 +133,20 @@ creative: storyboard, stills and sound concept approved). Picture and sound are 
    - **Not in it:** a textbook, history, tutorials, easing math, code, tool advice, the client's taste (that's
      `brief/taste/`), or anything already in INTERVIEW.md or TEMPLATE.md (link to it instead).
    - **Must include:** the outline above, plus how to pitch 2–3 concepts to a non-technical client in everyday words
-     (each a few lines: the idea, what they'd see, how it feels; one still or sketch each when possible), what a
+     (each a few lines: the idea, what they'd see, how it feels; one still or sketch each when possible), choice
+     panels (below), what a
      storyboard row and a still frame must prove, and a short self-check to run before showing the client anything
      (the anti-patterns as questions).
    - **Form:** ≤ 1,500 words; headings and tight bullets; plain English, so a later, cheaper model can follow it.
    - **Wire it in:** in `brief/INTERVIEW.md` "After the interview", read `brief/CRAFT.md` before step 4 (concepts);
      add it to CLAUDE.md's file map row for `brief/`. Commit on a branch, open a PR, show Bryan the full text.
+4b. **Choice panels** (Bryan, Oct 25: the demo-sheet pickers from the Academies hero marks "were a great
+   methodology"). Whenever the client has to choose (concepts, a look, a hero moment, a sound), show one simple
+   offline HTML page: up to six options in a 3 × 2 grid, each a still, a ~15-second clip or a sound sample, with a
+   short plain-words label and a letter to answer with ("B, but slower"). A non-technical client picks by looking and
+   listening, not by reading descriptions. The options follow the stage rules: during design they're stills or
+   sketches made for this piece; clips and sound samples come once the tools are open. CRAFT.md says when to use one;
+   the toolbox gets a small template for building them.
 5. **Taste as a profile with IDs, not prose** (tier 1; public). Most first prompts carry weak taste, so the house
    taste applies by default; a project may change it, but only item by item, with a reason.
    - `brief/taste/house.md`: the default profile, Bryan's, distilled from STATUS.md and the briefs' verdicts. One
