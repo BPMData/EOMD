@@ -9,6 +9,9 @@ are made and questions answered, gradually reveal the tools and prior context ne
 efficient." Avoid reinventing the wheel, and avoid getting stuck reusing prior art's wheel designs. "Frontloading all
 that context is how you get endless repetitive demoscene videos."
 
+**Who it's for:** non-technical people who want a video made, on a Pro plan. Technical users already get good
+results. Test every change against someone organizing a church tag sale: could they follow it?
+
 ## The problem today
 A session opens with ~8,900 words: CLAUDE.md (~3,400, mostly per-piece file maps, builds and the CD-ROM's music
 routing) plus STATUS.md (~5,500, mostly CD-ROM history), which CLAUDE.md says to read every session. Before the

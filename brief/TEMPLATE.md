@@ -1,7 +1,7 @@
 # Brief: <piece name>
 
 Status: DRAFT | APPROVED <date> by <name> · Mode: efficient | full creative · Client: <name> · Sign-off: <names>
-Cost: <model> · <$ or share of plan usage, per stage, as Claude Code reports it>
+Usage: <model, effort> · <share of a 5-hour limit, per stage, as the Claude app or Claude Code shows it>
 
 _Copy to `proj/<name>/brief.md` after the interview (`brief/INTERVIEW.md`). Write it in the client's words where
 possible and keep the reasons. **ASK** = missing, **DRAFT** = Claude's draft (translations, suggested copy),
