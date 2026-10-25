@@ -11,7 +11,7 @@
 (function (G) {
   'use strict';
   const P = G.DHS.dsp, TAU = Math.PI * 2, ex = Math.exp, sin = Math.sin;
-  const STYLE = G.CSE_STYLE || 'S1', SAMPLE = G.CSE_SAMPLE !== false;
+  const STYLE = G.CSE_STYLE || 'S1', SAMPLE = G.CSE_SAMPLE !== false, SNAP = G.CSE_SNAP || null;   // SNAP: 'wood' | 'mallet' | 'finger' overrides a style's snap sound
   const BPM = 120, BEAT = 60 / BPM, BAR = 4 * BEAT, BARS = SAMPLE ? 8 : 24, LEN = BARS * BAR;
   const tb = (bar, beat = 0) => (bar * 4 + beat) * BEAT;
   // picture cues from storyboard.md (seconds): block snaps, the ball turning red, where the line is drawing
@@ -21,7 +21,7 @@
     lineDraws: [[0.0, 1.6], [5.2, 8.0], [9.6, 11.2]],
   };
   const TITLES = { S1: 'CSE loop: S1 Snap Groove', S2: 'CSE loop: S2 Glass Lobby', S3: 'CSE loop: S3 Maker Bench' };
-  G.PIECE = { title: TITLES[STYLE] + (SAMPLE ? ' (sample)' : ''), length: LEN, bpm: BPM, cues: CUES, render };
+  G.PIECE = { title: TITLES[STYLE] + (SNAP ? ' + ' + SNAP + ' snaps' : '') + (SAMPLE ? ' (sample)' : ''), length: LEN, bpm: BPM, cues: CUES, render };
 
   function render(sr) {
     const N = Math.round(LEN * sr), at = (t) => Math.round(t * sr), rnd = P.rng(4810), r01 = () => rnd() * 0.5 + 0.5;
@@ -128,7 +128,7 @@
         [5, 0, 74, .75], [5, .75, 73, .75], [5, 1.5, 69, 1], [5, 2.5, 66, .5], [5, 3, 69, 1],
         [6, 0, 71, .5], [6, .5, 74, .5], [6, 1, 76, .5], [6, 1.5, 79, 1], [6, 2.5, 78, .5], [6, 3, 76, 1],
         [7, 0, 74, 1], [7, 1, 76, .5], [7, 1.5, 73, 1], [7, 2.5, 71, .5], [7, 3, 69, 1]];
-      const K = kick(1.1, 46), SN = snare(), HH = [hat(1), hat(0.45)], SNAP = fingerSnap();
+      const K = kick(1.1, 46), SN = snare(), HH = [hat(1), hat(0.45)], SNAPF = fingerSnap();
       for (let bar = 0; bar < BARS; bar++) {
         const ch = CH[bar], r = ROOT[bar], v2 = Array.isArray(ch[0]) ? ch : [ch, ch];
         epChord(v2[0], tb(bar, 0), 1.75 * BEAT, 0.42, 0.75, { strum: 0.012, bright: 0.8 }); epChord(v2[1], tb(bar, 2.5), 1.3 * BEAT, 0.34, 0.65, { strum: 0.012, bright: 0.8 });
@@ -145,7 +145,12 @@
         put(ks(m + 12, d * BEAT, { bright: 6500, fb: 0.998, rel: 0.12 }), tb(bar, b), 0.3, 0.2, { rv: 0.3, dl: 0.2 });
         put([ep(m, d * BEAT, 0.7, -5, 0.9), ep(m, d * BEAT, 0.7, 5, 0.9)], tb(bar, b), 0.14, 0, { rv: 0.3, width: 0.5 });
       }
-      CUES.snaps.forEach((t) => put(SNAP, t, 0.35, 0.3, { rv: 0.35 }));
+      // the snap sound: finger snap (original), or Bryan's Oct 25 asks: S1's wooden click or S3's mallet, tuned to D major
+      const SNAPNOTES = [81, 83, 86, 81, 83, 86];
+      CUES.snaps.forEach((t, i) => {
+        if (SNAP === 'wood') put(woodClick(SNAPNOTES[i]), t, 0.34, 0.15, { rv: 0.15 });
+        else if (SNAP === 'mallet') { put(mallet(SNAPNOTES[i], 1), t, 0.4, 0.2, { rv: 0.25 }); put(mallet(SNAPNOTES[i] + 12, 0.5), t + 0.004, 0.12, 0.3); }
+        else put(SNAPF, t, 0.35, 0.3, { rv: 0.35 }); });
       epChord([66, 69, 73, 76], CUES.ballRed, 0.5, 0.35, 0.9, { strum: 0.02 });
       glide(...CUES.lineDraws[0], [74, 78, 76], 0.04); glide(...CUES.lineDraws[1], [69, 73, 76, 78, 74], 0.04); glide(...CUES.lineDraws[2], [76, 73, 71, 69], 0.04);
     }

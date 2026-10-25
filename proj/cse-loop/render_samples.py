@@ -1,12 +1,16 @@
 """
-render_samples.py -- renders the three 16-second sound samples (S1, S2, S3) for the CSE hallway loop and builds the
-choice panel (choices-sound.html) with the samples inlined, so it works offline.
+render_samples.py -- renders 16-second sound samples (any style, with an optional snap sound) for the CSE hallway loop and
+builds a choice panel with the samples inlined, so it works offline. Set VARIANTS and PANEL_FILE below.
 Press Run in Thonny. Needs Node.js and ffmpeg. Uses tools/render_piece.py for loudness and true-peak limiting.
 """
 import os, sys, json, base64
 
 # ============================ SETTINGS (edit these) ============================
-STYLES      = ["S1", "S2", "S3"]
+VARIANTS    = [("S2", "wood"), ("S2", "mallet")]   # (style, snap sound or None); e.g. [("S1", None), ("S2", None), ("S3", None)]
+PANEL_FILE  = "choices-sound-b.html"
+PANEL_TITLE = "CSE hallway loop: B with which snap?"
+PANEL_ASK   = ("Glass Lobby (B) with a different sound for the block snaps. Same 16 seconds, same loudness. "
+               "Answer with a letter.")
 TARGET_LUFS = -16.0          # hallway level (brief section 11)
 CEILING     = -1.5           # dBTP
 # ===============================================================================
@@ -22,35 +26,41 @@ LABELS = {
     "S3": ("Maker Bench", "Interlocking mallets and plucked strings; the snaps, clicks and the car's tick become the beat."),
 }
 
+SNAPS = {
+    "wood": ("wooden clicks", "The block snaps use A's wooden click, tuned to B's key."),
+    "mallet": ("mallet hits", "The block snaps use C's mallet, tuned to B's key."),
+    "finger": ("finger snaps", "The original B."),
+}
+
 def main():
     os.makedirs(os.path.join(ROOT, "dist"), exist_ok=True)
     os.makedirs(os.path.join(HERE, "samples"), exist_ok=True)
     music = os.path.join(HERE, "music.js")
     opts = []
-    for s in STYLES:
-        wrapper = os.path.join(ROOT, "dist", f"cse-loop-{s}.js")      # dist/ is git-ignored
-        open(wrapper, "w").write(f"globalThis.CSE_STYLE = {json.dumps(s)}; globalThis.CSE_SAMPLE = true;\n"
+    for s, snap in VARIANTS:
+        tag = s + ("-" + snap if snap else "")
+        wrapper = os.path.join(ROOT, "dist", f"cse-loop-{tag}.js")      # dist/ is git-ignored
+        open(wrapper, "w").write(f"globalThis.CSE_STYLE = {json.dumps(s)}; globalThis.CSE_SAMPLE = true; "
+                                 f"globalThis.CSE_SNAP = {json.dumps(snap)};\n"
                                  f"eval(fs.readFileSync({json.dumps(music)}, 'utf8'));\n")
         rp.PIECE = os.path.relpath(wrapper, ROOT)
-        rp.OUT_WAV = os.path.join(ROOT, "dist", f"cse-loop-{s}.wav")
-        rp.OUT_MP3 = os.path.join(HERE, "samples", f"{s}.mp3")          # *.mp3 is git-ignored; the panel inlines them
+        rp.OUT_WAV = os.path.join(ROOT, "dist", f"cse-loop-{tag}.wav")
+        rp.OUT_MP3 = os.path.join(HERE, "samples", f"{tag}.mp3")          # *.mp3 is git-ignored; the panel inlines them
         rp.TARGET_LUFS, rp.CEILING_DBTP = TARGET_LUFS, CEILING
         rp.main()
         data = base64.b64encode(open(rp.OUT_MP3, "rb").read()).decode()
         label, note = LABELS[s]
-        opts.append({"label": f"{s}. {label}", "note": note, "audio": "data:audio/mpeg;base64," + data})
+        if snap: label, note = f"{label} + {SNAPS[snap][0]}", SNAPS[snap][1]
+        opts.append({"label": label, "note": note, "audio": "data:audio/mpeg;base64," + data})
     # the choice panel: the toolbox template with PANEL filled in
     tpl = open(os.path.join(ROOT, ".claude", "skills", "toolbox", "choice-panel.html")).read()
     a = tpl.index("// ===================== PANEL"); b = tpl.index("// ================================================================\n")
     panel = ("// ===================== PANEL (filled by render_samples.py) =====================\n"
              "const PANEL = " + json.dumps({
-                 "title": "CSE hallway loop: which sound?",
-                 "ask": "Three 16-second samples of the video's opening (the first app, then the robot car). Each one loops, so "
-                        "play it a few times. They're the same speed and loudness. Answer with a letter, or mix "
-                        "(\"B, with C's clicks\").",
+                 "title": PANEL_TITLE, "ask": PANEL_ASK,
                  "options": opts}) + ";\n")
-    open(os.path.join(HERE, "choices-sound.html"), "w").write(tpl[:a] + panel + tpl[b:])
-    print("panel:", os.path.join(HERE, "choices-sound.html"))
+    open(os.path.join(HERE, PANEL_FILE), "w").write(tpl[:a] + panel + tpl[b:])
+    print("panel:", os.path.join(HERE, PANEL_FILE))
 
 if __name__ == "__main__":
     main()

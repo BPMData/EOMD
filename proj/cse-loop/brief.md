@@ -237,3 +237,4 @@ None at approval. **DRAFT** lines (on-screen copy, ES/PT) get checked at the sto
 - 2026-10-25 · "Give me 3 different soundways methods to choose from. I like your current idea as one of those
   three." · Three sound directions in the storyboard.
 - 2026-10-25 · "Storyboard and stills approved. Open the toolbox, make 15-second samples of S1, S2 and S3, and I'll pick by ear." · Stage: build.
+- 2026-10-25 · On the first sound samples: B's snap "doesn't sound like [finger snapping], more like a sega genesis-era drum machine lol." Asked to hear B with A's wooden clicks or C's mallets as the snap. · `choices-sound-b.html`.
