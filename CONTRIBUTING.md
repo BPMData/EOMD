@@ -54,7 +54,7 @@ pull request. A cartridge that passes the smoke test but was never looked at isn
 
 ## License and copyright
 
-- Everything you contribute is under the repo's **MIT License** (see `LICENSE`).
+- Everything you contribute is under the repo's **GNU AGPLv3** (see `LICENSE`).
 - **No copyrighted material** you don't have the rights to: no commercial song lyrics, logos, photos or fonts
   without an open license.
 - Lyrics from a commercial record belong only in `gen/carts/private/`, which git ignores. Never put them in a pull request.

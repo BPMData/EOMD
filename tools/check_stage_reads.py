@@ -7,7 +7,7 @@ reads of restricted paths (picture, sound and music, tools, other pieces) made b
 It only reports (as GitHub warning annotations in CI); it never fails, so it can't block a push.
 Run it in Thonny with the Run button, or `python tools/check_stage_reads.py` (CI does).
 """
-import fnmatch, glob, json, os, re
+import fnmatch, glob, json, os, re, shlex
 
 # ===================== SETTINGS =====================
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # the repo root (this script sits in tools/)
@@ -44,20 +44,32 @@ def restricted(path, own):
     return False
 
 
+def bash_tokens(cmd):
+    """The words of a shell command, quotes removed (falls back to a plain split if the command won't parse)."""
+    try:
+        lex = shlex.shlex(cmd, posix=True, punctuation_chars=True)
+        lex.whitespace_split = True
+        return list(lex)
+    except ValueError:
+        return re.split(r"[\s'\"=(),;&<>`]+", cmd)
+
+
 def bash_hits(cmd, own):
+    """Restricted paths a Bash command touches. Only words that look like paths count: a search pattern such as
+    "gen/\\|living/" (regex characters) is skipped, and an absolute path counts from its repo-relative part."""
     hits = []
-    for r in RESTRICTED:
-        probe = r.split('*')[0] if '*' in r else r
-        if '*' in r:
-            tail = r.split('*')[-1]
-            for m in re.finditer(r'proj/([\w.-]+)' + re.escape(tail), cmd):
-                if m.group(1) != own:
-                    hits.append(m.group(0))
-        elif probe in cmd and probe not in hits:
-            hits.append(probe)
-    for m in re.finditer(r'proj/([\w.-]+)/', cmd):
-        if m.group(1) != own and m.group(0) not in hits:
-            hits.append(m.group(0))
+    for tok in bash_tokens(cmd):
+        tok = tok.strip('\'"')
+        if '/' not in tok or any(ch in tok for ch in '\\|^$'):
+            continue
+        cands = [tok]
+        if tok.startswith(('/', '~')):          # absolute: try from each folder boundary, the first match decides
+            cands = [tok[k + 1:] for k in range(len(tok)) if tok[k] == '/']
+        for c in cands:
+            if c.startswith('proj/') or any(c.startswith(r.split('*')[0]) for r in RESTRICTED):
+                if restricted(c, own) and c not in hits:
+                    hits.append(c)
+                break
     return hits
 
 

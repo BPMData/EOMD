@@ -23,7 +23,7 @@ folder's `STATUS.md`; repo-wide history in `notes/history.md`._
 - **Regression baseline:** settled for Node 22; the Mac's Node 26 doesn't match it (`tools/STATUS.md`).
 - **New pieces:** interview → brief → concepts → storyboard → build; tools open at the gate via `/toolbox`
   (`notes/context-plan.md`). Taste defaults: `brief/taste/house.md`.
-- **Peeking audit (step 9):** 0 of 1 new pieces so far (CSE hallway loop: no restricted reads before its gate). Decision rule: peeks in 2 of the next 3 new pieces (or once
+- **Peeking audit (step 9):** 0 of 1 new pieces so far (CSE hallway loop: no restricted reads before its gate; the one Bash hit was a search of its own log, and the checker no longer counts that). Decision rule: peeks in 2 of the next 3 new pieces (or once
   in a way that shaped a design) → make the stage hook blocking. Record each piece's count here.
 
 ## Next
