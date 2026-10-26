@@ -767,7 +767,7 @@ addEventListener('click',()=>{if(BOOT.on&&BOOT.out<0)bootGo(true)},true);
 /* ================= channel surf: ~4-5 min each, ordered-dither dissolve; cards + Duds persist ================= */
 const ORDER=['ascii','dos','stars','desk','maze'],LOCK=ORDER.includes(Q.get('ch'))?Q.get('ch'):null,SURF=+Q.get('surf')||0,DIS=2;
 const make=k=>k==='desk'?new Desk():k==='maze'?new Maze():k==='stars'?new Stars():k==='ascii'?new Dungeon():new GSim(k);
-let CUR,NXT=null,disT0=0,chEnd=0;
+let CUR,NXT=null,disT0=0,chEnd=0,RT=0;   // RT: real seconds; the era dwell runs on it because T lags when frames are slow or the tab is throttled
 const hold=()=>SURF||240+R()*60;
 let WAIT=null;
 function startSwitch(key,dir){if(NXT||WAIT)return;dir=dir<0?-1:1;key=key||ORDER[(ORDER.indexOf(CUR.key)+dir+ORDER.length)%ORDER.length];MUS.dir(dir);MUS.want(key);WAIT={key,at:-1};(dir<0?pv:nx).textContent='Switching…'}
@@ -779,9 +779,9 @@ let SCAN;function makeScan(){const b=buf(W,H),c=b.getContext('2d');c.fillStyle='
 /* ================= main loop (time-based; frame rate never changes speed) ================= */
 const cv=document.getElementById('cv'),ctx=cv.getContext('2d');let b1=buf(2,2),b2=buf(2,2);
 function size(){const dpr=Math.min(devicePixelRatio||1,2),bw=Math.max(480,Math.min(W,Math.round(Math.min(innerWidth,innerHeight*16/9)*dpr)));if(bw===cv.width)return;cv.width=bw;cv.height=Math.round(bw*9/16)}
-function step(dt){T+=dt;checkTimer();if(!NXT&&!LOCK&&T>=chEnd&&!MUS.busy())startSwitch();
+function step(dt){T+=dt;RT+=dt;checkTimer();if(!NXT&&!LOCK&&RT>=chEnd&&!MUS.busy())startSwitch();
  if(WAIT){if(WAIT.at<0){const p=MUS.poll();if(p)WAIT.at=T+Math.max(0,p.tx-MUS.now())}if(WAIT.at>=0&&T>=WAIT.at){const k=WAIT.key;WAIT=null;beginSwitch(k)}}
- CUR.sim.step(T);if(NXT){NXT.sim.step(T);if(T-disT0>=DIS){CUR=NXT;NXT=null;chEnd=T+hold();TTL.k=CUR.key;TTL.t0=-1}}stepCards()}
+ CUR.sim.step(T);if(NXT){NXT.sim.step(T);if(T-disT0>=DIS){CUR=NXT;NXT=null;chEnd=RT+hold();TTL.k=CUR.key;TTL.t0=-1}}stepCards()}
 function draw(){const s=cv.width/W;
  if(!NXT){ctx.setTransform(s,0,0,s,0,0);ctx.imageSmoothingEnabled=true;CUR.sim.draw(ctx,T)}
  else{for(const b of[b1,b2])if(b.width!==cv.width||b.height!==cv.height){b.width=cv.width;b.height=cv.height}
@@ -801,7 +801,7 @@ addEventListener('keydown',e=>{poke();const k=e.key.toLowerCase();if(e.key===' '
 document.body.classList.add('idle');addEventListener('resize',size);
 const fpsEl=document.getElementById('fps');if(Q.has('fps'))fpsEl.hidden=false;
 let last=0,lastDraw=0,fc=0,fw=0,cost=0;
-function tick(now){requestAnimationFrame(tick);if(!last)last=now;const dt=Math.min(.05,(now-last)/1000);last=now;
+function tick(now){requestAnimationFrame(tick);if(!last)last=now;const real=(now-last)/1000,dt=Math.min(.05,real);last=now;RT+=real-dt;
  if(BOOT.on&&BOOT.out<0){drawBoot(now/1000);return}
  if(paused){if(now-lastDraw>=250){lastDraw=now;draw()}return}
  const t0=performance.now();step(dt);draw();lastDraw=now;
@@ -811,6 +811,6 @@ window.advance=(sec,hz=60)=>{const n=Math.round(sec*hz);for(let i=0;i<n;i++)step
 window.CDROM={state:()=>({T:+T.toFixed(1),ch:CUR.key,next:NXT&&NXT.key,card:CM.card&&CM.card.id,cs:CM.state,duds:CUR.sim.duds.length,bag:CM.bag.length}),next:k=>startSwitch(k)};
 size();
 window.ready=Promise.race([Promise.all(['124px Jq','700 110px Pix','112px VT','52px VT','48px VT','52px Atk','700 56px Atk','44px Mono','700 46px Mono'].map(f=>document.fonts.load(f))),new Promise(r=>setTimeout(r,3000))])
- .then(()=>{bootLoading();return new Promise(r=>setTimeout(r,50))}).then(()=>{makeContour();makeScan();makeD3();makeMazeTex();CUR={key:LOCK||ORDER[0]};CUR.sim=make(CUR.key);TTL.k=CUR.key;TTL.t0=-1;CUR.sim.spawn({ant:'V',eyes:'normal',mouth:'flat',legs:'spider',pal:'yellow'},true);chEnd=hold();
+ .then(()=>{bootLoading();return new Promise(r=>setTimeout(r,50))}).then(()=>{makeContour();makeScan();makeD3();makeMazeTex();CUR={key:LOCK||ORDER[0]};CUR.sim=make(CUR.key);TTL.k=CUR.key;TTL.t0=-1;CUR.sim.spawn({ant:'V',eyes:'normal',mouth:'flat',legs:'spider',pal:'yellow'},true);chEnd=RT+hold();
   for(const c of ACTIVE)cardLayout(c);if(!Q.has('manual'))requestAnimationFrame(tick);else draw()});
 </script></body></html>

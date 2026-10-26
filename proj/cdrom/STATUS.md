@@ -66,6 +66,9 @@ _Moved from the root `STATUS.md` on Oct 25, 2026 (context plan step 2); the root
     ellipsoids (the 3 darkest `ENV` tones); propellers as pixel sprites: a thin X (1 sprite px = 5 screen px) in `ENV`, 4 frames per
     quarter turn stepped at `PROP_FPS` 8, counter-rotating; reduced motion holds frame 0. Knobs `PROP_R`, `PROP_FPS` (in
     `proj/cdrom/addons.js`).
+  - **Oct 26 fix, eras never swapped:** the era dwell (240-300 s) ran on `T`, which advances at most 0.05 s per frame, so a slow
+    frame rate or a throttled/hidden tab stretched it (Bryan left it 10 min on era 1). It now runs on real time (`RT` in `player-src.html`).
+    Checked in the browser by simulating 5 fps; rebuilt `dist/`, `players/` copy not yet refreshed. Bryan: confirm on the real machine.
   - **Built, still unheard (Oct 8):** Previous Era / Next Era, Lounge (Chipped), Lounge speech ~3 dB louder (`LOUNGE_SPK` 1.4).
   - **How Overclock works in the player** (details in the files' header comments): `audio/style-overclock.js` cuts the piece into
     endless 8-bar sections (intro once, then passes), voices each bar through `TRACK2R2.chipEvents`, adds chip-voiced Dud speech from
