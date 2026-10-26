@@ -20,6 +20,7 @@
   const CUES = {
     snaps: [2.0, 4.0, 5.0, 12.0, 12.6, 15.6, 16.0, 25.4, 25.9, 26.4, 31.0, 32.3, 32.6, 33.8],  // every block or code strip that snaps in
     snapGroups: [2.0, 12.0, 25.4, 31.0],                                                        // first snap of each scene
+    pyLines: [19.4, 20.5, 21.6],                                                                // each Python line starts typing
     ballRed: 8.0, carRolls: 13.2, stall: [15.0, 16.0], carOff: [17.6, 18.9], typing: [19.4, 22.7], redRise: 24.0,
     drips: [27.4, 29.4], smile: [29.0, 29.6], takeoff: 31.0, burst: 38.75, settle: 41.0, cardOut: 46.0,
     lineDraws: [[5.2, 7.4], [9.6, 11.2], [18.0, 18.8], [25.2, 26.0], [30.5, 31.0], [46.8, 49.2]],
@@ -189,6 +190,8 @@
         if (SNAP === 'wood') put(woodClick(m), t, 0.34, 0.15, { rv: 0.15 });
         else if (SNAP === 'mallet') { put(mallet(m, 1), t, 0.4, 0.2, { rv: 0.25 }); put(mallet(m + 12, 0.5), t + 0.004, 0.12, 0.3); }
         else put(SNAPF, t, 0.35, 0.3, { rv: 0.35 }); });
+      // the Python lines: the mirror of the snaps, a mallet stepping down the scale for each line (Bryan, Oct 25)
+      CUES.pyLines.forEach((t, i) => { if (t >= LEN) return; const m = [85, 83, 81][i]; /* C#, B, A: fit F#m9 then Em9 */ put(mallet(m, 1), t, 0.4, -0.2, { rv: 0.25 }); put(mallet(m + 12, 0.5), t + 0.004, 0.12, -0.3); });
       if (CUES.ballRed < LEN) epChord([66, 69, 73, 76], CUES.ballRed, 0.5, 0.35, 0.9, { strum: 0.02 });
       // the car: a low hum far back, straining a little in the stall
       if (!SAMPLE) {

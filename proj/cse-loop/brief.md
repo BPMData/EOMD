@@ -271,3 +271,4 @@ _Opened with `/toolbox` on 2026-10-25, after the storyboard, stills and sound we
 - 2026-10-25 · "The blocks should always play the mallets in ascending scale for their individual scene." · Snap notes climb the pentatonic within each scene.
 - 2026-10-25 · "The 'Tap here!' for the ball but nothing ever taps is a tease ... show a tap (as indicated by that expanding circle)." · A tap ripple on the button; the ball turns red and bounces.
 - 2026-10-25 · "At the very end, it should say 'Ask your counselor about (name of the academy) and Computer Science Essentials.'" · End line: "Ask your counselor about the Information Technology & Cybersecurity Academy and Computer Science Essentials." (two lines; "the" added for grammar, **DRAFT**).
+- 2026-10-25 · "There should be some audio hits when the python blocks come in ... maybe a downward scale mallet hit as the python text chunks come in?" · A mallet stepping down (C#, B, A) as each Python line starts.
