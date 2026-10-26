@@ -54,6 +54,7 @@ Start sound for the music. Move the mouse to see the controls.
 | `players/living-player-cs.html` | Living poster with trilingual (EN/ES/PT) computer-science tip cards |
 | `players/living-player-ex.html` | Living poster with trilingual cards for a 9th-grade Exploration Seminar |
 | `players/pltw-cse.html` | The PLTW Computer Science Essentials promo above (60 s, with music) |
+| `players/cse-loop.html` | Computer Science Essentials hallway loop (48 s, with music): MakeCode-style blocks snap together and become an app, a self-driving car, Python, a self-watering micro:bit plant and a drone. Built by `proj/cse-loop/build.py` |
 | `players/gen-player.html` | The generative library below as one self-contained file (USB-stick ready) |
 
 - **Generative motion library:** double-click **`gen/player.html`**. Press **G** for the gallery of ready-made

@@ -2,7 +2,7 @@
 
 _Last updated: Oct 25, 2026._
 
-- **Stage:** build, stage 4 done (Oct 25): polished and checked (QA below). Next: stage 5, publish to `players/` + `index.html` (Bryan's OK first), then the S3 Maker Bench second player.
+- **Stage:** published Oct 25 as `players/cse-loop.html` (GitHub Pages). Extra in progress: a second player with S3 Maker Bench.
 - **What it is:** a 30–60 s looping HTML player about PLTW's Computer Science Essentials for the Information
   Technology & Cybersecurity Academy hallway TVs at Danbury High School; also shared with CS educators via GitHub Pages.
 - **Sources:** `sources/CSE_CourseOutline_CS.pdf` (PLTW course outline, BR015.06.2026), `sources/itc-academy-badge.webp`
