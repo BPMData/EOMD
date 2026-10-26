@@ -31,9 +31,9 @@
   function snapStack(ctx, t, x, y, s, hatMake, kids, snaps, from = [1400, 0]) {
     const k = snaps.slice(1).filter((ts) => t >= ts).length;
     if (t < snaps[0] - 0.55) return;
-    const hy = y - flyIn(t, snaps[0], 0.45) * 260;
+    const hx = x - flyIn(t, snaps[0], 0.45) * 520;     // the event block slides in from the left (clear of the headline)
     const hat = hatMake(kids.slice(0, k).map((f) => f()));
-    ctx.save(); ctx.globalAlpha *= clamp(prog(t, snaps[0] - 0.55, snaps[0] - 0.35)); B.drawStack(ctx, [hat], x, hy + snapBump(t, snaps[0]), s); ctx.restore();
+    ctx.save(); ctx.globalAlpha *= clamp(prog(t, snaps[0] - 0.55, snaps[0] - 0.35)); B.drawStack(ctx, [hat], hx, y + snapBump(t, snaps[0]), s); ctx.restore();
     // the next child, in flight
     if (k < kids.length) { const ts = snaps[k + 1], f = flyIn(t, ts, 0.55);
       if (t > ts - 0.55) { const placed = kids.slice(0, k).reduce((a, mk) => a + B.hOf(mk()), 0);
@@ -72,16 +72,17 @@
   // A. apps on yellow (rows 1-2). Comes in with the seam wipe (46.8 -> 49.2 = -1.2 -> 1.2).
   S({ t0: -1.2, t1: 11.4, bg: C.YELLOW, wipe: { t0: -1.2, t1: 1.2, dir: 'right', line: '#fff' },
     draw(ctx, t) {
-      // hero: "Never coded? Start here." shrinks into the support line as "Build your own apps." arrives
-      const sw = inOut(prog(t, 4.0, 4.6));
-      const e0 = enter(t, 0.5);
-      T(ctx, 'Never coded? Start here.', lerp(96, 100, sw), lerp(170, 236, sw) + 34 * (1 - e0), lerp(96, 44, sw), C.INK, e0, sw > 0.5 ? 600 : 800);
-      rise(ctx, 'Build your own apps.', 96, 170, 96, C.INK, t, 4.15);
+      // hero: "Want to learn to code? Start here." shrinks into the support line, turning into "Never coded? Start here.",
+      // as "Build your own apps." arrives (Bryan, Oct 25)
+      const sw = inOut(prog(t, 3.9, 4.4)), e0 = enter(t, 0.5), hx = lerp(96, 100, sw), hy = lerp(170, 236, sw) + 34 * (1 - e0), hp = lerp(96, 44, sw);
+      T(ctx, 'Want to learn to code? Start here.', hx, hy, hp, C.INK, e0 * (1 - sw), 800);
+      T(ctx, 'Never coded? Start here.', hx, hy, hp, C.INK, sw, 600);
+      rise(ctx, 'Build your own apps.', 96, 170, 96, C.INK, t, 4.35);
       // blocks
       snapStack(ctx, t, 120, 330, 1.8, appHat, appKids, [2.0, 4.0, 5.0]);
       // the line draws the phone
       const P = LN.get('toPhone', TO_PHONE), u = smooth(prog(t, 5.2, 7.4));
-      const ph = { fill: smooth(prog(t, 7.4, 7.9)), press: t > 7.85 && t < 8.15 ? 1 : 0, red: t >= 8.0 ? 1 : 0, bounce: t >= 8.0 ? Math.abs(Math.sin((t - 8.0) * 5.2)) * 90 * Math.exp(-(t - 8.0) * 1.1) : 0 };
+      const ph = { fill: smooth(prog(t, 7.4, 7.9)), press: t > 7.85 && t < 8.15 ? 1 : 0, tap: prog(t, 7.85, 8.6), red: t >= 8.0 ? 1 : 0, bounce: t >= 8.0 ? Math.abs(Math.sin((t - 8.0) * 5.2)) * 90 * Math.exp(-(t - 8.0) * 1.1) : 0 };
       if (t > 7.1) { ctx.save(); ctx.globalAlpha = smooth(prog(t, 7.1, 7.5)); A.phone(ctx, 1210, 300, 400, 700, ph); ctx.restore(); }
       if (u > 0) LN.draw(ctx, P, 0, u, { color: C.BLUE, glow: '#fff', glowAlpha: 0.5, head: u < 1 });
       rise(ctx, 'MIT App Inventor', 1610, 1050, 36, C.INK, t, 6.0, 700, 'right');
@@ -207,7 +208,8 @@
       rise(ctx, 'No coding experience needed.', W / 2, 560, 64, C.YELLOW, t, 41.5, 800, 'center');
       rise(ctx, 'No necesitas experiencia previa.', W / 2, 628, 40, C.WHITE, t, 42.0, 600, 'center');
       rise(ctx, 'Não precisa de experiência prévia.', W / 2, 682, 40, C.WHITE, t, 42.4, 600, 'center');
-      rise(ctx, 'Ask your counselor about Computer Science Essentials.', W / 2, 840, 44, C.WHITE, t, 43.1, 700, 'center');
+      rise(ctx, 'Ask your counselor about the Information Technology', W / 2, 820, 44, C.WHITE, t, 43.1, 700, 'center');
+      rise(ctx, '& Cybersecurity Academy and Computer Science Essentials.', W / 2, 878, 44, C.WHITE, t, 43.25, 700, 'center');
       ctx.restore();
     } });
 

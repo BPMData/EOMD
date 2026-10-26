@@ -18,6 +18,9 @@
     const pr = o.press || 0, by = y + 70 + pr * 4;
     rr(ctx, x + 38, by, w - 76, 70, 12); ctx.fillStyle = pr > 0.01 ? '#2f6fe0' : '#458ef7'; ctx.fill();
     ctx.fillStyle = '#fff'; ctx.font = DHS.type.font(34, 800); ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('Tap me!', x + w / 2, by + 36); ctx.textAlign = 'left';
+    // the tap: a dot and a ring growing from where the finger touched (no finger drawn)
+    const tp = o.tap || 0; if (tp > 0 && tp < 1) { const tx = x + w / 2 + 40, ty = by + 40;
+      ctx.save(); ctx.globalAlpha = 0.55 * (1 - tp); circ(ctx, tx, ty, 18, '#0e0318'); ctx.globalAlpha = 0.7 * (1 - tp); ctx.beginPath(); ctx.arc(tx, ty, 18 + tp * 70, 0, TAU); ctx.lineWidth = 6; ctx.strokeStyle = '#0e0318'; ctx.stroke(); ctx.restore(); }
     const red = o.red || 0, bx = x + w / 2, bcy = y + h * 0.62 - (o.bounce || 0);
     circ(ctx, bx, bcy, 72, red > 0.5 ? C.RED : '#8a8f99');
     ctx.globalAlpha = 0.45; circ(ctx, bx - 24, bcy - 26, 18, '#fff'); ctx.globalAlpha = 1;

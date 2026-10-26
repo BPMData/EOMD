@@ -19,6 +19,7 @@
   // picture cues (seconds), from src/film.js: keep them in step when the film's timing changes
   const CUES = {
     snaps: [2.0, 4.0, 5.0, 12.0, 12.6, 15.6, 16.0, 25.4, 25.9, 26.4, 31.0, 32.3, 32.6, 33.8],  // every block or code strip that snaps in
+    snapGroups: [2.0, 12.0, 25.4, 31.0],                                                        // first snap of each scene
     ballRed: 8.0, carRolls: 13.2, stall: [15.0, 16.0], carOff: [17.6, 18.9], typing: [19.4, 22.7], redRise: 24.0,
     drips: [27.4, 29.4], smile: [29.0, 29.6], takeoff: 31.0, burst: 38.75, settle: 41.0, cardOut: 46.0,
     lineDraws: [[5.2, 7.4], [9.6, 11.2], [18.0, 18.8], [25.2, 26.0], [30.5, 31.0], [46.8, 49.2]],
@@ -182,7 +183,9 @@
       lead(HOOK, 0.3, 0.14); lead(COUNTER, 0.24, 0.16, 4500); lead(LIFT, 0.3, 0.14); lead(SOLO, 0.26, 0, 7000);
       // ---- the picture's moments ----
       const chordAt = (t) => { const bar = Math.floor(t / BAR) % BARS, c = CH[bar]; return Array.isArray(c[0]) ? c[(t % BAR) < BAR / 2 ? 0 : 1] : c; };
-      CUES.snaps.forEach((t, i) => { if (t >= LEN) return; const c = chordAt(t), m = c[(i % 3) + 1] + 12;
+      // snaps climb the pentatonic within each scene (Bryan: "always ... ascending"); scenes start where CUES.snapGroups says
+      const PENT = (t) => (t >= 24 && t < 38 ? [76, 78, 80, 83, 85, 88] : [74, 76, 78, 81, 83, 86]);   // E section / D
+      CUES.snaps.forEach((t, i) => { if (t >= LEN) return; const g = CUES.snapGroups.filter((s0) => s0 <= t).pop(), k = CUES.snaps.filter((s) => s >= g && s < t).length, m = PENT(t)[k];
         if (SNAP === 'wood') put(woodClick(m), t, 0.34, 0.15, { rv: 0.15 });
         else if (SNAP === 'mallet') { put(mallet(m, 1), t, 0.4, 0.2, { rv: 0.25 }); put(mallet(m + 12, 0.5), t + 0.004, 0.12, 0.3); }
         else put(SNAPF, t, 0.35, 0.3, { rv: 0.35 }); });

@@ -172,6 +172,7 @@ body.idle #bar{opacity:0;pointer-events:none}
   // picture cues (seconds), from src/film.js: keep them in step when the film's timing changes
   const CUES = {
     snaps: [2.0, 4.0, 5.0, 12.0, 12.6, 15.6, 16.0, 25.4, 25.9, 26.4, 31.0, 32.3, 32.6, 33.8],  // every block or code strip that snaps in
+    snapGroups: [2.0, 12.0, 25.4, 31.0],                                                        // first snap of each scene
     ballRed: 8.0, carRolls: 13.2, stall: [15.0, 16.0], carOff: [17.6, 18.9], typing: [19.4, 22.7], redRise: 24.0,
     drips: [27.4, 29.4], smile: [29.0, 29.6], takeoff: 31.0, burst: 38.75, settle: 41.0, cardOut: 46.0,
     lineDraws: [[5.2, 7.4], [9.6, 11.2], [18.0, 18.8], [25.2, 26.0], [30.5, 31.0], [46.8, 49.2]],
@@ -335,7 +336,9 @@ body.idle #bar{opacity:0;pointer-events:none}
       lead(HOOK, 0.3, 0.14); lead(COUNTER, 0.24, 0.16, 4500); lead(LIFT, 0.3, 0.14); lead(SOLO, 0.26, 0, 7000);
       // ---- the picture's moments ----
       const chordAt = (t) => { const bar = Math.floor(t / BAR) % BARS, c = CH[bar]; return Array.isArray(c[0]) ? c[(t % BAR) < BAR / 2 ? 0 : 1] : c; };
-      CUES.snaps.forEach((t, i) => { if (t >= LEN) return; const c = chordAt(t), m = c[(i % 3) + 1] + 12;
+      // snaps climb the pentatonic within each scene (Bryan: "always ... ascending"); scenes start where CUES.snapGroups says
+      const PENT = (t) => (t >= 24 && t < 38 ? [76, 78, 80, 83, 85, 88] : [74, 76, 78, 81, 83, 86]);   // E section / D
+      CUES.snaps.forEach((t, i) => { if (t >= LEN) return; const g = CUES.snapGroups.filter((s0) => s0 <= t).pop(), k = CUES.snaps.filter((s) => s >= g && s < t).length, m = PENT(t)[k];
         if (SNAP === 'wood') put(woodClick(m), t, 0.34, 0.15, { rv: 0.15 });
         else if (SNAP === 'mallet') { put(mallet(m, 1), t, 0.4, 0.2, { rv: 0.25 }); put(mallet(m + 12, 0.5), t + 0.004, 0.12, 0.3); }
         else put(SNAPF, t, 0.35, 0.3, { rv: 0.35 }); });
@@ -649,6 +652,9 @@ DHS.audio = { render: () => { const P = DHS.dsp, sr = 48000, LUFS = -16, CEIL = 
     const pr = o.press || 0, by = y + 70 + pr * 4;
     rr(ctx, x + 38, by, w - 76, 70, 12); ctx.fillStyle = pr > 0.01 ? '#2f6fe0' : '#458ef7'; ctx.fill();
     ctx.fillStyle = '#fff'; ctx.font = DHS.type.font(34, 800); ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('Tap me!', x + w / 2, by + 36); ctx.textAlign = 'left';
+    // the tap: a dot and a ring growing from where the finger touched (no finger drawn)
+    const tp = o.tap || 0; if (tp > 0 && tp < 1) { const tx = x + w / 2 + 40, ty = by + 40;
+      ctx.save(); ctx.globalAlpha = 0.55 * (1 - tp); circ(ctx, tx, ty, 18, '#0e0318'); ctx.globalAlpha = 0.7 * (1 - tp); ctx.beginPath(); ctx.arc(tx, ty, 18 + tp * 70, 0, TAU); ctx.lineWidth = 6; ctx.strokeStyle = '#0e0318'; ctx.stroke(); ctx.restore(); }
     const red = o.red || 0, bx = x + w / 2, bcy = y + h * 0.62 - (o.bounce || 0);
     circ(ctx, bx, bcy, 72, red > 0.5 ? C.RED : '#8a8f99');
     ctx.globalAlpha = 0.45; circ(ctx, bx - 24, bcy - 26, 18, '#fff'); ctx.globalAlpha = 1;
@@ -781,9 +787,9 @@ DHS.audio = { render: () => { const P = DHS.dsp, sr = 48000, LUFS = -16, CEIL = 
   function snapStack(ctx, t, x, y, s, hatMake, kids, snaps, from = [1400, 0]) {
     const k = snaps.slice(1).filter((ts) => t >= ts).length;
     if (t < snaps[0] - 0.55) return;
-    const hy = y - flyIn(t, snaps[0], 0.45) * 260;
+    const hx = x - flyIn(t, snaps[0], 0.45) * 520;     // the event block slides in from the left (clear of the headline)
     const hat = hatMake(kids.slice(0, k).map((f) => f()));
-    ctx.save(); ctx.globalAlpha *= clamp(prog(t, snaps[0] - 0.55, snaps[0] - 0.35)); B.drawStack(ctx, [hat], x, hy + snapBump(t, snaps[0]), s); ctx.restore();
+    ctx.save(); ctx.globalAlpha *= clamp(prog(t, snaps[0] - 0.55, snaps[0] - 0.35)); B.drawStack(ctx, [hat], hx, y + snapBump(t, snaps[0]), s); ctx.restore();
     // the next child, in flight
     if (k < kids.length) { const ts = snaps[k + 1], f = flyIn(t, ts, 0.55);
       if (t > ts - 0.55) { const placed = kids.slice(0, k).reduce((a, mk) => a + B.hOf(mk()), 0);
@@ -822,16 +828,17 @@ DHS.audio = { render: () => { const P = DHS.dsp, sr = 48000, LUFS = -16, CEIL = 
   // A. apps on yellow (rows 1-2). Comes in with the seam wipe (46.8 -> 49.2 = -1.2 -> 1.2).
   S({ t0: -1.2, t1: 11.4, bg: C.YELLOW, wipe: { t0: -1.2, t1: 1.2, dir: 'right', line: '#fff' },
     draw(ctx, t) {
-      // hero: "Never coded? Start here." shrinks into the support line as "Build your own apps." arrives
-      const sw = inOut(prog(t, 4.0, 4.6));
-      const e0 = enter(t, 0.5);
-      T(ctx, 'Never coded? Start here.', lerp(96, 100, sw), lerp(170, 236, sw) + 34 * (1 - e0), lerp(96, 44, sw), C.INK, e0, sw > 0.5 ? 600 : 800);
-      rise(ctx, 'Build your own apps.', 96, 170, 96, C.INK, t, 4.15);
+      // hero: "Want to learn to code? Start here." shrinks into the support line, turning into "Never coded? Start here.",
+      // as "Build your own apps." arrives (Bryan, Oct 25)
+      const sw = inOut(prog(t, 3.9, 4.4)), e0 = enter(t, 0.5), hx = lerp(96, 100, sw), hy = lerp(170, 236, sw) + 34 * (1 - e0), hp = lerp(96, 44, sw);
+      T(ctx, 'Want to learn to code? Start here.', hx, hy, hp, C.INK, e0 * (1 - sw), 800);
+      T(ctx, 'Never coded? Start here.', hx, hy, hp, C.INK, sw, 600);
+      rise(ctx, 'Build your own apps.', 96, 170, 96, C.INK, t, 4.35);
       // blocks
       snapStack(ctx, t, 120, 330, 1.8, appHat, appKids, [2.0, 4.0, 5.0]);
       // the line draws the phone
       const P = LN.get('toPhone', TO_PHONE), u = smooth(prog(t, 5.2, 7.4));
-      const ph = { fill: smooth(prog(t, 7.4, 7.9)), press: t > 7.85 && t < 8.15 ? 1 : 0, red: t >= 8.0 ? 1 : 0, bounce: t >= 8.0 ? Math.abs(Math.sin((t - 8.0) * 5.2)) * 90 * Math.exp(-(t - 8.0) * 1.1) : 0 };
+      const ph = { fill: smooth(prog(t, 7.4, 7.9)), press: t > 7.85 && t < 8.15 ? 1 : 0, tap: prog(t, 7.85, 8.6), red: t >= 8.0 ? 1 : 0, bounce: t >= 8.0 ? Math.abs(Math.sin((t - 8.0) * 5.2)) * 90 * Math.exp(-(t - 8.0) * 1.1) : 0 };
       if (t > 7.1) { ctx.save(); ctx.globalAlpha = smooth(prog(t, 7.1, 7.5)); A.phone(ctx, 1210, 300, 400, 700, ph); ctx.restore(); }
       if (u > 0) LN.draw(ctx, P, 0, u, { color: C.BLUE, glow: '#fff', glowAlpha: 0.5, head: u < 1 });
       rise(ctx, 'MIT App Inventor', 1610, 1050, 36, C.INK, t, 6.0, 700, 'right');
@@ -957,7 +964,8 @@ DHS.audio = { render: () => { const P = DHS.dsp, sr = 48000, LUFS = -16, CEIL = 
       rise(ctx, 'No coding experience needed.', W / 2, 560, 64, C.YELLOW, t, 41.5, 800, 'center');
       rise(ctx, 'No necesitas experiencia previa.', W / 2, 628, 40, C.WHITE, t, 42.0, 600, 'center');
       rise(ctx, 'Não precisa de experiência prévia.', W / 2, 682, 40, C.WHITE, t, 42.4, 600, 'center');
-      rise(ctx, 'Ask your counselor about Computer Science Essentials.', W / 2, 840, 44, C.WHITE, t, 43.1, 700, 'center');
+      rise(ctx, 'Ask your counselor about the Information Technology', W / 2, 820, 44, C.WHITE, t, 43.1, 700, 'center');
+      rise(ctx, '& Cybersecurity Academy and Computer Science Essentials.', W / 2, 878, 44, C.WHITE, t, 43.25, 700, 'center');
       ctx.restore();
     } });
 
