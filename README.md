@@ -162,7 +162,16 @@ and so is work written with an AI assistant. See **[CONTRIBUTING.md](CONTRIBUTIN
 
 ## License
 
-Code: MIT, © 2026 Bryan Patrick Murphy (see `LICENSE`). Fonts keep their own SIL Open Font License (`fonts/OFL-*.txt`,
-`gen/fonts/OFL-Montserrat.txt`, `academies-film/source/fonts/OFL.txt`, `engine/fonts/OFL.txt`). The Academies of Danbury High School names and
-logos in `academies-film/` and `proj/academies/*` belong to the school; they're here as an example piece and aren't
-covered by the MIT license.
+Copyright (C) 2026 Bryan Patrick Murphy. The code is licensed under the
+[GNU Affero General Public License v3.0](LICENSE) (AGPLv3): you may use, change and share it, but if you share a
+changed version, or run one as a website or online service, you must share its source code under AGPLv3 too. (Until
+Oct 26, 2026 it was MIT; copies taken before then keep that license.)
+
+Pieces you make with this (their words, data, pictures and music) are yours to license however you like; the code
+inside stays AGPLv3.
+
+Fonts keep their own SIL Open Font License (`fonts/OFL-*.txt`, `gen/fonts/OFL-Montserrat.txt`,
+`academies-film/source/fonts/OFL.txt`, `engine/fonts/OFL.txt`). Names and logos of schools, programs and products in
+the example pieces (the Academies of Danbury High School in `academies-film/` and `proj/academies/`, PLTW and the
+tools shown in `proj/pltw/` and `proj/cse-loop/`) belong to their owners; they're here as examples and aren't covered
+by the AGPLv3.
