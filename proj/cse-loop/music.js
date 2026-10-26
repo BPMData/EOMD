@@ -7,7 +7,7 @@
      S3 Maker Bench  - interlocking mallets and plucked strings; the picture's own sounds tuned into the rhythm
    Style: globalThis.CSE_STYLE ('S1' | 'S2' | 'S3'). Sample mode (globalThis.CSE_SAMPLE): bars 1-8 only (0:00-0:16).
    Bryan picked S2 + mallet snaps + tight snare (Oct 25); S2 is written for all 24 bars (48 s). S1 and S3 are still the
-   8-bar samples (S3 gets its full version last, as a second player).
+   8-bar samples; S3 Maker Bench is also written for all 24 bars (the second player, cse-loop-maker.html).
    Render: proj/cse-loop/render_samples.py (uses tools/render_piece.py). */
 (function (G) {
   'use strict';
@@ -27,7 +27,7 @@
     lineDraws: [[5.2, 7.4], [9.6, 11.2], [18.0, 18.8], [25.2, 26.0], [30.5, 31.0], [46.8, 49.2]],
   };
   const TITLES = { S1: 'CSE loop: S1 Snap Groove', S2: 'CSE loop: S2 Glass Lobby', S3: 'CSE loop: S3 Maker Bench' };
-  G.PIECE = { title: TITLES[STYLE] + (SNAP ? ' + ' + SNAP + ' snaps' : '') + (G.CSE_SNARE ? ' + ' + SNARE + ' snare' : '') + (SAMPLE ? ' (sample)' : ''), length: LEN, bpm: BPM, cues: CUES, render };
+  G.PIECE = { title: TITLES[STYLE] + (STYLE === 'S2' && SNAP ? ' + ' + SNAP + ' snaps' : '') + (G.CSE_SNARE ? ' + ' + SNARE + ' snare' : '') + (SAMPLE ? ' (sample)' : ''), length: LEN, bpm: BPM, cues: CUES, render };
 
   function render(sr) {
     const N = Math.round(LEN * sr), at = (t) => Math.round(t * sr), rnd = P.rng(4810), r01 = () => rnd() * 0.5 + 0.5;
@@ -227,31 +227,67 @@
     }
 
     if (STYLE === 'S3') {
-      // G major, interlocking. Em9 | Cmaj7 | G/B | Am7 D9 | Em9 | Cmaj7#11 | Am9 | Bsus4 B7
-      const CH = [[64, 67, 71, 74, 78], [60, 64, 67, 71, 74], [59, 62, 67, 71, 74], [[57, 60, 64, 67, 72], [57, 60, 62, 66, 69]],
+      // E minor / G, interlocking; lifts a step for the Academy part (bars 12-18), back for the end card.
+      // Bryan (Oct 25): liked it, but "the harsh electrical sound" (the sample's high car tick) was too much; the car is now a
+      // soft muted pluck that drives, stutters in the stall, and speeds up when the velocity block snaps in.
+      const P8 = [[64, 67, 71, 74, 78], [60, 64, 67, 71, 74], [59, 62, 67, 71, 74], [[57, 60, 64, 67, 72], [57, 60, 62, 66, 69]],
         [64, 67, 71, 74, 78], [60, 64, 66, 67, 71], [57, 60, 64, 67, 71], [[59, 64, 66, 69, 71], [59, 63, 66, 69, 71]]];
-      const ROOT = [40, 36, 35, 33, 40, 36, 33, 35], ROOT2 = [40, 36, 35, 38, 40, 36, 33, 35];
+      const RA = [40, 36, 35, 33, 40, 36, 33, 35], RB = [40, 36, 35, 38, 40, 36, 33, 35];
+      const tr = (c, k) => Array.isArray(c[0]) ? c.map((h) => h.map((m) => m + k)) : c.map((m) => m + k);
+      const idx = [0, 1, 2, 3, 4, 5, 6, 7, 0, 1, 2, -7, 0, 1, 2, 3, 4, 5, 7, 0, 1, 2, 3, 7];   // -7 = bar 7 a step up (pivot)
+      const up = (b) => (b >= 11 && b <= 17 ? 2 : 0);
+      const CH = idx.map((k, b) => tr(P8[Math.abs(k)], up(b))), ROOT = idx.map((k, b) => RA[Math.abs(k)] + up(b)), ROOT2 = idx.map((k, b) => RB[Math.abs(k)] + up(b));
+      const breath = (b) => b >= 19 && b <= 22, half = (b) => b === 15 || b === 16;
+      const inStall = (t) => t >= 15.0 && t < 16.0;
       const K = kick(0.8, 52), CL = clap();
       for (let bar = 0; bar < BARS; bar++) {
-        const ch = CH[bar], half = (b) => (Array.isArray(ch[0]) ? ch[b < 2 ? 0 : 1] : ch);
-        // mallet A: a 3-note cell every dotted eighth (3 against 4), always on
-        for (let k = 0; k < 6; k++) { const b = k * 0.75; if (b >= 4) break; const c = half(b); put(mallet(c[[0, 2, 4][k % 3]] + 0, 0.85), tb(bar, b), 0.3, -0.45, { rv: 0.18 }); }
-        // mallet B: eighths in another order, from bar 3 (after the first app blocks snap)
-        if (bar >= 2) for (let k = 0; k < 8; k++) { const c = half(k / 2); put(mallet(c[[1, 3, 2, 4, 1, 3, 0, 2][k]] + 12, 0.6), tb(bar, k / 2), 0.22, 0.45, { rv: 0.18 }); }
-        // plucked-string bass from bar 3
-        if (bar >= 2) for (const [b, d] of [[0, .9], [1.5, .5], [3, .7]]) put(ks((b < 2 ? ROOT : ROOT2)[bar], d * BEAT, { bright: 1800, fb: 0.994, rel: 0.05 }), tb(bar, b), 0.75, 0);
-        // pizzicato chord answers on the off-beats from bar 5
-        if (bar >= 4) for (const b of [1.5, 3.5]) half(b).slice(1, 4).forEach((m, k) => put(ks(m, 0.12, { bright: 3000, fb: 0.99, rel: 0.03 }), tb(bar, b) + k * 0.008, 0.16, 0.2 - k * 0.2, { rv: 0.2 }));
-        // claps and a soft kick join when the road appears (bar 6)
-        if (bar >= 5) { for (const b of [1, 3]) put(CL, tb(bar, b), 0.32, 0.1, { rv: 0.25 }); for (const b of [0, 2.5]) put(K, tb(bar, b), 0.8); }
+        const ch = CH[bar], halfCh = (b) => (Array.isArray(ch[0]) ? ch[b < 2 ? 0 : 1] : ch), br = breath(bar);
+        // mallet A: a 3-note cell every dotted eighth (3 against 4), always on: the thread through the whole loop
+        for (let k = 0; k < 6; k++) { const b = k * 0.75; if (b >= 4) break; const c = halfCh(b); put(mallet(c[[0, 2, 4][k % 3]], 0.85), tb(bar, b), br ? 0.34 : 0.3, -0.45, { rv: 0.18 }); }
+        // mallet B: eighths in another order, from the first app snaps on (out in the stall and the breather)
+        if (bar >= 2 && !br) for (let k = 0; k < 8; k++) { const t = tb(bar, k / 2); if (inStall(t)) continue; const c = halfCh(k / 2); put(mallet(c[[1, 3, 2, 4, 1, 3, 0, 2][k]] + 12, 0.6), t, 0.22, 0.45, { rv: 0.18 }); }
+        // plucked-string bass
+        if (bar >= 2) { const pat = br ? [[0, 1.8], [2, 1.8]] : bar === 7 ? [[0, .9], [1.5, 2.5]] : [[0, .9], [1.5, .5], [3, .7]];
+          for (const [b, d] of pat) put(ks((b < 2 ? ROOT : ROOT2)[bar], d * BEAT, { bright: 1800, fb: 0.994, rel: 0.05 }), tb(bar, b), 0.75, 0); }
+        // pizzicato chord answers on the off-beats
+        if (bar >= 4 && !br) for (const b of [1.5, 3.5]) { const t = tb(bar, b); if (inStall(t)) continue;
+          halfCh(b).slice(1, 4).forEach((m, k) => put(ks(m, 0.12, { bright: 3000, fb: 0.99, rel: 0.03 }), t + k * 0.008, 0.16, 0.2 - k * 0.2, { rv: 0.2 })); }
+        // claps and a soft kick join with the Python (bar 10 on); half-time at takeoff; out for the breather; back in bar 24
+        if (bar >= 9 && bar <= 18) { for (const b of half(bar) ? [2] : [1, 3]) put(CL, tb(bar, b), 0.32, 0.1, { rv: 0.25 }); for (const b of half(bar) ? [0] : [0, 2.5]) put(K, tb(bar, b), 0.8); }
+        if (bar === 23) { for (const b of [0, 1, 2, 2.5, 3, 3.5]) put(K, tb(bar, b), 0.45 + b * 0.1); put(CL, tb(bar, 3), 0.3, 0.1, { rv: 0.25 }); }
       }
-      // the picture's sounds, tuned and kept: each snap's click comes back on beat 3.5 from then on (the beat gets built)
-      const CLICK = [79, 83, 86, 79, 83, 86];
-      CUES.snaps.filter((t) => t < LEN).slice(0, 6).forEach((t, i) => { put(woodClick(CLICK[i]), t, 0.34, -0.15 + i * 0.06, { rv: 0.1 });
-        for (let tt = t + 2; tt < LEN; tt += 2) put(woodClick(CLICK[i]), Math.floor(tt / BAR) * BAR + 3.5 * BEAT * (i % 2 ? 0.5 : 1) + (i > 2 ? BEAT * 0.25 : 0), 0.12, -0.15 + i * 0.06); });
-      put(mallet(83, 1), CUES.ballRed, 0.3, 0.3); put(mallet(88, 0.8), CUES.ballRed + 0.125, 0.2, 0.4);
-      // the car: a tuned sixteenth tick that follows it once it rolls
-      for (let t = CUES.carRolls; t < LEN; t += BEAT / 4) put(tick([86, 79, 83, 79][Math.round(t / (BEAT / 4)) % 4]), t, 0.1, 0.5);
+      const chordAt = (t) => { const bar = Math.floor(t / BAR) % BARS, c = CH[bar]; return Array.isArray(c[0]) ? c[(t % BAR) < BAR / 2 ? 0 : 1] : c; };
+      const PENT = (t) => (t >= 22 && t < 36 ? [78, 81, 83, 85, 88, 90] : [76, 79, 81, 83, 86, 88]);
+      // snaps: a wooden click climbing the pentatonic within each scene; each comes back on beat 3.5 until the scene ends
+      const sceneEnd = [9.6, 18.0, 30.0, 36.2];
+      CUES.snaps.forEach((t, i) => { if (t >= LEN) return; const gi = CUES.snapGroups.filter((s0) => s0 <= t).length - 1, g = CUES.snapGroups[gi];
+        const k = CUES.snaps.filter((s) => s >= g && s < t).length, m = PENT(t)[k];
+        put(woodClick(m), t, 0.34, -0.15 + k * 0.1, { rv: 0.1 });
+        for (let bt = Math.floor(t / BAR) * BAR + BAR; bt < sceneEnd[gi]; bt += BAR) { const tt = bt + (3.5 - k * 0.25) * BEAT; if (!inStall(tt)) put(woodClick(m), tt, 0.1, -0.15 + k * 0.1); } });
+      if (CUES.tap < LEN) put(woodClick(83), CUES.tap, 0.18, 0.25, { rv: 0.12 });
+      if (CUES.ballRed < LEN) { put(mallet(83, 1), CUES.ballRed, 0.3, 0.3); put(mallet(88, 0.8), CUES.ballRed + 0.125, 0.2, 0.4); }
+      if (!SAMPLE) {
+        // the car: a soft muted pluck on the eighths; in the stall it repeats in place, faster and fainter; then sixteenths uphill
+        const carNote = (t) => chordAt(t)[0] - 12;
+        for (let t = CUES.carRolls; t < CUES.carOff[1]; t += BEAT / 4) { const st = inStall(t), fast = t >= 16.0;
+          if (!st && !fast && Math.round(t / (BEAT / 4)) % 2) continue;
+          put(ks(carNote(t) + (st ? 0 : [0, 7, 12, 7][Math.round(t / (BEAT / 4)) % 4]), 0.08, { bright: 2200, fb: 0.97, rel: 0.02 }), t, st ? 0.08 : 0.12, 0.35); }
+        // the Python lines: a mallet stepping down (the mirror of the snaps)
+        CUES.pyLines.forEach((t, i) => put(mallet([83, 81, 79][i], 1), t, 0.38, -0.2, { rv: 0.25 }));
+        // the pump: falling plucks on the eighths; the smile: a pop per row
+        let k = 0; for (let t = CUES.drips[0]; t < CUES.drips[1]; t += BEAT / 2, k++) put(ks([90, 88, 85, 83][k % 4], 0.15, { bright: 6000, fb: 0.99, rel: 0.05 }), Math.round(t / (BEAT / 2)) * (BEAT / 2), 0.12, 0.3, { rv: 0.3 });
+        for (let i = 0; i < 5; i++) put(mallet([78, 81, 83, 85, 88][i], 0.5), CUES.smile[0] + i * 0.12, 0.14, 0.35, { rv: 0.3 });
+        // the drone: a soft hum that rises at takeoff (filtered noise, no buzz), gone at the burst
+        const whir = (() => { const t0 = CUES.takeoff, n = at(CUES.burst - t0 + 0.3), b = new Float32Array(n), bp = P.svf(); let ph = 0;
+          for (let i = 0; i < n; i++) { const t = t0 + i / sr, rise = 0.85 + 0.3 * Math.min(1, (t - t0) / 1.2); ph = (ph + 31 * rise / sr) % 1;
+            const env = Math.min(1, i / (0.5 * sr)) * (t > CUES.burst ? Math.max(0, 1 - (t - CUES.burst) / 0.3) : 1); b[i] = env * (0.8 + 0.2 * Math.sin(TAU * ph)) * bp(rnd(), 380 * rise, 2.2, sr, 'bp'); } return b; })();
+        put(whir, CUES.takeoff, 0.18, 0.25);
+        // the burst: a pizzicato chord, mallets swirling down and back up with the dots, a settle chord as the title lands
+        chordAt(CUES.burst).forEach((m, i) => put(ks(m, 0.4, { bright: 3500, fb: 0.995, rel: 0.2 }), CUES.burst + i * 0.02, 0.16, -0.4 + i * 0.2, { rv: 0.4 }));
+        const swirl = [88, 86, 83, 81, 79, 76, 74, 71, 74, 76, 79, 81, 83, 86, 88];
+        swirl.forEach((m, i) => put(mallet(m, 0.7 - i * 0.02), CUES.burst + 0.1 + i * (CUES.settle - CUES.burst - 0.2) / swirl.length, 0.16, i % 2 ? 0.5 : -0.5, { rv: 0.35, dl: 0.2 }));
+        [64, 67, 71, 74, 78].forEach((m, i) => put(mallet(m + 12, 0.8), CUES.settle + i * 0.03, 0.18, -0.4 + i * 0.2, { rv: 0.4 }));
+      }
     }
 
     // ---------------- mix: reverb + delay sends, run circularly so tails cross the loop point ----------------

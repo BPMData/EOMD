@@ -6,9 +6,10 @@ Keys in the player: space = pause, F = fullscreen, left/right = jump 2 s (for ch
 import os, base64
 
 # ============================ SETTINGS (edit these) ============================
-OUT_HTML   = "cse-loop.html"        # written next to this script
+STYLE      = "S2"                   # "S2" Glass Lobby (published as players/cse-loop.html) or "S3" Maker Bench
+OUT_HTML   = "cse-loop.html" if STYLE == "S2" else "cse-loop-maker.html"   # written next to this script
 WITH_SOUND = True                   # True: music.js synthesized in the browser at Start sound (False: picture only)
-TITLE      = "Computer Science Essentials"
+TITLE      = "Computer Science Essentials" + ("" if STYLE == "S2" else " (Maker Bench sound)")
 # ===============================================================================
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -33,7 +34,7 @@ def main():
     assets += ',"images":{' + ",".join(f'"{k}":"data:image/png;base64,{b64(v)}"' for k, v in IMAGES.items()) + "}};"
     audio = ""
     if WITH_SOUND:
-        audio = (read(os.path.join("..", "..", "engine", "src", "audio", "dsp.js")) + "\n;\n" + read("music.js") +
+        audio = (f"globalThis.CSE_STYLE = '{STYLE}';\n" + read(os.path.join("..", "..", "engine", "src", "audio", "dsp.js")) + "\n;\n" + read("music.js") +
                  "\n;\n" + AUDIO_MASTER)
     html = f"""<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>{TITLE}</title>
