@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pick one</title>
+<!--
+  Choice panel: one offline page, up to six options in a 3 x 2 grid. The client answers with a letter ("B, but slower").
+  Copy to proj/<name>/choices-<topic>.html and fill in PANEL below; nothing else needs editing.
+  Each option is ONE of:
+    img:   'still-a.png' or a data: URI            (a still or a sketch)
+    video: 'clip-b.mp4'                            (~15 s; loops, muted until clicked)
+    audio: 'sound-c.mp3'                           (a sound sample; the tile shows a play button)
+    draw:  function (ctx, w, h, t) { ... }         (a sketch drawn live on a 16:9 canvas; t = seconds)
+  Media files sit beside this page (or inline as data: URIs), so it works with no internet.
+-->
+<style>
+  :root { --bg:#f4f2ee; --card:#fff; --ink:#1c1c1e; --dim:#5d5d63; --line:#d9d6cf; --accent:#2f5bd3; --tile:#e7e4dd; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#141416; --card:#1f1f23; --ink:#f2f0ea; --dim:#a4a4ab; --line:#34343a; --accent:#8fb0ff; --tile:#2a2a30; } }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:17px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width:1500px; margin:0 auto; padding:28px 16px 40px; }
+  h1 { font-size:clamp(24px, 3vw, 34px); margin:0 0 6px; line-height:1.2; }
+  .ask { color:var(--dim); margin:0 0 22px; max-width:70ch; }
+  .grid { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:18px; }
+  @media (max-width:900px) { .grid { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
+  @media (max-width:560px) { .grid { grid-template-columns:1fr; } }
+  .opt { background:var(--card); border:1px solid var(--line); border-radius:14px; overflow:hidden; display:flex; flex-direction:column; }
+  .media { position:relative; aspect-ratio:16 / 9; background:var(--tile); cursor:zoom-in; }
+  .media > img, .media > video, .media > canvas { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; display:block; }
+  .letter { position:absolute; left:10px; top:10px; z-index:2; width:44px; height:44px; border-radius:50%; background:var(--ink); color:var(--bg);
+            display:grid; place-items:center; font-weight:800; font-size:24px; }
+  .play { position:absolute; inset:0; margin:auto; width:88px; height:88px; border-radius:50%; border:0; background:var(--accent); color:#fff;
+          font-size:34px; cursor:pointer; }
+  .play[aria-pressed="true"] { background:var(--ink); color:var(--bg); }
+  .text { padding:12px 14px 16px; }
+  .label { font-weight:700; font-size:19px; }
+  .note { color:var(--dim); margin-top:2px; }
+  .how { margin-top:24px; color:var(--dim); }
+  .zoom { position:fixed; inset:0; background:rgba(0,0,0,.92); display:none; align-items:center; justify-content:center; z-index:10; cursor:zoom-out; padding:16px; }
+  .zoom.on { display:flex; }
+  .zoom .media { width:min(100%, calc((100vh - 32px) * 16 / 9)); cursor:zoom-out; background:#000; }
+</style>
+</head>
+<body>
+<main>
+  <h1 id="title"></h1>
+  <p class="ask" id="ask"></p>
+  <div class="grid" id="grid"></div>
+  <p class="how" id="how"></p>
+</main>
+<div class="zoom" id="zoom" aria-hidden="true"></div>
+<script>
+// ===================== PANEL (fill this in) =====================
+// CSE hallway loop: concept sketches. Rough on purpose; type is a stand-in for Poppins; words are DRAFT.
+const C = { dark:'#0e0318', deep:'#141e8a', blue:'#3e34d9', purple:'#461c5d', lilac:'#7b4fd6', pink:'#b74e9c',
+            cream:'#f7f4f1', ink:'#333132', red:'#d60132' };
+const FONT = (px, wt) => `${wt || 800} ${px}px Poppins, "Avenir Next", system-ui, sans-serif`;
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const eOut = (x) => 1 - Math.pow(1 - clamp(x, 0, 1), 3);
+const eBack = (x) => { x = clamp(x, 0, 1); const s = 1.7; return 1 + (s + 1) * Math.pow(x - 1, 3) + s * Math.pow(x - 1, 2); };
+function rr(c, x, y, w, h, r) { c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r);
+  c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
+function glassLobby(c, w, h, top, bot) {
+  const g = c.createLinearGradient(0, 0, 0, h); g.addColorStop(0, top); g.addColorStop(1, bot); c.fillStyle = g; c.fillRect(0, 0, w, h);
+  c.strokeStyle = 'rgba(255,255,255,.55)'; c.lineWidth = Math.max(1, w / 500);
+  for (let i = 1; i < 8; i++) { c.beginPath(); c.moveTo(w * i / 8, 0); c.lineTo(w * i / 8, h * 0.78); c.stroke(); }
+  c.fillStyle = 'rgba(255,255,255,.35)'; c.fillRect(0, h * 0.78, w, h * 0.22);
+}
+function block(c, x, y, bw, bh, col, label) {
+  c.fillStyle = col; rr(c, x, y, bw, bh, bh * 0.22); c.fill();
+  c.fillRect(x + bw * 0.12, y + bh - 2, bw * 0.14, bh * 0.16);           // the snap tab
+  c.fillStyle = '#fff'; c.font = FONT(bh * 0.38, 700); c.textBaseline = 'middle'; c.fillText(label, x + bh * 0.35, y + bh * 0.5);
+}
+function headline(c, w, h, text, col, y) { c.fillStyle = col; c.font = FONT(h * 0.075); c.textBaseline = 'alphabetic'; c.fillText(text, w * 0.13, y || h * 0.16); }
+function tag(c, w, h, text, col) { c.fillStyle = col; c.font = FONT(h * 0.04, 600); c.fillText(text, w * 0.06, h * 0.92); }
+
+// ---------- A. Snap ----------
+function snap(c, w, h, t) {
+  glassLobby(c, w, h, C.cream, '#e6e0f6');
+  const cyc = 9, lt = t % cyc, k = Math.floor(t / cyc) % 2;
+  const bw = w * 0.24, bh = h * 0.1, x0 = w * 0.1, y0 = h * 0.34;
+  const labels = k ? ['when started', 'drive forward', 'turn right'] : ['when tapped', 'set color', 'play sound'];
+  const cols = [C.blue, C.lilac, C.pink];
+  for (let i = 0; i < 3; i++) {
+    const p = eBack((lt - i * 0.35) / 0.8), x = x0 + (1 - p) * w * 0.9, y = y0 + i * bh * 1.02 - (1 - p) * h * 0.1;
+    block(c, x, y, bw, bh, cols[i], labels[i]);
+  }
+  // the stack turns into the thing it runs
+  const q = eBack((lt - 2.2) / 0.9), fx = w * 0.62, fy = h * 0.26;
+  if (q > 0) {
+    c.save(); c.globalAlpha = clamp(q, 0, 1);
+    c.strokeStyle = C.blue; c.lineWidth = h * 0.01; c.setLineDash([h * 0.02, h * 0.02]);
+    c.beginPath(); c.moveTo(x0 + bw + w * 0.01, y0 + bh * 1.5); c.lineTo(fx - w * 0.02, y0 + bh * 1.5); c.stroke(); c.setLineDash([]);
+    if (!k) {             // phone app: a ball that changes color when "tapped"
+      const pw = h * 0.3 * q, ph = h * 0.56 * q;
+      c.fillStyle = C.dark; rr(c, fx, fy, pw, ph, pw * 0.14); c.fill();
+      c.fillStyle = '#fff'; rr(c, fx + pw * 0.07, fy + ph * 0.06, pw * 0.86, ph * 0.86, pw * 0.08); c.fill();
+      const b = Math.abs(Math.sin(lt * 3)); c.fillStyle = Math.floor(lt * 1.5) % 2 ? C.pink : C.blue;
+      c.beginPath(); c.arc(fx + pw / 2, fy + ph * (0.75 - 0.4 * b), pw * 0.16, 0, 7); c.fill();
+    } else {              // robot car on a road that the blocks unrolled
+      c.strokeStyle = C.ink; c.lineWidth = h * 0.08 * q; c.lineCap = 'round';
+      c.beginPath(); c.moveTo(fx, h * 0.62); c.quadraticCurveTo(w * 0.8, h * 0.2, w * 0.95, h * 0.5); c.stroke();
+      const u = clamp((lt - 3) / 4, 0, 1), ax = (1 - u) * (1 - u) * fx + 2 * u * (1 - u) * w * 0.8 + u * u * w * 0.95,
+            ay = (1 - u) * (1 - u) * h * 0.62 + 2 * u * (1 - u) * h * 0.2 + u * u * h * 0.5;
+      c.fillStyle = C.blue; rr(c, ax - h * 0.06, ay - h * 0.09, h * 0.12, h * 0.08, h * 0.02); c.fill();
+      c.fillStyle = C.dark; c.fillRect(ax - h * 0.055, ay - h * 0.015, h * 0.03, h * 0.02); c.fillRect(ax + h * 0.025, ay - h * 0.015, h * 0.03, h * 0.02);
+    }
+    c.restore();
+  }
+  // the same code as Python text (blocks -> text)
+  const r = eOut((lt - 6) / 0.8);
+  if (r > 0) { c.globalAlpha = r; c.fillStyle = C.ink; c.font = FONT(h * 0.045, 600);
+    (k ? ['drive.forward()', 'drive.turn(RIGHT)'] : ['ball.color = PINK', 'sound.play()']).forEach((s, i) => c.fillText(s, x0, h * 0.74 + i * h * 0.06));
+    c.globalAlpha = 1; }
+  headline(c, w, h, 'Never coded? Snap it. Run it.', C.dark);
+  tag(c, w, h, k ? 'VEXcode · robot cars' : 'MIT App Inventor · your first app', C.blue);
+}
+
+// ---------- B. Ground Floor ----------
+const FLOORS = [
+  { t: 'LOBBY  ·  Computer Science Essentials', col: C.blue, icon: 'door' },
+  { t: 'Apps', col: C.lilac, icon: 'phone' },
+  { t: 'Robot cars', col: C.blue, icon: 'car' },
+  { t: 'Python', col: C.pink, icon: 'text' },
+  { t: 'micro:bit', col: C.red, icon: 'grid' },
+  { t: 'Drones', col: C.red, icon: 'drone' },
+  { t: '3 pathways', col: C.purple, icon: 'hex' },
+];
+function hex(c, x, y, r) { c.beginPath(); for (let i = 0; i < 6; i++) { const a = Math.PI / 6 + i * Math.PI / 3; c.lineTo(x + r * Math.cos(a), y + r * Math.sin(a)); } c.closePath(); }
+function icon(c, kind, x, y, s, col) {
+  c.fillStyle = col; c.strokeStyle = col; c.lineWidth = s * 0.08;
+  if (kind === 'phone') { rr(c, x - s * 0.3, y - s * 0.5, s * 0.6, s, s * 0.1); c.stroke(); }
+  if (kind === 'car') { rr(c, x - s * 0.5, y - s * 0.25, s, s * 0.4, s * 0.1); c.fill(); c.fillRect(x - s * 0.4, y + s * 0.15, s * 0.2, s * 0.15); c.fillRect(x + s * 0.2, y + s * 0.15, s * 0.2, s * 0.15); }
+  if (kind === 'text') { c.font = FONT(s * 0.5, 700); c.textBaseline = 'middle'; c.fillText('>>>', x - s * 0.45, y); }
+  if (kind === 'grid') { for (let i = 0; i < 5; i++) for (let j = 0; j < 5; j++) if ((i + j) % 2 === 0) c.fillRect(x - s * 0.45 + i * s * 0.2, y - s * 0.45 + j * s * 0.2, s * 0.1, s * 0.1); }
+  if (kind === 'drone') { c.beginPath(); c.moveTo(x - s * 0.4, y - s * 0.4); c.lineTo(x + s * 0.4, y + s * 0.4); c.moveTo(x + s * 0.4, y - s * 0.4); c.lineTo(x - s * 0.4, y + s * 0.4); c.stroke();
+    for (const [a, b] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) { c.beginPath(); c.arc(x + a * s * 0.4, y + b * s * 0.4, s * 0.15, 0, 7); c.stroke(); } }
+  if (kind === 'hex') { for (const [a, b] of [[0, -0.28], [-0.26, 0.18], [0.26, 0.18]]) { hex(c, x + a * s, y + b * s, s * 0.25); c.stroke(); } }
+  if (kind === 'door') { c.fillRect(x - s * 0.25, y - s * 0.5, s * 0.5, s); c.fillStyle = '#fff'; c.fillRect(x - s * 0.02, y - s * 0.5, s * 0.04, s); }
+}
+function tower(c, w, h, t) {
+  const g = c.createLinearGradient(0, 0, 0, h); g.addColorStop(0, '#dfe6ff'); g.addColorStop(1, C.cream); c.fillStyle = g; c.fillRect(0, 0, w, h);
+  const fh = h * 0.34, total = fh * FLOORS.length, scroll = (t * fh / 2.6) % total;   // the ride never ends
+  const tx = w * 0.2, tw = w * 0.6;
+  for (let n = -1; n <= FLOORS.length + 1; n++) {
+    const idx = ((n % FLOORS.length) + FLOORS.length) % FLOORS.length, f = FLOORS[idx];
+    const y = h * 0.62 - n * fh + scroll - Math.floor(0) * total; if (y < -fh || y > h) continue;
+    c.fillStyle = 'rgba(255,255,255,.7)'; c.fillRect(tx, y, tw, fh - h * 0.02);
+    c.fillStyle = f.col; c.globalAlpha = 0.14; c.fillRect(tx, y, tw, fh - h * 0.02); c.globalAlpha = 1;
+    c.strokeStyle = 'rgba(14,3,24,.12)'; c.lineWidth = 1; for (let i = 1; i < 6; i++) { c.beginPath(); c.moveTo(tx + tw * i / 6, y); c.lineTo(tx + tw * i / 6, y + fh - h * 0.02); c.stroke(); }
+    c.fillStyle = f.col === C.red ? C.red : C.dark; c.font = FONT(h * 0.055); c.textBaseline = 'middle'; c.fillText(f.t, tx + w * 0.03, y + fh * 0.45);
+    icon(c, f.icon, tx + tw - w * 0.08, y + fh * 0.45, h * 0.14, f.col);
+  }
+  // the glass elevator, fixed while the floors slide past
+  c.strokeStyle = C.blue; c.lineWidth = h * 0.008; rr(c, w * 0.07, h * 0.32, w * 0.09, h * 0.36, h * 0.02); c.stroke();
+  c.fillStyle = 'rgba(62,52,217,.12)'; c.fill();
+  c.fillStyle = C.dark; c.font = FONT(h * 0.035, 700); c.textBaseline = 'alphabetic'; c.fillText('Everyone starts on the ground floor.', w * 0.06, h * 0.94);
+}
+
+// ---------- C. One Line ----------
+let LINE = null;
+function linePts(w, h) {
+  const p = [], push = (x, y) => p.push([x * w, y * h]);
+  for (let i = 0; i <= 40; i++) { const u = i / 40; push(0.02 + 0.3 * u, 0.62 + 0.08 * Math.sin(u * 6)); }      // a road
+  [[0.34, 0.62], [0.34, 0.25], [0.46, 0.25], [0.46, 0.75], [0.34, 0.75], [0.34, 0.62]].forEach(([x, y]) => push(x, y)); // a phone
+  for (let i = 0; i <= 20; i++) push(0.48 + 0.1 * i / 20, 0.62);                                                  // a line of text
+  for (let i = 0; i < 5; i++) for (let j = 0; j < 2; j++) push(0.6 + i * 0.025, 0.55 + j * 0.05);                // micro:bit lights
+  for (let i = 0; i <= 60; i++) { const u = i / 60 * Math.PI * 2; push(0.82 + 0.1 * Math.sin(u), 0.45 + 0.18 * Math.sin(2 * u) / 2 - 0.1 * u / 6); } // drone loop
+  for (let i = 0; i <= 30; i++) { const u = i / 30; push(0.82 + 0.16 * u, 0.35 + 0.27 * u); }
+  const L = [0]; for (let i = 1; i < p.length; i++) L.push(L[i - 1] + Math.hypot(p[i][0] - p[i - 1][0], p[i][1] - p[i - 1][1]));
+  return { p, L, w, h };
+}
+function oneLine(c, w, h, t) {
+  c.fillStyle = C.cream; c.fillRect(0, 0, w, h);
+  if (!LINE || LINE.w !== w || LINE.h !== h) LINE = linePts(w, h);
+  const { p, L } = LINE, tot = L[L.length - 1], head = ((t % 10) / 10) * tot;
+  c.lineCap = 'round'; c.lineJoin = 'round';
+  for (let i = 1; i < p.length && L[i] <= head; i++) {
+    const age = (head - L[i]) / tot; c.strokeStyle = L[i] / tot > 0.62 ? C.red : C.blue; c.globalAlpha = clamp(1 - age * 1.6, 0.08, 1);
+    c.lineWidth = h * 0.014; c.beginPath(); c.moveTo(p[i - 1][0], p[i - 1][1]); c.lineTo(p[i][0], p[i][1]); c.stroke();
+  }
+  c.globalAlpha = 1; let j = 0; while (j < p.length - 1 && L[j] < head) j++;
+  c.fillStyle = '#fff'; c.beginPath(); c.arc(p[j][0], p[j][1], h * 0.022, 0, 7); c.fill();
+  c.strokeStyle = C.blue; c.lineWidth = h * 0.008; c.stroke();
+  headline(c, w, h, 'One line at a time.', C.dark);
+  tag(c, w, h, 'road · app · Python · micro:bit · drone', C.blue);
+}
+
+const PANEL = {
+  title: 'CSE hallway loop: which idea?',
+  ask: 'Three different ideas for the video, as rough moving sketches (the real thing will be far more polished; the words are drafts). Click any one to see it big. Answer with a letter, or mix ("A, with B\'s ending").',
+  options: [
+    { label: 'Snap (my pick)', note: 'Code blocks snap together and turn into the thing they run: an app, a robot car, Python. Playful and "I could do that."', draw: snap },
+    { label: 'Ground Floor', note: 'CSE is the lobby of a glass tower; ride up past floors of things you\'ll build, to the Academy\'s three pathways. Sleek and aspirational.', draw: tower },
+    { label: 'One Line', note: 'One bright line draws everything: a road, an app, Python, a micro:bit, a drone\'s flight. Clean and clever, but more abstract.', draw: oneLine },
+  ],
+};
+// ================================================================
+
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const opts = PANEL.options.slice(0, 6);
+if (PANEL.options.length > 6) console.warn('Choice panel: only the first six options are shown.');
+document.title = PANEL.title;
+document.getElementById('title').textContent = PANEL.title;
+document.getElementById('ask').textContent = PANEL.ask;
+document.getElementById('how').textContent = 'Reply with the letter of the one you like: ' + opts.map((_, i) => 'ABCDEF'[i]).join(', ') + '.';
+const draws = [];      // live canvases: { cv, fn }
+let current = null;    // playing <audio>
+
+function makeMedia(o, i, big) {
+  const m = document.createElement('div'); m.className = 'media';
+  const L = document.createElement('div'); L.className = 'letter'; L.textContent = 'ABCDEF'[i]; m.appendChild(L);
+  if (o.draw) {
+    const cv = document.createElement('canvas'); m.appendChild(cv); draws.push({ cv, fn: o.draw, big });
+  } else if (o.video) {
+    const v = document.createElement('video'); v.src = o.video; v.loop = true; v.muted = true; v.playsInline = true;
+    if (!reduced) v.autoplay = true; if (big) { v.controls = true; v.muted = false; v.play().catch(() => {}); }
+    m.appendChild(v);
+  } else if (o.audio) {
+    const a = new Audio(o.audio); a.preload = 'auto';
+    const b = document.createElement('button'); b.className = 'play'; b.textContent = '▶'; b.setAttribute('aria-pressed', 'false');
+    b.setAttribute('aria-label', 'Play option ' + 'ABCDEF'[i]);
+    b.onclick = (e) => {
+      e.stopPropagation();
+      if (current && current !== a) { current.pause(); document.querySelectorAll('.play').forEach((x) => { x.textContent = '▶'; x.setAttribute('aria-pressed', 'false'); }); }
+      if (a.paused) { a.currentTime = a.ended ? 0 : a.currentTime; a.play(); current = a; b.textContent = '❚❚'; b.setAttribute('aria-pressed', 'true'); }
+      else { a.pause(); b.textContent = '▶'; b.setAttribute('aria-pressed', 'false'); }
+    };
+    a.onended = () => { b.textContent = '▶'; b.setAttribute('aria-pressed', 'false'); };
+    m.appendChild(b); m.style.cursor = 'default';
+    return m;
+  } else if (o.img) {
+    const im = document.createElement('img'); im.src = o.img; im.alt = o.label || ''; m.appendChild(im);
+  }
+  return m;
+}
+
+const grid = document.getElementById('grid'), zoom = document.getElementById('zoom');
+opts.forEach((o, i) => {
+  const card = document.createElement('section'); card.className = 'opt';
+  const m = makeMedia(o, i, false);
+  if (!o.audio) m.onclick = () => openZoom(o, i);
+  const tx = document.createElement('div'); tx.className = 'text';
+  tx.innerHTML = '<div class="label"></div><div class="note"></div>';
+  tx.querySelector('.label').textContent = 'ABCDEF'[i] + '. ' + (o.label || '');
+  tx.querySelector('.note').textContent = o.note || '';
+  card.append(m, tx); grid.appendChild(card);
+});
+
+function openZoom(o, i) {
+  zoom.innerHTML = ''; zoom.appendChild(makeMedia(o, i, true)); zoom.classList.add('on'); zoom.setAttribute('aria-hidden', 'false');
+}
+function closeZoom() {
+  for (let k = draws.length - 1; k >= 0; k--) if (draws[k].big) draws.splice(k, 1);
+  zoom.querySelectorAll('video').forEach((v) => v.pause());
+  zoom.innerHTML = ''; zoom.classList.remove('on'); zoom.setAttribute('aria-hidden', 'true');
+}
+zoom.onclick = closeZoom;
+addEventListener('keydown', (e) => { if (e.key === 'Escape') closeZoom(); });
+
+const t0 = performance.now();
+function frame(now) {
+  const t = reduced ? 3 : (now - t0) / 1000;    // reduced motion: one held frame
+  for (const d of draws) {
+    const r = d.cv.getBoundingClientRect(), dpr = Math.min(2, devicePixelRatio || 1);
+    const w = Math.max(1, Math.round(r.width * dpr)), h = Math.max(1, Math.round(r.height * dpr));
+    if (d.cv.width !== w || d.cv.height !== h) { d.cv.width = w; d.cv.height = h; }
+    const c = d.cv.getContext('2d'); c.setTransform(1, 0, 0, 1, 0, 0);
+    try { d.fn(c, w, h, t); } catch (err) { console.error(err); }
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

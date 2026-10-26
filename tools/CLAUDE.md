@@ -29,7 +29,8 @@ Never render an MP4 by hand in a sandbox: use `html_to_mp4.py` (it drives `?manu
 
 ## Publishing a build
 `players/` holds published copies of `dist/jukebox.html`, `pltw-cse.html`, `cdrom-player.html`, `cdrom-ambient.html`,
-`living-player.html`, `living-player-cs.html`, `living-player-ex.html` and `gen/dist/gen-player.html`. After rebuilding
+`living-player.html`, `living-player-cs.html`, `living-player-ex.html`, `gen/dist/gen-player.html` and
+`proj/cse-loop/cse-loop.html` (built in place by `proj/cse-loop/build.py`, published as `players/cse-loop.html`). After rebuilding
 one, copy it into `players/` and commit, so the public copies don't go stale. Only publish a build that loads without
 script errors. Adding or renaming a player: update `index.html` (the Pages landing page; `.nojekyll` must stay, or Pages
 hides `gen/carts/_bundle.js`) and keep `README.md` true.

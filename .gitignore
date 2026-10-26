@@ -9,3 +9,6 @@ font_cache/
 porter_work/
 gen/carts/private/*
 !gen/carts/private/README.txt
+
+# Bryan's MakeCode block references (local only)
+MakeCode/
