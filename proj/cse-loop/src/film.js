@@ -192,7 +192,7 @@
     draw(ctx, t) {
       if (!DOTS) makeDots();
       if (t < BURST) { const p = dronePos(t), k = 1 - M.inCubic(prog(t, BURST - 0.15, BURST)); A.drone(ctx, p.x, p.y, p.s * k, p.tilt, t * 30); }
-      const out = smooth(prog(t, 46.0, 46.8)), oa = 1 - out;
+      const out = smooth(prog(t, 46.6, 47.6)), oa = 1 - out;   // leaves as the yellow sweep arrives (no empty gap)
       ctx.save(); ctx.translate(out * 600, 0); ctx.globalAlpha = oa;
       // a soft ring where the drone was (one gentle pulse, no flash)
       const rp = prog(t, BURST, BURST + 0.6); if (rp > 0 && rp < 1) { ctx.save(); ctx.globalAlpha = 0.45 * (1 - rp); ctx.strokeStyle = '#fff'; ctx.lineWidth = 10; ctx.beginPath(); ctx.arc(CENTER[0], CENTER[1], 40 + rp * 360, 0, 6.283); ctx.stroke(); ctx.restore(); }
@@ -206,8 +206,8 @@
       ctx.globalAlpha = oa; T(ctx, 'Computer Science Essentials', W / 2, 430, 110, C.WHITE, typeIn, 800, 'center');
       ctx.globalAlpha = oa * enter(t, 41.1); A.pltwLogo(ctx, W / 2 - 400.36 * 70 / 99.89 / 2, 220, 70, '#fff'); ctx.globalAlpha = oa;
       rise(ctx, 'No coding experience needed.', W / 2, 560, 64, C.YELLOW, t, 41.5, 800, 'center');
-      rise(ctx, 'No necesitas experiencia previa.', W / 2, 628, 40, C.WHITE, t, 42.0, 600, 'center');
-      rise(ctx, 'Não precisa de experiência prévia.', W / 2, 682, 40, C.WHITE, t, 42.4, 600, 'center');
+      rise(ctx, 'No necesitas experiencia previa.', W / 2, 632, 46, C.WHITE, t, 42.0, 600, 'center');
+      rise(ctx, 'Não precisa de experiência prévia.', W / 2, 692, 46, C.WHITE, t, 42.4, 600, 'center');
       rise(ctx, 'Ask your counselor about the Information Technology', W / 2, 820, 44, C.WHITE, t, 43.1, 700, 'center');
       rise(ctx, '& Cybersecurity Academy and Computer Science Essentials.', W / 2, 878, 44, C.WHITE, t, 43.25, 700, 'center');
       ctx.restore();

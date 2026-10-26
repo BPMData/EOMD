@@ -87,7 +87,7 @@
     ctx.save(); ctx.translate(x, y); ctx.rotate(tilt); ctx.scale(s, s);
     for (const dx of [-130, 130]) {
       ctx.strokeStyle = '#f4f4f6'; ctx.lineWidth = 22; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(dx, -20); ctx.stroke();
-      const sq = 0.6 + 0.4 * Math.abs(Math.cos(spin + dx));
+      const sq = 0.85;   // a steady blur: a flickering shimmer would break the 3-flashes-a-second rule
       ctx.beginPath(); ctx.ellipse(dx, -34, 92, 20, 0, 0, TAU); ctx.lineWidth = 10; ctx.strokeStyle = '#fff'; ctx.stroke();
       ctx.globalAlpha = 0.35; ctx.beginPath(); ctx.ellipse(dx, -34, 84 * sq, 10, 0, 0, TAU); ctx.fillStyle = '#fff'; ctx.fill(); ctx.globalAlpha = 1;
       rr(ctx, dx - 10, -38, 20, 26, 5); ctx.fillStyle = '#2a2a30'; ctx.fill();

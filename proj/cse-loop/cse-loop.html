@@ -721,7 +721,7 @@ DHS.audio = { render: () => { const P = DHS.dsp, sr = 48000, LUFS = -16, CEIL = 
     ctx.save(); ctx.translate(x, y); ctx.rotate(tilt); ctx.scale(s, s);
     for (const dx of [-130, 130]) {
       ctx.strokeStyle = '#f4f4f6'; ctx.lineWidth = 22; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(dx, -20); ctx.stroke();
-      const sq = 0.6 + 0.4 * Math.abs(Math.cos(spin + dx));
+      const sq = 0.85;   // a steady blur: a flickering shimmer would break the 3-flashes-a-second rule
       ctx.beginPath(); ctx.ellipse(dx, -34, 92, 20, 0, 0, TAU); ctx.lineWidth = 10; ctx.strokeStyle = '#fff'; ctx.stroke();
       ctx.globalAlpha = 0.35; ctx.beginPath(); ctx.ellipse(dx, -34, 84 * sq, 10, 0, 0, TAU); ctx.fillStyle = '#fff'; ctx.fill(); ctx.globalAlpha = 1;
       rr(ctx, dx - 10, -38, 20, 26, 5); ctx.fillStyle = '#2a2a30'; ctx.fill();
@@ -948,7 +948,7 @@ DHS.audio = { render: () => { const P = DHS.dsp, sr = 48000, LUFS = -16, CEIL = 
     draw(ctx, t) {
       if (!DOTS) makeDots();
       if (t < BURST) { const p = dronePos(t), k = 1 - M.inCubic(prog(t, BURST - 0.15, BURST)); A.drone(ctx, p.x, p.y, p.s * k, p.tilt, t * 30); }
-      const out = smooth(prog(t, 46.0, 46.8)), oa = 1 - out;
+      const out = smooth(prog(t, 46.6, 47.6)), oa = 1 - out;   // leaves as the yellow sweep arrives (no empty gap)
       ctx.save(); ctx.translate(out * 600, 0); ctx.globalAlpha = oa;
       // a soft ring where the drone was (one gentle pulse, no flash)
       const rp = prog(t, BURST, BURST + 0.6); if (rp > 0 && rp < 1) { ctx.save(); ctx.globalAlpha = 0.45 * (1 - rp); ctx.strokeStyle = '#fff'; ctx.lineWidth = 10; ctx.beginPath(); ctx.arc(CENTER[0], CENTER[1], 40 + rp * 360, 0, 6.283); ctx.stroke(); ctx.restore(); }
@@ -962,8 +962,8 @@ DHS.audio = { render: () => { const P = DHS.dsp, sr = 48000, LUFS = -16, CEIL = 
       ctx.globalAlpha = oa; T(ctx, 'Computer Science Essentials', W / 2, 430, 110, C.WHITE, typeIn, 800, 'center');
       ctx.globalAlpha = oa * enter(t, 41.1); A.pltwLogo(ctx, W / 2 - 400.36 * 70 / 99.89 / 2, 220, 70, '#fff'); ctx.globalAlpha = oa;
       rise(ctx, 'No coding experience needed.', W / 2, 560, 64, C.YELLOW, t, 41.5, 800, 'center');
-      rise(ctx, 'No necesitas experiencia previa.', W / 2, 628, 40, C.WHITE, t, 42.0, 600, 'center');
-      rise(ctx, 'Não precisa de experiência prévia.', W / 2, 682, 40, C.WHITE, t, 42.4, 600, 'center');
+      rise(ctx, 'No necesitas experiencia previa.', W / 2, 632, 46, C.WHITE, t, 42.0, 600, 'center');
+      rise(ctx, 'Não precisa de experiência prévia.', W / 2, 692, 46, C.WHITE, t, 42.4, 600, 'center');
       rise(ctx, 'Ask your counselor about the Information Technology', W / 2, 820, 44, C.WHITE, t, 43.1, 700, 'center');
       rise(ctx, '& Cybersecurity Academy and Computer Science Essentials.', W / 2, 878, 44, C.WHITE, t, 43.25, 700, 'center');
       ctx.restore();
@@ -1109,13 +1109,16 @@ DHS.audio = { render: () => { const P = DHS.dsp, sr = 48000, LUFS = -16, CEIL = 
 await DHS.type.load();DHS.film.build();
 const P=DHS.runtime.create($('c'),{orientation:'landscape',fps:+(q.get('fps')||60),maxScale:+(q.get('scale')||2),muted:false});
 if(q.get('t'))P.seek(+q.get('t'));if(q.get('pause'))P.pause();
-P.onStatus(s=>{$('st').textContent={synth:'Preparing sound…',ready:'',blocked:'',playing:''}[s]??'';if(s==='playing')$('snd').hidden=true;});
+// reduced motion: open paused on the end card (the whole message), controls showing; Play runs it
+const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches&&!q.get('t');
+if(reduced){P.seek(44.5);P.pause();$('pp').textContent='Play';}
+P.onStatus(s=>{if(reduced&&!P.st.playing)return;$('st').textContent={synth:'Preparing sound…',ready:'',blocked:'',playing:''}[s]??'';if(s==='playing')$('snd').hidden=true;});
 P.start();
 P.enableAudio();   // make the music now (in the background); it plays once a click allows it
 $('snd').onclick=()=>{P.enableAudio();};
 let idle;const wake=()=>{document.body.classList.remove('idle');clearTimeout(idle);idle=setTimeout(()=>document.body.classList.add('idle'),3000);};
-document.body.classList.add('idle');addEventListener('mousemove',wake);addEventListener('pointerdown',wake);
-$('pp').onclick=()=>{P.toggle();$('pp').textContent=P.st.playing?'Pause':'Play';};
+if(reduced){$('st').textContent='Paused: reduced motion is on. Press Play to watch.';}else document.body.classList.add('idle');addEventListener('mousemove',wake);addEventListener('pointerdown',wake);
+$('pp').onclick=()=>{P.toggle();$('pp').textContent=P.st.playing?'Pause':'Play';if(P.st.playing){P.enableAudio();if(reduced)$('st').textContent='';}};
 $('fs').onclick=()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(()=>{});
 addEventListener('dblclick',()=>$('fs').onclick());
 addEventListener('keydown',e=>{if(e.key==='f')$('fs').onclick();if(e.code==='Space'){e.preventDefault();$('pp').onclick();}

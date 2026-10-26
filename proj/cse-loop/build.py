@@ -57,13 +57,16 @@ body.idle #bar{{opacity:0;pointer-events:none}}
 await DHS.type.load();DHS.film.build();
 const P=DHS.runtime.create($('c'),{{orientation:'landscape',fps:+(q.get('fps')||60),maxScale:+(q.get('scale')||2),muted:{'false' if WITH_SOUND else 'true'}}});
 if(q.get('t'))P.seek(+q.get('t'));if(q.get('pause'))P.pause();
-P.onStatus(s=>{{$('st').textContent={{synth:'Preparing sound…',ready:'',blocked:'',playing:''}}[s]??'';if(s==='playing')$('snd').hidden=true;}});
+// reduced motion: open paused on the end card (the whole message), controls showing; Play runs it
+const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches&&!q.get('t');
+if(reduced){{P.seek(44.5);P.pause();$('pp').textContent='Play';}}
+P.onStatus(s=>{{if(reduced&&!P.st.playing)return;$('st').textContent={{synth:'Preparing sound…',ready:'',blocked:'',playing:''}}[s]??'';if(s==='playing')$('snd').hidden=true;}});
 P.start();
 {'P.enableAudio();' if WITH_SOUND else ''}   // make the music now (in the background); it plays once a click allows it
 $('snd').onclick=()=>{{P.enableAudio();}};
 let idle;const wake=()=>{{document.body.classList.remove('idle');clearTimeout(idle);idle=setTimeout(()=>document.body.classList.add('idle'),3000);}};
-document.body.classList.add('idle');addEventListener('mousemove',wake);addEventListener('pointerdown',wake);
-$('pp').onclick=()=>{{P.toggle();$('pp').textContent=P.st.playing?'Pause':'Play';}};
+if(reduced){{$('st').textContent='Paused: reduced motion is on. Press Play to watch.';}}else document.body.classList.add('idle');addEventListener('mousemove',wake);addEventListener('pointerdown',wake);
+$('pp').onclick=()=>{{P.toggle();$('pp').textContent=P.st.playing?'Pause':'Play';if(P.st.playing){{{'P.enableAudio();' if WITH_SOUND else ''}if(reduced)$('st').textContent='';}}}};
 $('fs').onclick=()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(()=>{{}});
 addEventListener('dblclick',()=>$('fs').onclick());
 addEventListener('keydown',e=>{{if(e.key==='f')$('fs').onclick();if(e.code==='Space'){{e.preventDefault();$('pp').onclick();}}
