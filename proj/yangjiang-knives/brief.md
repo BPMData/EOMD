@@ -56,10 +56,12 @@ Bryan supplies the facts (round 1: "I'll supply them"). Nothing goes on the page
 source. Primer facts: Bryan's sources are mostly history, so `research-prompt.md` covers the primer; its results
 count as Bryan's sources once he passes them on and checks them.
 
+Bryan's reports are in `sources/` (q1–q4); Claude's read of them, with conflicts and gaps, is `research-notes.md`.
+Rows get filled from them at the concept stage, using the conflict rules in the notes.
+
 | Fact | Source |
 |---|---|
-| **ASK** (Bryan's history sources) | |
-| **ASK** (primer research results) | |
+| (to fill from `sources/`) | |
 
 ## 6. Structure and hierarchy
 Claude's call, within this: primer early enough that the history makes sense, but the page opens on story, not a
@@ -142,8 +144,9 @@ Bryan signs off; no one else. Success: a knife nerd reads to the end, learns how
 checks where theirs was made.
 
 ## 19. Open questions
-1. Bryan's history sources (§5): "i'll give those to you next".
-2. Primer research results (§5).
+1. The premise flips (`research-notes.md`): China was barred from exporting knives, not dethroned. OK to
+   build the story on that?
+2. Gaps in `research-notes.md`: WWII Solingen/Seki sources for the joke; Sheffield; "Made in Japan" once meant cheap.
 3. Brief approval.
 
 ## Decisions log
@@ -164,3 +167,5 @@ _Date · the decision or verdict, in the client's words · what changed._
   are fake though fuck those wannabes" · §4 updated.
 - 2026-11-02 · "globalhomo = global homogeneous" · the hate is same-everywhere generic web design.
 - 2026-11-02 · No deadline; Bryan is the only sign-off; English only.
+- 2026-11-02 · Sources delivered: five research reports (q1–q4) · saved to `sources/`; notes in `research-notes.md`.
+  Bryan: "don't actually start coding anything" until usage resets.
