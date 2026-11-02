@@ -1,7 +1,7 @@
 # Brief: Yangjiang knives (scrolling infographic)
 
 Status: APPROVED 2026-11-02 by Bryan Murphy · Stage: build · Mode: full creative · Client: Bryan Murphy · Sign-off: Bryan
-Usage: <model, effort> · <share of a 5-hour limit, per stage, as the Claude app or Claude Code shows it>
+Usage: Opus 5.5 (cloud session) · shares of the 5-hour limit not visible from inside the session; Bryan to note them
 
 _**ASK** = missing, **DRAFT** = Claude's draft, **Claude's call** = delegated by the client._
 
@@ -203,3 +203,5 @@ _Date · the decision or verdict, in the client's words · what changed._
   as fuck"; Bryan would say "Thinner: cuts easier, but breaks easier, too." He is "a wordy pretentious fuck who loves
   colons and semi-colons and run-on sentences" · all DRAFT copy is written in that voice: long, clause-heavy
   sentences, colons and semicolons; no stacked three-word sentences, no "X. Y. Z." punchlines (house taste T35).
+- 2026-11-02 · Build plan (about one 5-hour limit, three rounds): "1" (start round 1 now) · building the system,
+  strike, belt and rows 0–4 first.
