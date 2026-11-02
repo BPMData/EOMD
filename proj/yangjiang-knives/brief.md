@@ -1,6 +1,6 @@
 # Brief: Yangjiang knives (scrolling infographic)
 
-Status: DRAFT · Stage: brief · Mode: full creative · Client: Bryan Murphy · Sign-off: Bryan
+Status: APPROVED 2026-11-02 by Bryan Murphy · Stage: concepts · Mode: full creative · Client: Bryan Murphy · Sign-off: Bryan
 Usage: <model, effort> · <share of a 5-hour limit, per stage, as the Claude app or Claude Code shows it>
 
 _**ASK** = missing, **DRAFT** = Claude's draft, **Claude's call** = delegated by the client._
@@ -43,7 +43,8 @@ Three threads plus a primer:
   origin matters vs the individual maker.
 
 **Jokes:** dark humor about Germany and Japan is allowed, but grounded in sourced history (the knife towns' own
-arms-making past), not national character. Bryan: "the actual history not my dumb joke".
+arms-making past), not national character. Bryan: "the actual history not my dumb joke". The humor aims at companies, marketing and myths; facts about
+forced laborers and other victims are stated plainly, never joked about (approved).
 
 **Never:** "we are NOT doing the ching chong riff." No fake-Chinese "chop suey" lettering, no gong, no lederhosen, no
 samurai ("samurai are fake though fuck those wannabes"). **Allowed if it fits:** red and gold ("chinese people
@@ -144,8 +145,7 @@ Bryan signs off; no one else. Success: a knife nerd reads to the end, learns how
 checks where theirs was made.
 
 ## 19. Open questions
-1. Tone: dark humor aims at companies, marketing and myths, never at the forced laborers (Claude's suggestion,
-   `research-notes.md`). OK?
+1. None blocking. Small checks in `research-notes.md` (Bourdain quote, carbide line).
 3. Brief approval.
 
 ## Decisions log
@@ -173,3 +173,4 @@ _Date · the decision or verdict, in the client's words · what changed._
   the gap research.
 - 2026-11-02 · Gap research delivered (q5a, q5b): "okay THIS had better be enough lol" · saved to `sources/`;
   gaps 1–3 filled; no more research rounds planned.
+- 2026-11-02 · Tone rule and brief: "yes yes" · humor never aimed at victims; brief APPROVED, stage → concepts.
