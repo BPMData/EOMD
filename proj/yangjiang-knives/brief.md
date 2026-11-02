@@ -148,6 +148,28 @@ checks where theirs was made.
 1. None blocking. Small checks in `research-notes.md` (Bourdain quote, carbide line).
 3. Brief approval.
 
+## Build plan
+Route: a scrolling HTML page (DOM + inline SVG + a little JS), not a canvas player; none of the film/stream engines
+fit a reader-paced page. Built by `proj/yangjiang-knives/build.py` (Thonny-friendly, SETTINGS block) from
+`page.html` + `page.css` + `page.js` + `content/` into one offline file, then published as `players/yangjiang-knives.html`.
+
+| Element (storyboard row) | Route |
+|---|---|
+| Fonts | **Reuse plumbing:** the inline-font build pattern (`proj/cse-loop/build.py`). **New fonts** (OFL, licenses added to `fonts/`): Source Serif 4 (reading), Archivo with its width axis (stamps, labels), Noto Serif SC subset to the characters used (阳江, 十八子, 関, 日本製…) |
+| The strike (rows 0, 3–7, 9, 11) | **Build new:** one reusable SVG "die + deboss" component driven by scroll progress (pure function of progress; reduced motion shows the finished mark) |
+| The belt (rows 3–10) | **Build new:** a fixed SVG belt whose plate and position are set by which chapter is on screen; tap opens the lineage |
+| Chapter color fields + text column | **Build new:** CSS system (paper, ink, red/gold, iron blue, indigo, grey), sticky picture beside text on laptop, inline on phone (the NYT mechanism) |
+| Specimen plates 1–7 | **Build new:** one plate template (header, drawing, callouts, controls) + seven small SVG interactives: carbon slider, bolster grind-down, edge-angle slider + bevel toggle, Wenwudao chop/slice, sandwich overlay, heat-treat toggle, garlic smash |
+| Charts (Sheffield workforce, export bars, OEM split) | **Build new:** hand-drawn SVG charts from data in `content/data.json`, each value with its source id (dataviz skill for colors/marks) |
+| Label decoder (row 11) | **Build new:** tap a phrase, it stamps onto the blade with its legal meaning |
+| Sources (row 12) | **Build new:** numbered list generated from `content/sources.json`; every on-page fact links to its number |
+| Copy | **Build new:** `content/copy.md`, all DRAFT in Bryan's voice (T35), facts only from `sources/` |
+| Sound | None (silent page) |
+| Publishing | **Reuse plumbing:** copy to `players/`, link from `index.html`, update `README.md` |
+
+Stages: (2) playable rough: the system, the strike, the belt and rows 0–4 · (4) the full page, all plates and
+charts · (5) extras: polish, QA report, publish.
+
 ## Decisions log
 _Date · the decision or verdict, in the client's words · what changed._
 - 2026-11-02 · Form: "Scrolling web page" · interactive page, not a poster or video.
