@@ -13,6 +13,8 @@ _Last updated: Nov 2, 2026._ Brief: `brief.md` (approved; Stage: build). Storybo
 - Fonts: Source Serif 4, Archivo (width axis), Noto Serif SC subset to the characters used; licenses in
   `fonts/OFL-SourceSerif4.txt`, `OFL-Archivo.txt`, `OFL-NotoSerifSC.txt`.
 
+- Plate 1 animates: the edge drops onto bone and bends, rolls, holds or chips (Bryan's request after round 1).
+
 ## Checked
 - No script errors on phone (390×844) or laptop (1440×900) in Chromium; screenshots looked over at 14 scroll points.
 - Text contrast: every pair ≥ 4.5:1 (lowest: gold on red, 4.67).

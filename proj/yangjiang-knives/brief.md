@@ -205,3 +205,6 @@ _Date · the decision or verdict, in the client's words · what changed._
   sentences, colons and semicolons; no stacked three-word sentences, no "X. Y. Z." punchlines (house taste T35).
 - 2026-11-02 · Build plan (about one 5-hour limit, three rounds): "1" (start round 1 now) · building the system,
   strike, belt and rows 0–4 first.
+- 2026-11-02 · Round 1: "Overall though it looks fucking sick as hell"; Plate 1: "If it could actually show the knife
+  descending and then bending, rolling, holding or chipping it would be awesome" · Plate 1 now animates the blow
+  (time-based, replays on each pick, plays once when the plate scrolls into view; reduced motion shows the result).

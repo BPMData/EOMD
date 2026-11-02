@@ -272,36 +272,86 @@ beltBtn.addEventListener("click", () => {
       say: "Japanese “white paper” carbon steel: takes the keenest edge of the lot, chips the easiest, and rusts if you look at it wrong." }
   ];
   const seg = document.getElementById("p1seg"), out = document.getElementById("p1out");
-  function draw(i) {
+  const WORD = { bend: "BENDS", roll: "ROLLS", hold: "HOLDS", chip: "CHIPS" };
+  // static parts: bone and hardness scale; moving parts: the blade (with its load arrow), shards, the verdict
+  fig.innerHTML = `
+    <g id="p1blade"><g id="p1arrow"><line x1="170" y1="-6" x2="170" y2="14" stroke="#1B1A17" stroke-width="2.5"/>
+      <path d="M 161 6 L 170 20 L 179 6 Z" fill="#1B1A17"/>
+      <text x="188" y="12" font-family="Arch,sans-serif" font-size="14" letter-spacing="1.5" fill="#5C564C">LOAD</text></g>
+      <path id="p1edge" fill="#c5c9cd" stroke="#1B1A17" stroke-width="2.2" stroke-linejoin="round"/></g>
+    <rect x="80" y="194" width="200" height="34" fill="#e3dccd" stroke="#1B1A17" stroke-width="1.5"/>
+    <text x="180" y="216" text-anchor="middle" font-family="Arch,sans-serif" font-size="13" letter-spacing="2.5" fill="#5C564C">BONE</text>
+    <g id="p1shards"><path d="M -7 -4 l 13 -5 l 3 12 z" fill="#c5c9cd" stroke="#1B1A17" stroke-width="1.6"/>
+      <path d="M -5 -3 l 10 -4 l 2 9 z" fill="#c5c9cd" stroke="#1B1A17" stroke-width="1.6"/></g>
+    <text id="p1word" x="20" y="120" font-family="Arch,sans-serif" font-weight="900" font-size="28" style="font-stretch:72%" fill="#B3261E"></text>
+    <text x="20" y="262" font-family="Arch,sans-serif" font-size="13" letter-spacing="1.5" fill="#5C564C">HARDNESS, ROCKWELL C</text>
+    <line x1="20" y1="284" x2="340" y2="284" stroke="#C9C0AE" stroke-width="12"/>
+    <line id="p1bar" y1="284" y2="284" stroke="#1E2A57" stroke-width="12" style="transition:all .4s cubic-bezier(.2,1,.3,1)"/>
+    <text x="20" y="310" font-family="Arch,sans-serif" font-size="13" fill="#5C564C">48</text>
+    <text x="340" y="310" text-anchor="end" font-family="Arch,sans-serif" font-size="13" fill="#5C564C">68</text>
+    <text id="p1hrc" y="310" text-anchor="middle" font-family="Arch,sans-serif" font-weight="800" font-size="15" fill="#1B1A17"></text>`;
+  const blade = fig.querySelector("#p1blade"), edge = fig.querySelector("#p1edge"), shards = [...fig.querySelectorAll("#p1shards path")],
+    word = fig.querySelector("#p1word"), bar = fig.querySelector("#p1bar"), hrc = fig.querySelector("#p1hrc");
+  const f1 = n => n.toFixed(1);
+  // the edge outline; k bends the apex over to the left (0 = straight); chipped = a notch where the tip broke away
+  function edgePath(k, chipped) {
+    if (chipped) return "M 150 30 L 190 30 L 180 150 Q 177 168 175 177 L 168 181 L 171 186 L 165 186 Q 163 170 160 150 Z";
+    const px = 170 - 26 * k, py = 194 - 7 * k;
+    return `M 150 30 L 190 30 L ${f1(180 - 3 * k)} 150 Q ${f1(177 + 2 * k)} ${f1(172 + 16 * k)} ${f1(px)} ${f1(py)} ` +
+      `Q ${f1(164 - 12 * k)} ${f1(172 + 8 * k)} ${f1(160 - 6 * k)} 150 Z`;
+  }
+  // one blow, as a pure function of milliseconds since the steel was picked
+  const DROP = 650, BEND = 420, END = 1600;
+  function pose(s, t) {
+    let dy = t < DROP ? lerp(-95, 0, easeIn(t / DROP)) : 0, k = 0, chipped = false;
+    const after = t - DROP;
+    if (after > 0) {
+      if (s.out === "bend") k = easeOut(clamp(after / BEND));
+      if (s.out === "roll") k = .42 * easeOut(clamp(after / BEND));
+      if (s.out === "hold") dy = after < 320 ? -7 * Math.sin(Math.PI * after / 320) : 0;   // a clean bounce
+      if (s.out === "chip") chipped = after > 25;
+      if (s.out !== "hold") dy = after < 160 ? 2.5 * Math.sin(Math.PI * after / 160) : 0;  // the edge bites in a touch
+    }
+    blade.setAttribute("transform", `translate(0 ${f1(dy)})`);
+    edge.setAttribute("d", edgePath(k, chipped));
+    // chips fly off the apex and fall past the bone's edge under a fixed gravity
+    shards.forEach((p, i) => {
+      if (s.out !== "chip" || after < 25) { p.style.opacity = 0; return; }
+      const u = (after - 25) / 1000, vx = i ? 105 : 70, vy = i ? -120 : -170, g = 700;
+      const x = 172 + vx * u, y = 188 + vy * u + .5 * g * u * u;
+      p.setAttribute("transform", `translate(${f1(x)} ${f1(Math.min(y, 300))}) rotate(${f1((i ? -1 : 1) * 540 * u)})`);
+      p.style.opacity = (1 - smooth(250, 300, y)).toFixed(2);
+    });
+    word.textContent = WORD[s.out];
+    word.style.opacity = smooth(DROP + 150, DROP + 400, t).toFixed(2);
+  }
+  let cur = 1, t0 = 0, raf = 0;
+  function play(i) {
+    cur = i;
     const s = STEELS[i];
-    const tipP = { bend: "M 150 30 L 190 30 L 178 168 Q 172 190 150 194", roll: "M 150 30 L 190 30 L 178 172 Q 174 190 162 192",
-      hold: "M 150 30 L 190 30 L 174 190 L 168 190", chip: "M 150 30 L 190 30 L 178 170 L 166 180 L 173 187 L 168 190" }[s.out];
-    const closeP = { bend: "150 194 L 150 30 Z", roll: "162 192 L 150 30 Z", hold: "168 190 L 150 30 Z", chip: "168 190 L 150 30 Z" }[s.out];
     const lo = 20 + (s.hrc[0] - 48) / 20 * 320, hi = 20 + (s.hrc[1] - 48) / 20 * 320;
-    fig.innerHTML = `
-      <line x1="170" y1="0" x2="170" y2="20" stroke="#1B1A17" stroke-width="2.5"/><path d="M 161 12 L 170 26 L 179 12 Z" fill="#1B1A17"/>
-      <text x="188" y="16" font-family="Arch,sans-serif" font-size="14" letter-spacing="1.5" fill="#5C564C">LOAD</text>
-      <path d="${tipP} L ${closeP}" fill="#c5c9cd" stroke="#1B1A17" stroke-width="2.2" stroke-linejoin="round"/>
-      ${s.out === "chip" ? '<path d="M 182 202 l 9 -4 l 3 8 z M 198 210 l 7 -3 l 1 7 z" fill="#c5c9cd" stroke="#1B1A17" stroke-width="1.4"/>' : ""}
-      <rect x="80" y="194" width="200" height="34" fill="#e3dccd" stroke="#1B1A17" stroke-width="1.5"/>
-      <text x="180" y="216" text-anchor="middle" font-family="Arch,sans-serif" font-size="13" letter-spacing="2.5" fill="#5C564C">BONE</text>
-      <text x="20" y="120" font-family="Arch,sans-serif" font-weight="900" font-size="26" style="font-stretch:72%" fill="#B3261E">${{ bend: "BENDS", roll: "ROLLS", hold: "HOLDS", chip: "CHIPS" }[s.out]}</text>
-      <text x="20" y="262" font-family="Arch,sans-serif" font-size="13" letter-spacing="1.5" fill="#5C564C">HARDNESS, ROCKWELL C</text>
-      <line x1="20" y1="284" x2="340" y2="284" stroke="#C9C0AE" stroke-width="12"/>
-      <line x1="${lo.toFixed(1)}" y1="284" x2="${hi.toFixed(1)}" y2="284" stroke="#1E2A57" stroke-width="12"/>
-      <text x="20" y="310" font-family="Arch,sans-serif" font-size="13" fill="#5C564C">48</text>
-      <text x="340" y="310" text-anchor="end" font-family="Arch,sans-serif" font-size="13" fill="#5C564C">68</text>
-      <text x="${((lo + hi) / 2).toFixed(1)}" y="310" text-anchor="middle" font-family="Arch,sans-serif" font-weight="800" font-size="15" fill="#1B1A17">${s.hrc[0]}–${s.hrc[1]}</text>`;
+    bar.setAttribute("x1", f1(lo)); bar.setAttribute("x2", f1(hi));
+    hrc.setAttribute("x", f1((lo + hi) / 2)); hrc.textContent = `${s.hrc[0]}–${s.hrc[1]}`;
     out.innerHTML = `<b>${s.name}</b>, ${s.c}, ${s.hrc[0]}–${s.hrc[1]} HRC: ${s.say}`;
     [...seg.children].forEach((b, j) => b.setAttribute("aria-pressed", j === i));
+    cancelAnimationFrame(raf);
+    if (RM) { pose(s, END); return; }
+    t0 = performance.now();
+    const tick = now => { const t = now - t0; pose(s, Math.min(t, END)); if (t < END) raf = requestAnimationFrame(tick); };
+    raf = requestAnimationFrame(tick);
   }
   STEELS.forEach((s, i) => {
     const b = document.createElement("button");
     b.type = "button"; b.textContent = s.name;
-    b.addEventListener("click", () => draw(i));
+    b.addEventListener("click", () => play(i));   // picking the same steel again replays the blow
     seg.appendChild(b);
   });
-  draw(1);
+  // ready and waiting above the bone; the first blow lands when the plate is properly on screen
+  pose(STEELS[1], 0);
+  [...seg.children].forEach((b, j) => b.setAttribute("aria-pressed", j === 1));
+  const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { io.disconnect(); play(cur); } }, { threshold: .6 });
+  io.observe(fig);
+  if (RM) play(1);
 })();
 
 /* ---------- chart: Sheffield's cutlery workforce ---------- */
