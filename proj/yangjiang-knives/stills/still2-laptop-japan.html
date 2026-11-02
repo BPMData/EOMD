@@ -1,0 +1,55 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+:root{--paper:#F2EDE3;--ink:#1B1A17;--indigo:#1E2A57;--indigo2:#2A3A72;--stamp:#2F4AA0;--red:#B3261E}
+*{margin:0;box-sizing:border-box}
+body{width:1440px;height:900px;background:var(--indigo);font-family:'Bitstream Charter',serif;color:var(--paper);overflow:hidden;position:relative}
+.col{position:absolute;left:820px;top:150px;width:500px}
+.ch{font-family:'Inter Display';font-weight:800;font-size:13px;letter-spacing:.24em;color:#b9c3e8;margin-bottom:18px}
+h2{font-family:'Inter Display';font-weight:900;font-size:58px;line-height:.95;letter-spacing:-.01em;margin-bottom:28px}
+p{font-size:21px;line-height:1.55;margin-bottom:18px;color:#ece7dc}
+sup{font-family:Inter;font-size:11px;color:#9fa9d0}
+.belt{position:absolute;right:28px;bottom:24px}
+</style></head><body>
+<svg width="760" height="900" style="position:absolute;left:40px;top:0">
+<defs><pattern id="glaze" width="6" height="6" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r=".6" fill="#000" opacity=".05"/></pattern>
+<filter id="rough"><feTurbulence baseFrequency="1.4" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="2.2"/></filter></defs>
+<!-- plate underside -->
+<ellipse cx="380" cy="470" rx="330" ry="330" fill="#F6F2EA"/>
+<ellipse cx="380" cy="470" rx="330" ry="330" fill="url(#glaze)"/>
+<ellipse cx="380" cy="470" rx="200" ry="200" fill="none" stroke="#d9d2c4" stroke-width="10"/>
+<ellipse cx="380" cy="470" rx="194" ry="194" fill="none" stroke="#c9c1b1" stroke-width="1.5"/>
+<!-- NIPPON stamp struck out -->
+<g filter="url(#rough)" transform="rotate(-6 380 400)">
+<ellipse cx="380" cy="400" rx="92" ry="44" fill="none" stroke="#7a8fcf" stroke-width="3" opacity=".6"/>
+<text x="380" y="413" text-anchor="middle" font-family="Inter Display" font-weight="900" font-size="38" letter-spacing="5" fill="#7a8fcf" opacity=".6">NIPPON</text></g>
+<line x1="270" y1="430" x2="490" y2="372" stroke="var(--red)" stroke-width="7" stroke-linecap="square"/>
+<!-- JAPAN fresh -->
+<g filter="url(#rough)"><text x="380" y="540" text-anchor="middle" font-family="Inter Display" font-weight="900" font-size="64" letter-spacing="10" fill="var(--stamp)">JAPAN</text>
+</g>
+<!-- callouts -->
+<g font-family="Inter" font-size="13" fill="#d7ddf3" letter-spacing=".04em">
+<line x1="300" y1="365" x2="120" y2="230" stroke="#d7ddf3" stroke-width="1"/><circle cx="120" cy="230" r="13" fill="none" stroke="#d7ddf3"/><text x="120" y="235" text-anchor="middle">1</text>
+<text x="40" y="200">1891–1921 · “NIPPON”</text>
+<line x1="470" y1="560" x2="660" y2="760" stroke="#d7ddf3" stroke-width="1"/><circle cx="660" cy="760" r="13" fill="none" stroke="#d7ddf3"/><text x="660" y="765" text-anchor="middle">2</text>
+<text x="560" y="800">from Sept 1, 1921 · “JAPAN”</text></g>
+</svg>
+<div class="col">
+<div class="ch">CHAPTER 6 · NIPPON → JAPAN</div>
+<h2>Japan’s first famous mark was a customs requirement.</h2>
+<p>The US McKinley Tariff of 1890 made every import say where it came from, in plain English. Japanese porcelain answered with “Nippon.”<sup> 41</sup></p>
+<p>In 1921, US Customs decided “Nippon” wasn’t English. Everything after that says JAPAN.<sup> 42</sup></p>
+</div>
+<!-- belt: split into two weight classes -->
+<svg class="belt" width="300" height="120" viewBox="0 0 300 120">
+<g transform="translate(0,6)">
+<rect x="0" y="22" width="140" height="22" fill="#5a3b1e"/><rect x="38" y="8" width="64" height="50" fill="#D4A63A"/><rect x="44" y="14" width="52" height="38" fill="none" stroke="#7a5a16" stroke-width="1.5"/>
+<text x="70" y="31" text-anchor="middle" font-family="Inter Display" font-weight="900" font-size="9" fill="#3a2a08">HEAVY</text>
+<text x="70" y="45" text-anchor="middle" font-family="Inter Display" font-weight="900" font-size="8" fill="#3a2a08">SOLINGEN</text>
+<text x="70" y="78" text-anchor="middle" font-family="Inter" font-size="10" fill="#b9c3e8">220–280 g</text></g>
+<g transform="translate(155,6)">
+<rect x="0" y="22" width="140" height="22" fill="#5a3b1e"/><rect x="38" y="8" width="64" height="50" fill="#D4A63A"/><rect x="44" y="14" width="52" height="38" fill="none" stroke="#7a5a16" stroke-width="1.5"/>
+<text x="70" y="31" text-anchor="middle" font-family="Inter Display" font-weight="900" font-size="9" fill="#3a2a08">LIGHT</text>
+<text x="70" y="45" text-anchor="middle" font-family="Inter Display" font-weight="900" font-size="10" fill="#3a2a08">JAPAN</text>
+<text x="70" y="78" text-anchor="middle" font-family="Inter" font-size="10" fill="#b9c3e8">120–160 g</text></g>
+<text x="150" y="112" text-anchor="middle" font-family="Inter" font-size="10" letter-spacing="2" fill="#8d97c2">TITLE SPLIT · TAP FOR LINEAGE</text>
+</svg>
+</body></html>

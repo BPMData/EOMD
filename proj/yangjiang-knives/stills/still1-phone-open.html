@@ -1,0 +1,41 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+:root{--paper:#F2EDE3;--ink:#1B1A17;--steel1:#5E6266;--steel2:#8C9095;--red:#A3221B}
+*{margin:0;box-sizing:border-box}
+body{width:390px;height:844px;background:var(--paper);font-family:'Bitstream Charter',Charter,serif;color:var(--ink);overflow:hidden}
+.steel{height:470px;position:relative}
+.hook{padding:26px 22px 0}
+.hook p{font-size:20px;line-height:1.45;margin-bottom:14px}
+.hook .src{white-space:nowrap;font-family:Inter;font-size:11px;letter-spacing:.06em;color:#6b655b;vertical-align:super}
+.kick{font-family:'Inter Display';font-weight:800;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--red);margin-bottom:12px}
+.hook p.last{font-weight:bold}
+</style></head><body>
+<div class="steel"><svg width="390" height="470" viewBox="0 0 390 470">
+<defs>
+<linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4c5054"/><stop offset=".45" stop-color="#9a9ea3"/><stop offset=".55" stop-color="#7d8186"/><stop offset="1" stop-color="#3f4346"/></linearGradient>
+<pattern id="brush" width="390" height="3" patternUnits="userSpaceOnUse"><rect width="390" height="1" fill="#fff" opacity=".05"/><rect y="2" width="390" height="1" fill="#000" opacity=".06"/></pattern>
+<filter id="deboss" x="-10%" y="-10%" width="120%" height="120%">
+ <feOffset in="SourceAlpha" dx="0" dy="-3" result="up"/><feGaussianBlur in="up" stdDeviation="1.6" result="upb"/>
+ <feComposite in="upb" in2="SourceAlpha" operator="out" result="o1"/>
+ <feFlood flood-color="#000" flood-opacity=".0"/>
+ <feOffset in="SourceAlpha" dx="0" dy="3" result="dn"/><feGaussianBlur in="dn" stdDeviation="1.8" result="dnb"/>
+ <feComposite in="SourceAlpha" in2="dnb" operator="out" result="inner"/>
+ <feFlood flood-color="#111" flood-opacity=".75"/><feComposite in2="inner" operator="in" result="shadow"/>
+ <feOffset in="SourceAlpha" dx="0" dy="2" result="lo"/><feComposite in="lo" in2="SourceAlpha" operator="out" result="lip"/>
+ <feFlood flood-color="#fff" flood-opacity=".35"/><feComposite in2="lip" operator="in" result="hl"/>
+ <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="shadow"/><feMergeNode in="hl"/></feMerge>
+</filter>
+</defs>
+<rect width="390" height="470" fill="url(#g)"/><rect width="390" height="470" fill="url(#brush)"/>
+<!-- die, just lifted -->
+<g opacity=".9"><rect x="95" y="-40" width="200" height="58" fill="#26282a"/><rect x="110" y="18" width="170" height="10" fill="#1c1d1f"/>
+<line x1="195" y1="34" x2="195" y2="52" stroke="#e9e4da" stroke-width="1" opacity=".5"/><line x1="160" y1="38" x2="152" y2="54" stroke="#e9e4da" stroke-width="1" opacity=".35"/><line x1="230" y1="38" x2="238" y2="54" stroke="#e9e4da" stroke-width="1" opacity=".35"/></g>
+<g filter="url(#deboss)"><text x="195" y="275" text-anchor="middle" font-family="WenQuanYi Zen Hei" font-size="150" fill="#6f7377">阳江</text></g>
+<g filter="url(#deboss)"><text x="195" y="335" text-anchor="middle" font-family="Inter Display" font-weight="900" font-size="30" letter-spacing="14" fill="#6f7377">YANGJIANG</text></g>
+<text x="22" y="448" font-family="Inter" font-size="10" letter-spacing="2" fill="#e9e4da" opacity=".7">SCROLL TO STRIKE ↓</text>
+</svg></div>
+<div class="hook">
+<div class="kick">Knife Country</div>
+<p>One city in China makes most of its knives.<span class="src"> 1</span></p>
+<p>China ships half the world’s knife exports.<span class="src">&nbsp;2</span></p>
+<p class="last">Under the Qing, shipping one abroad was a crime.<span class="src"> 3</span></p>
+</div></body></html>

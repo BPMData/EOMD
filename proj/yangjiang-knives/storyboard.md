@@ -41,7 +41,8 @@ for Bryan to change.
 | **12. Sources** (1–2) | Every fact, numbered, with its source and confidence. A short note on what's disputed (the self-reported shares). | Links open the sources. |
 
 ## Stills
-Three frames, at real sizes, in `proj/yangjiang-knives/stills/` (to be made next):
+Three rough frames at real sizes in `proj/yangjiang-knives/stills/` (PNG, plus the HTML they're drawn from). Fonts are
+stand-ins from the build machine; the working title "Knife Country" is DRAFT.
 1. **Phone, row 0:** the 阳江 strike and the hook at real phone type sizes. Proves the signature idea and the
    opening.
 2. **Laptop, row 6:** the NIPPON → JAPAN porcelain stamp with the split belt in the corner. Proves the chapter color
