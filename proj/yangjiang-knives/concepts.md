@@ -23,7 +23,7 @@ and lies, so judge the knife, not the stamp.
 
 **What they'd see:**
 - **Opening:** a blank steel strip fills the screen. Scrolling brings a die down: 阳江. Then the hook: "Yangjiang
-  makes most of China's knives. For most of history, it would have been illegal to sell you one."
+  makes most of China's knives. Under the Qing, shipping one abroad was a crime." (DRAFT copy)
 - **The marks, in order** (each the hero of its chapter, the stamp in the metal and the story beside it):
   - the Qing ban
   - SOLINGEN
