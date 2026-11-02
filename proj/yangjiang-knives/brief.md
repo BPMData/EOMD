@@ -1,130 +1,160 @@
 # Brief: Yangjiang knives (scrolling infographic)
 
-Status: DRAFT · Stage: interview · Mode: full creative · Client: Bryan Murphy · Sign-off: **ASK**
+Status: DRAFT · Stage: brief · Mode: full creative · Client: Bryan Murphy · Sign-off: Bryan (assumed, **ASK**)
 Usage: <model, effort> · <share of a 5-hour limit, per stage, as the Claude app or Claude Code shows it>
 
-_Copy to `proj/<name>/brief.md` once round 1 of the interview is answered (`brief/INTERVIEW.md`) and update `Stage:` at each gate. Write it in the client's words where
-possible and keep the reasons. **ASK** = missing, **DRAFT** = Claude's draft (translations, suggested copy),
-**Claude's call** = delegated by the client. `brief/example-academies.md` shows the level of detail to aim for._
+_**ASK** = missing, **DRAFT** = Claude's draft, **Claude's call** = delegated by the client._
 
 ## 1. The ask
 An infographic on the history of knife-making in China, especially Yangjiang: how Germany and Japan became the
 go-to "good knife countries", and how China is working to win that title back through fast technology growth and a
-vertically integrated supply chain. Form: a **scrolling web page** people open on a phone or laptop and scroll at
-their own pace. Deadline: **ASK**.
+vertically integrated supply chain. Form: a **long scrolling web page** people open on a phone or laptop and read at
+their own pace. Published on the GitHub Pages site alongside the three pieces already there. Deadline: none given
+(**ASK** to confirm).
 
 ## 2. Purpose and tone
-**Audience:** "nerds on the internet, not specific to any class" — people who would happily read a long infographic
-about knives. Adults; not for students.
+**Audience:** "nerds on the internet, not specific to any class": the kind of people who would read a long
+infographic about knives. Adults; not for students.
 
 - **Know:** Yangjiang makes most of China's knives (needs a source, §5); what makes a good knife and good knife steel.
 - **Feel:** the "best knife" label is something countries win and lose.
 - **Do:** look at where their own knives were made.
-- **The real question it answers:** how much does it matter where a knife is made, if at all, or does it come down to
-  the individual manufacturer? Reason: most readers don't know enough about chef knives to follow the history, so the
-  page does double duty: knife primer + history.
-- **Tone:** "fun, knowledgeable, and a very Chinese time in my life." Dark jokes allowed (see §4).
+- **The question it answers:** how much does it matter where a knife is made, if at all, or does it come down to the
+  individual manufacturer? Reason: most readers don't know enough about chef knives to follow the history, so the
+  page does "double duty": knife primer + history.
+- **Before → after:** "Germany and Japan make the good knives; Chinese knives are cheap" → "the title moves; judge
+  the maker and the knife, and now I know what to look at."
+- **Tone:** "fun, knowledgeable, and a very Chinese time in my life." Dark humor allowed (§4).
 - **Must NOT feel like:** default AI-written CSS ("curved bezels and shit everywhere"); homework.
 
 ## 3. How it's watched
-A scrolling web page on a phone or laptop, read once at the reader's own pace, sitting down by choice. Long-form is
-fine. Phone share, sound, where it's linked from: **ASK**.
+- A scrolling web page, read once, seated, by choice. Long-form is fine; this audience reads to the end if it's good.
+- Phone and laptop both. Assume phone first (links get shared on social), so every interactive works by touch and at
+  phone width, and nothing depends on hover.
+- **Silent.** "Everyone hates music on web pages." No music, no sound effects.
+- No player chrome: no fullscreen, no hidden controls, no Start sound button (§15).
 
 ## 4. How the subject works
-Three threads: (1) knife-making history in China and Yangjiang; (2) how Germany and Japan became the go-to "good knife
-countries"; (3) how China is working to take the title back (fast technology growth, vertically integrated supply
-chain). Plus the primer: the major choices in a good chef knife (shape, single or double bevel, grind angle, spine
-thickness, weight, length, steel and heat treatment).
+Three threads plus a primer:
+1. Knife-making history in China and Yangjiang.
+2. How Germany and Japan became the go-to "good knife countries".
+3. How China is working to take the title back: fast technology growth, a vertically integrated supply chain.
+- **Primer:** the major choices in a chef knife: shape, single or double bevel, grind angle, spine thickness, weight,
+  length, steel and heat treatment. It must leave the reader able to judge a knife, and to say how much country of
+  origin matters vs the individual maker.
 
-Jokes: Bryan allows dark humor about Germany and Japan, e.g. "the personality type that's good at running
-industrial-scale genocides is also good at making knives, what's up with that?" Claude's suggestion (pending Bryan's
-call): ground it in sourced history (the knife towns' own arms-making past) rather than national character.
+**Jokes:** Bryan allows dark humor about Germany and Japan, e.g. "the personality type that's good at running
+industrial-scale genocides is also good at making knives, what's up with that?" Claude's suggestion (**ASK**, Bryan's
+call): ground it in sourced history (the knife towns' own arms-making past) rather than national character, so the
+audience can't wave it off.
+
+**Never:** "we are NOT doing the ching chong riff." Claude extends this in the same spirit (**ASK** to confirm): no
+"Oriental" clichés of any kind: no chop-suey/brush-stroke fake-Chinese lettering, no dragon-and-lantern red-and-gold
+wallpaper, no gong. The same for Germany and Japan (no lederhosen, no cherry blossoms and samurai). Chinese characters
+only where they're real and correct (place names, terms like 菜刀), each checked.
 
 ## 5. Content and facts
-Primer facts (knife design and steel): Bryan's sources are mostly history, so a research prompt covers the primer:
-`proj/yangjiang-knives/research-prompt.md`. Its results count as Bryan's sources once he passes them on.
-_Every fact that appears on screen, with its source. Fixed copy: the path of the copy file, used word for word._
-
-Bryan supplies the facts (round 1: "I'll supply them"). Nothing goes on the page that isn't in this table.
+Bryan supplies the facts (round 1: "I'll supply them"). Nothing goes on the page that isn't in this table with a
+source. Primer facts: Bryan's sources are mostly history, so `research-prompt.md` covers the primer; its results
+count as Bryan's sources once he passes them on and checks them.
 
 | Fact | Source |
 |---|---|
-| **ASK** (Bryan's notes / articles) | |
+| **ASK** (Bryan's history sources) | |
+| **ASK** (primer research results) | |
 
 ## 6. Structure and hierarchy
-_Beats; hero vs supporting text in each; whether every beat must stand alone; how often the name or message must be
-readable; minimum holds; total length; loop rules._
+Claude's call, within this: primer early enough that the history makes sense, but the page opens on story, not a
+lesson. Every section has one hero (a picture or interactive) and short copy. Long page, read once; no loop rules.
 
 ## 7. Brand and contrast
-_Colors (hex and role), fonts, logos; contrast rules (e.g. dark text on yellow, never white)._
+No brand. Palette and fonts: Claude's call, from §13's references, not from Chinese/German/Japanese clichés (§4).
+Fonts are self-hosted and inlined (no Google Fonts). Contrast: WCAG AA for all text, AAA for body copy where it's easy.
 
 ## 8. Visual language
-Bryan: "Use the interactivity of the format to your advantage." Custom SVG of knife styles. Interactive ways to show
-the major choices in a chef knife (shape, bevel, grind angle, spine, weight, length). Spine: Claude's call.
+Bryan: "Use the interactivity of the format to your advantage, write custom SVG to show different styles of knives."
+- Custom SVG knife illustrations (shapes, cross-sections of bevels and grinds, spine taper, steel structure).
+- Interactive ways to show the major choices (shape, bevel, grind angle, spine, weight, length) so the reader learns
+  by trying, not reading.
+- Spine of the page: Claude's call.
 
 ## 9. Language
-_Languages, which lines, cognate flourishes or full translations, who checks them._
+English only (assumed: internet audience, not Bryan's classroom; **ASK** to confirm). Chinese and Japanese terms
+appear with their characters and romanization where they're real terms (§4).
 
 ## 10. Call to action
-_The next step. Nothing invented: no URL, deadline, QR code or contact that isn't in section 5._
+"Look at where your own knives were made" (§2). No URLs, shops or brand recommendations unless Bryan adds them.
 
 ## 11. Music and sound
-_Feel; where it plays and how often people hear it; what to avoid; sound effects synced to motion or not; loudness
-from how and where it's heard (a client file in `brief/clients/` may have targets that held before)._
+None. Silent page (§3).
 
 ## 12. Hard limits
-_Claims, likenesses, photos, anything admin or legal won't allow._
+- No ranking claims ("the best knife country", "best steel") stated as fact; the page shows evidence and trade-offs.
+- Brand names only with a sourced fact attached (e.g. a documented OEM relationship); nothing implied.
+- No photos of real people; no product photos copied from makers' sites. Illustrations are drawn from scratch.
 
 ## 13. Taste references
-`Taste: house. Applies: <the IDs from brief/taste/house.md whose condition this brief meets>. Overrides: <ID off or
-changed, with the reason>.`
-_Then the client's own loves and hates, with why._
-- Hates: default AI-written CSS, rounded corners everywhere; anything that reads like homework.
-- Loves: **ASK**.
+`Taste: house. Applies: T01, T02, T04, T05, T06, T19 (sound off), T20, T25, T26, T27, T28, T30, T34. Overrides: none.
+Off by condition: music and sound items (silent), loop and walk-up items (read once, scrolling).`
+- **Loves:** "The NYTimes Sushi piece" (**ASK**: link, so the right piece is studied); "those great hardcover
+  reference books Barnes and Noble sells with names just like 'THE GREATEST BATTLES' or 'FIREARMS' for Christmas
+  presents": big illustrated encyclopedias, labeled cutaways, specimen spreads, dense captions.
+- **Hates:** default AI-written CSS, rounded corners everywhere; anything that reads like homework; the "ching chong
+  riff".
 
 ## 14. Creative expectations
-Default craft bar (from the Academies brief); this piece adds or relaxes: _..._
-- Contemporary motion graphics at portfolio quality (Motionographer / Behance / Awwwards-level craft). Quality
-  matters more than speed.
-- One memorable signature visual idea, made for this subject, that recurs.
-- Several beats share one system, yet each feels specific to its content.
-- Expressive motion: anticipation, overshoot, follow-through, staggered reveals, match cuts and shape-morph
-  transitions, camera-style moves (push, parallax, rotate), rhythm locked to the music.
-- No slideshow logic, no repeated templates, no default easings.
-- Considered typography: strong hierarchy, a tight type system, kinetic type where it earns it, sized for the viewing
-  distance; no thin weights or small text on a distant screen.
-- If it loops: a loop point that feels like a breath, not a restart.
-- None of the subject's clichés.
+Default craft bar, adapted to a scrolling page:
+- Editorial interactive quality (NYT / The Pudding / reference-book craft). Quality matters more than speed.
+- One memorable signature idea, made for this subject, that recurs.
+- Sections share one system, yet each feels specific to its content; no repeated card templates.
+- Motion is scroll-driven and earns its place: reveals, diagrams that build, comparisons that morph. No parallax for
+  its own sake. No default easings.
+- Considered typography: a real editorial type system, strong hierarchy, comfortable reading measure.
+- None of the subject's clichés (§4).
 
 ## 15. Technical
-Repo defaults (CLAUDE.md "Rules for every piece": a single offline HTML file, time-based motion, synthesized
-audio, nothing flashing more than 3×/s; legibility and loudness targets from sections 3 and 11). Exceptions for this piece: _..._
+Repo defaults where they apply: one self-contained offline HTML file (fonts, SVG, data inlined; nothing loads from the
+internet); motion time- or scroll-based, never frame-rate-based; nothing flashes more than 3×/s;
+prefers-reduced-motion respected. Exceptions: it's a page, not a player: no fullscreen, no hidden controls, no audio,
+no Start sound button. Works on phone width (16 px gutters, no horizontal scroll) and with keyboard.
 
 ## 16. Deliverables
-_Files (HTML player, MP4 with and without sound, portrait version, ZIP), length, where it's published (`players/`,
-the Pages site)._
+- One HTML file, added to the GitHub Pages site next to the three pieces already there, with a link from the landing
+  page (`index.html`).
+- No MP4, no portrait version.
 
 ## 17. QA
-Default checks; add the piece's own:
-- If it loops: the last second and the first second back to back show no jump and no click, gap or loudness change.
-- Legibility: hero text readable with the frame at 25% scale; supporting text legible on pause.
-- Walk-up test: every beat makes sense to someone who just arrived (if viewers walk past).
-- Sound-off test: the story holds with the audio drowned out (if it plays somewhere noisy).
-- Contrast: every text/background pair meets WCAG AA (stronger in bright rooms), reported honestly.
-- Audio: loudness, true peak and clipping measured (ffmpeg `ebur128`); nothing harsh on repeat.
-- Motion: smooth transitions, no dropped or duplicated frames.
-- Facts: everything on screen is in section 5 with a source.
-- Taste: every applicable `strong` item in `brief/taste/house.md` is honored, or overridden in section 13 with a reason.
+- Facts: everything on the page is in §5 with a source; Chinese characters checked.
+- Contrast: every text/background pair meets WCAG AA, reported honestly.
+- Phone: tested at 375 px width by touch; no hover-only content; no horizontal scroll.
+- Reduced motion: every section readable with motion off.
+- Offline: opens with the network off.
+- Performance: smooth scroll on a mid-range phone; page size reported.
+- Taste: every applicable `strong` item honored or overridden in §13.
 - A short report: what was verified, what wasn't, known limits.
 
 ## 18. Approval and success
-_Who signs off; what makes them say "that's it"; how we'll know it worked._
+Bryan signs off (**ASK**: anyone else?). Success: a knife nerd reads to the end, learns how to judge a knife, and
+checks where theirs was made.
 
 ## 19. Open questions
-_Every ASK above, in one list._
+1. Bryan's history sources (§5).
+2. Primer research results (§5).
+3. The joke: grounded in the towns' arms-making history, or the national-character version (§4)?
+4. The no-clichés list in §4: OK as extended?
+5. Link to the NYT sushi piece (§13).
+6. Deadline, other sign-off, English only.
 
 ## Decisions log
 _Date · the decision or verdict, in the client's words · what changed._
 - 2026-11-02 · Form: "Scrolling web page" · interactive page, not a poster or video.
-- 2026-11-02 · Mode: "From scratch" · full creative mode; `/toolbox` only after storyboard, stills and sound concept.
-- 2026-11-02 · Facts: "I'll supply them" · Claude uses only Bryan's sources.
+- 2026-11-02 · Mode: "From scratch" · full creative mode; `/toolbox` only after storyboard and stills.
+- 2026-11-02 · Facts: "I'll supply them" · Claude uses only Bryan's sources; research prompt written for the primer.
+- 2026-11-02 · Audience: "nerds on the internet", "it's not for students" · adult tone, dark humor allowed.
+- 2026-11-02 · Must not feel like "default globalhomo AI-written CSS with curved bezels and shit everywhere" or
+  homework · no rounded-card template look.
+- 2026-11-02 · Sound: "silent lol, everyone hates music on web pages and we are NOT doing the ching chong riff" ·
+  no audio.
+- 2026-11-02 · Loves: "The NYTimes Sushi piece", the B&N hardcover reference books ("THE GREATEST BATTLES",
+  "FIREARMS") · reference-book/editorial look.
+- 2026-11-02 · Publish: "add to the github pages site alongside the 3 already there".
