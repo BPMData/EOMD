@@ -6,7 +6,7 @@ requests carry little taste, so these apply unless the brief overrides them. Har
 **How to use it**
 - One line per item: `ID · strength · area · [condition ·] the preference — the verdict it came from`.
 - **strength:** `strong` = the default; overriding it needs a reason in the brief. `soft` = a lean.
-- **area:** motion, type, color, music, sound, structure, process.
+- **area:** motion, type, color, music, sound, structure, process, copy.
 - **condition:** the item applies only once the interview has answered it ("How it's watched"): `plays once` /
   `repeats`, `sound on` / `off` / `unreliable`, `walk-up` / `seated` / `scrolling`, `short` (< 30 s) / `medium` /
   `long` (> 5 min), `far` / `near`, and (from §9) `more than one language`. No condition = every piece. No format is assumed until the client says it.
@@ -51,3 +51,4 @@ T31 · strong · process · The final video comes from a one-click tool, not a m
 T32 · soft · process · A study stays a study: don't turn an experiment into a standalone product unless asked. — Dust Type: "it was never meant to be a standalone anything"
 T33 · soft · structure · when more than one language · Multilingual moments as a flourish: close cognates and greetings morphing across languages, Brazilian Portuguese spelling. — Academies brief
 T34 · soft · color · Punchy, saturated fields (primary and secondary colors) over pale tints and washed-out neutrals; when a brand palette is dull, keep it for the logo and accents. — CSE hallway loop concepts (Oct 25): pale purple and "washed out griege" backgrounds "bad", "choose something more punchy"
+T35 · strong · copy · Write copy in the client's voice, not the AI's: no stacked clipped sentences ("Thinner cuts easier. Thinner breaks easier."), no rule-of-three punchlines; for Bryan, long clause-heavy sentences with colons and semicolons. — Yangjiang knives storyboard (Nov 2): clipped lines "read claude-coded as fuck"; "I'm a wordy pretentious fuck who loves colons and semi-colons and run-on sentences"

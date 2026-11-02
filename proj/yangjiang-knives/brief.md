@@ -1,6 +1,6 @@
 # Brief: Yangjiang knives (scrolling infographic)
 
-Status: APPROVED 2026-11-02 by Bryan Murphy · Stage: storyboard · Mode: full creative · Client: Bryan Murphy · Sign-off: Bryan
+Status: APPROVED 2026-11-02 by Bryan Murphy · Stage: build · Mode: full creative · Client: Bryan Murphy · Sign-off: Bryan
 Usage: <model, effort> · <share of a 5-hour limit, per stage, as the Claude app or Claude Code shows it>
 
 _**ASK** = missing, **DRAFT** = Claude's draft, **Claude's call** = delegated by the client._
@@ -176,3 +176,8 @@ _Date · the decision or verdict, in the client's words · what changed._
 - 2026-11-02 · Tone rule and brief: "yes yes" · humor never aimed at victims; brief APPROVED, stage → concepts.
 - 2026-11-02 · Concept: "let's try A with the moving belt idea" · The Mark, with the title belt as a running gag;
   storyboard drafted (`storyboard.md`).
+- 2026-11-02 · Storyboard and stills: "looks good to me let's go" · stage → build.
+- 2026-11-02 · Copy voice: clipped parallel lines like "Thinner cuts easier. Thinner breaks easier." "read claude-coded
+  as fuck"; Bryan would say "Thinner: cuts easier, but breaks easier, too." He is "a wordy pretentious fuck who loves
+  colons and semi-colons and run-on sentences" · all DRAFT copy is written in that voice: long, clause-heavy
+  sentences, colons and semicolons; no stacked three-word sentences, no "X. Y. Z." punchlines (house taste T35).
