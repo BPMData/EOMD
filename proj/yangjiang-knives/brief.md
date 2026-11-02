@@ -144,8 +144,8 @@ Bryan signs off; no one else. Success: a knife nerd reads to the end, learns how
 checks where theirs was made.
 
 ## 19. Open questions
-1. Gaps (`research-prompt-gaps.md`, waiting on Bryan's run): WWII Solingen/Seki; Sheffield; "Made in Japan"
-   once meant cheap (incl. ceramics); the wider cheap-to-quality pattern.
+1. Tone: dark humor aims at companies, marketing and myths, never at the forced laborers (Claude's suggestion,
+   `research-notes.md`). OK?
 3. Brief approval.
 
 ## Decisions log
@@ -171,3 +171,5 @@ _Date · the decision or verdict, in the client's words · what changed._
 - 2026-11-02 · Premise: "yes" to building on the flipped story (China barred from the game, not dethroned) ·
   spine of the history. Cheap-to-quality: "interesting, it also happened to japan with i.e. ceramics" · added to
   the gap research.
+- 2026-11-02 · Gap research delivered (q5a, q5b): "okay THIS had better be enough lol" · saved to `sources/`;
+  gaps 1–3 filled; no more research rounds planned.

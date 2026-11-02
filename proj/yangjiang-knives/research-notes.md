@@ -118,3 +118,79 @@ between other countries:
    - The CATRA angle numbers: check them against Knife Steel Nerds.
 6. **Pictures:** what Blacksmith Lane, a Wenwudao and a Jifu pocketknife look like, as reference for drawing. None
    are in the sources.
+
+---
+
+## Gaps reports (q5a, q5b), Nov 2 2026: gaps 1–3 filled
+
+### New facts worth building on
+- **Solingen at war.**
+  - Zwilling J.A. Henckels, Wüsthof, Böker and Eickhorn all made bayonets, military knives and Nazi dress daggers
+    (q5a, q5b).
+  - Forced labor (q5b, citing Solingen City Archives / Max-Leven-Zentrum):
+    - The city had 10,800 forced workers plus about 2,000 POWs on Nov 1, 1944.
+    - Henckels used 700+ Ostarbeiter and 36 POWs across three camps.
+    - 150+ forced laborers died in the Nov 4–5, 1944 raids, kept in wooden barracks while Germans used shelters.
+  - The bombing destroyed 80%+ of central Solingen. Seki was never bombed.
+- **The 1938 law fit Nazi policy:** cartels, export earnings for rearmament, and "German quality labor"
+  (*deutsche Wertarbeit*). Printed as RGBl. I S. 953 (q5b).
+- **Solingen decree date resolved:** Dec 16, 1994; in force Jan 1, 1995 (q5a and q5b agree).
+- **Seki at war.**
+  - The 関 "Seki stamp" (from about 1940) on a sword's tang marks it as machine-made, not a traditional blade. Such
+    swords still can't be registered as art in Japan.
+  - Registered smiths: 1 in 1938, 232 by Sep 1944. Peak output: 2,000–4,000 blades a month (q5b).
+  - After 1945 the occupation banned edged weapons. Seki's presses turned to pocket knives and razors for US Army
+    stores, then exports.
+  - Bryan's "samurai are fake": the wartime "samurai swords" were mostly stamped factory steel.
+- **Sheffield.**
+  - Huntsman's crucible steel (1740s); the Cutlers' Company (1624).
+  - Lost to Solingen's drop-forging (Solingen was 20–40% cheaper) and the US McKinley Tariff of 1890.
+  - Workforce: about 15,500 (1881), about 5,500 (1971), under 1,000 today (q5b table).
+- **"Made in Germany" was a British warning label** (Merchandise Marks Act 1887) that backfired into a quality mark.
+  Germany's own commissioner called German goods "cheap and bad" (*billig und schlecht*) in 1876 (Reuleaux).
+- **Japan's ceramics.**
+  - "Nippon" stamps 1891–1921, required by the US McKinley Tariff.
+  - "Japan" from Sep 1, 1921.
+  - "Made in Occupied Japan" 1947–52; Noritake used a "Rose China" stamp to keep weak postwar ware off its main brand.
+  - Then Deming (1950), the JIS mark (1949) and the Export Inspection Law (1957), which barred substandard exports,
+    cutlery included.
+- **MAC Knife, Seki, 1964:** thin stamped Japanese chef's knives dismissed as cheap, before Global (1985) and Bourdain
+  (2000).
+- **The pattern:** USA, Germany, Japan, Korea and Taiwan each went from cheap copies to quality in about 20–50 years.
+  The 2017 Statista Made-In-Country Index:
+  - China scored 28 against Germany's 100.
+  - China was #1 for price/performance (36%).
+
+### Emergent idea: the page is about MARKS
+Every chapter has a stamp, and each one is a law or a lie:
+- Solingen's name law
+- "Made in Germany" (a warning that backfired)
+- "Nippon" → "Japan" → "Occupied Japan"
+- the 関 Seki stamp (machine-made sword)
+- the Sakai Kiwame seal
+- "German steel" / "Japanese steel core" (the loophole)
+- Yangjiang's fake-Japanese brand names
+- the reader's own knife: "go look at the mark on yours"
+
+That's a candidate signature idea for the concept stage: stamps struck into steel, with the reader checking their
+own knife's mark at the end.
+
+### New conflicts
+| Topic | Conflict | Handling |
+|---|---|---|
+| Wartime factory codes (RZM) for Wüsthof and Böker | q5a: M7/36, M7/27. q5b: M7/19, M7/75 | Don't show the codes; sources are militaria dealers |
+| Global knives' home | q5a: Seki. q2 and q5b: Niigata (Yoshikin) | Niigata |
+| Bourdain's pick | q2 and q5b: Global; q5a: MAC; q5b's quote unverified | Say "Global" and check the quote against the book before quoting |
+| German edge angle | q5b: 40–45° inclusive; q4: 30–40° | Use q4's range |
+| Seki's share of military swords, its population | ">70%" (q5b, uncited); "half of 30,000 residents" (q5a) | Leave out, or label as estimates |
+| China's MICI rank | "49th of 49" (q5a) vs "lower tier, score 28" (q5b) | Use score 28 vs 100, dated 2017 |
+| Brands moving to Yangjiang (Kershaw, Spyderco, Böker, CRKT) | Same weak-source problem as before | Don't name them |
+
+### Tone note (Claude's suggestion)
+The dark humor aims at companies, marketing and myths. Never at the forced laborers or other victims: those facts
+are stated plainly.
+
+### Still open (small)
+- The Bourdain quote: check against *Kitchen Confidential*.
+- The cut-off carbide hardness line (q4).
+- Picture references for drawing.
