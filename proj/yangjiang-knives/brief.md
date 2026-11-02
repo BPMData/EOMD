@@ -1,6 +1,6 @@
 # Brief: Yangjiang knives (scrolling infographic)
 
-Status: DRAFT · Stage: brief · Mode: full creative · Client: Bryan Murphy · Sign-off: Bryan (assumed, **ASK**)
+Status: DRAFT · Stage: brief · Mode: full creative · Client: Bryan Murphy · Sign-off: Bryan
 Usage: <model, effort> · <share of a 5-hour limit, per stage, as the Claude app or Claude Code shows it>
 
 _**ASK** = missing, **DRAFT** = Claude's draft, **Claude's call** = delegated by the client._
@@ -9,8 +9,7 @@ _**ASK** = missing, **DRAFT** = Claude's draft, **Claude's call** = delegated by
 An infographic on the history of knife-making in China, especially Yangjiang: how Germany and Japan became the
 go-to "good knife countries", and how China is working to win that title back through fast technology growth and a
 vertically integrated supply chain. Form: a **long scrolling web page** people open on a phone or laptop and read at
-their own pace. Published on the GitHub Pages site alongside the three pieces already there. Deadline: none given
-(**ASK** to confirm).
+their own pace. Published on the GitHub Pages site alongside the three pieces already there. No deadline.
 
 ## 2. Purpose and tone
 **Audience:** "nerds on the internet, not specific to any class": the kind of people who would read a long
@@ -43,15 +42,14 @@ Three threads plus a primer:
   length, steel and heat treatment. It must leave the reader able to judge a knife, and to say how much country of
   origin matters vs the individual maker.
 
-**Jokes:** Bryan allows dark humor about Germany and Japan, e.g. "the personality type that's good at running
-industrial-scale genocides is also good at making knives, what's up with that?" Claude's suggestion (**ASK**, Bryan's
-call): ground it in sourced history (the knife towns' own arms-making past) rather than national character, so the
-audience can't wave it off.
+**Jokes:** dark humor about Germany and Japan is allowed, but grounded in sourced history (the knife towns' own
+arms-making past), not national character. Bryan: "the actual history not my dumb joke".
 
-**Never:** "we are NOT doing the ching chong riff." Claude extends this in the same spirit (**ASK** to confirm): no
-"Oriental" clichés of any kind: no chop-suey/brush-stroke fake-Chinese lettering, no dragon-and-lantern red-and-gold
-wallpaper, no gong. The same for Germany and Japan (no lederhosen, no cherry blossoms and samurai). Chinese characters
-only where they're real and correct (place names, terms like 菜刀), each checked.
+**Never:** "we are NOT doing the ching chong riff." No fake-Chinese "chop suey" lettering, no gong, no lederhosen, no
+samurai ("samurai are fake though fuck those wannabes"). **Allowed if it fits:** red and gold ("chinese people
+fucking love red and gold"), cherry blossoms ("japanese people legitimately loving cherry blossoms"): used the way
+those cultures use them, not as wallpaper. Chinese characters only where they're real and correct (place names,
+terms like 菜刀), each checked.
 
 ## 5. Content and facts
 Bryan supplies the facts (round 1: "I'll supply them"). Nothing goes on the page that isn't in this table with a
@@ -79,7 +77,7 @@ Bryan: "Use the interactivity of the format to your advantage, write custom SVG 
 - Spine of the page: Claude's call.
 
 ## 9. Language
-English only (assumed: internet audience, not Bryan's classroom; **ASK** to confirm). Chinese and Japanese terms
+English only (internet audience, not Bryan's classroom). Chinese and Japanese terms
 appear with their characters and romanization where they're real terms (§4).
 
 ## 10. Call to action
@@ -96,11 +94,17 @@ None. Silent page (§3).
 ## 13. Taste references
 `Taste: house. Applies: T01, T02, T04, T05, T06, T19 (sound off), T20, T25, T26, T27, T28, T30, T34. Overrides: none.
 Off by condition: music and sound items (silent), loop and walk-up items (read once, scrolling).`
-- **Loves:** "The NYTimes Sushi piece" (**ASK**: link, so the right piece is studied); "those great hardcover
+- **Loves:** "The NYTimes Sushi piece": "The Untold Story of Sushi in America" (Daniel Fromson, illustrations by
+  Igor Bastidas, Nov 5 2021, https://www.nytimes.com/interactive/2021/11/05/magazine/sushi-us.html). What Claude took
+  from its source (Bryan supplied it): an investigative story told as a hidden history, opening on short, cadenced
+  lines ("In the beginning, God did not create a sushi company. / The sushi came later."); flat, simple animated
+  illustrations that morph from one scene into the next; each section sets its own background color; on desktop the
+  illustration holds beside the text while you scroll, on phones the pictures sit inline; a serif for reading, a
+  sans for labels. Take the mechanisms, not the look; "those great hardcover
   reference books Barnes and Noble sells with names just like 'THE GREATEST BATTLES' or 'FIREARMS' for Christmas
   presents": big illustrated encyclopedias, labeled cutaways, specimen spreads, dense captions.
-- **Hates:** default AI-written CSS, rounded corners everywhere; anything that reads like homework; the "ching chong
-  riff".
+- **Hates:** default AI-written, globally homogeneous CSS, rounded corners everywhere; anything that reads like
+  homework; the "ching chong riff"; samurai.
 
 ## 14. Creative expectations
 Default craft bar, adapted to a scrolling page:
@@ -134,16 +138,13 @@ no Start sound button. Works on phone width (16 px gutters, no horizontal scroll
 - A short report: what was verified, what wasn't, known limits.
 
 ## 18. Approval and success
-Bryan signs off (**ASK**: anyone else?). Success: a knife nerd reads to the end, learns how to judge a knife, and
+Bryan signs off; no one else. Success: a knife nerd reads to the end, learns how to judge a knife, and
 checks where theirs was made.
 
 ## 19. Open questions
-1. Bryan's history sources (§5).
+1. Bryan's history sources (§5): "i'll give those to you next".
 2. Primer research results (§5).
-3. The joke: grounded in the towns' arms-making history, or the national-character version (§4)?
-4. The no-clichés list in §4: OK as extended?
-5. Link to the NYT sushi piece (§13).
-6. Deadline, other sign-off, English only.
+3. Brief approval.
 
 ## Decisions log
 _Date · the decision or verdict, in the client's words · what changed._
@@ -158,3 +159,8 @@ _Date · the decision or verdict, in the client's words · what changed._
 - 2026-11-02 · Loves: "The NYTimes Sushi piece", the B&N hardcover reference books ("THE GREATEST BATTLES",
   "FIREARMS") · reference-book/editorial look.
 - 2026-11-02 · Publish: "add to the github pages site alongside the 3 already there".
+- 2026-11-02 · Joke: "the actual history not my dumb joke lmao" · humor grounded in sourced arms-making history.
+- 2026-11-02 · Clichés: red and gold OK ("chinese people fucking love red and gold"), cherry blossoms OK, "samurai
+  are fake though fuck those wannabes" · §4 updated.
+- 2026-11-02 · "globalhomo = global homogeneous" · the hate is same-everywhere generic web design.
+- 2026-11-02 · No deadline; Bryan is the only sign-off; English only.
