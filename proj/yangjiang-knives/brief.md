@@ -14,18 +14,35 @@ vertically integrated supply chain. Form: a **scrolling web page** people open o
 their own pace. Deadline: **ASK**.
 
 ## 2. Purpose and tone
-_What viewers should know, feel and do afterwards; what they believe now vs after; the tone in three words; what it
-must not feel like (clichés, energy)._
+**Audience:** "nerds on the internet, not specific to any class" — people who would happily read a long infographic
+about knives. Adults; not for students.
+
+- **Know:** Yangjiang makes most of China's knives (needs a source, §5); what makes a good knife and good knife steel.
+- **Feel:** the "best knife" label is something countries win and lose.
+- **Do:** look at where their own knives were made.
+- **The real question it answers:** how much does it matter where a knife is made, if at all, or does it come down to
+  the individual manufacturer? Reason: most readers don't know enough about chef knives to follow the history, so the
+  page does double duty: knife primer + history.
+- **Tone:** "fun, knowledgeable, and a very Chinese time in my life." Dark jokes allowed (see §4).
+- **Must NOT feel like:** default AI-written CSS ("curved bezels and shit everywhere"); homework.
 
 ## 3. How it's watched
-_This drives every design decision. Screen, orientation, distance, room light, sound (on / off / drowned out),
-attention (sits and watches, or walks past for three seconds), loop or once, how often the same people see and hear
-it, what plays it._
+A scrolling web page on a phone or laptop, read once at the reader's own pace, sitting down by choice. Long-form is
+fine. Phone share, sound, where it's linked from: **ASK**.
 
 ## 4. How the subject works
-_The system or story the piece must get right, and the words or promises to avoid._
+Three threads: (1) knife-making history in China and Yangjiang; (2) how Germany and Japan became the go-to "good knife
+countries"; (3) how China is working to take the title back (fast technology growth, vertically integrated supply
+chain). Plus the primer: the major choices in a good chef knife (shape, single or double bevel, grind angle, spine
+thickness, weight, length, steel and heat treatment).
+
+Jokes: Bryan allows dark humor about Germany and Japan, e.g. "the personality type that's good at running
+industrial-scale genocides is also good at making knives, what's up with that?" Claude's suggestion (pending Bryan's
+call): ground it in sourced history (the knife towns' own arms-making past) rather than national character.
 
 ## 5. Content and facts
+Primer facts (knife design and steel): Bryan's sources are mostly history, so a research prompt covers the primer:
+`proj/yangjiang-knives/research-prompt.md`. Its results count as Bryan's sources once he passes them on.
 _Every fact that appears on screen, with its source. Fixed copy: the path of the copy file, used word for word._
 
 Bryan supplies the facts (round 1: "I'll supply them"). Nothing goes on the page that isn't in this table.
@@ -42,8 +59,8 @@ readable; minimum holds; total length; loop rules._
 _Colors (hex and role), fonts, logos; contrast rules (e.g. dark text on yellow, never white)._
 
 ## 8. Visual language
-_Brand shapes, symbols, nicknames and motifs to build from (recreate them in the same spirit; never trace a logo);
-verified real details that may be shown; a suggested spine (optional; beat it if you have better)._
+Bryan: "Use the interactivity of the format to your advantage." Custom SVG of knife styles. Interactive ways to show
+the major choices in a chef knife (shape, bevel, grind angle, spine, weight, length). Spine: Claude's call.
 
 ## 9. Language
 _Languages, which lines, cognate flourishes or full translations, who checks them._
@@ -62,6 +79,8 @@ _Claims, likenesses, photos, anything admin or legal won't allow._
 `Taste: house. Applies: <the IDs from brief/taste/house.md whose condition this brief meets>. Overrides: <ID off or
 changed, with the reason>.`
 _Then the client's own loves and hates, with why._
+- Hates: default AI-written CSS, rounded corners everywhere; anything that reads like homework.
+- Loves: **ASK**.
 
 ## 14. Creative expectations
 Default craft bar (from the Academies brief); this piece adds or relaxes: _..._
