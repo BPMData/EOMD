@@ -209,3 +209,34 @@ _Date · the decision or verdict, in the client's words · what changed._
   descending and then bending, rolling, holding or chipping it would be awesome" · Plate 1 now animates the blow
   (time-based, replays on each pick, plays once when the plate scrolls into view; reduced motion shows the result).
 - 2026-11-03 · Round 2: "Go" · chapters 5–11 and plates 2–7 built.
+- 2026-11-03 · Round 2 review (Bryan, in his words where quoted) · changes:
+  - Opening "a little glitchy… looks bad starting with nothing"; text box "cut off" · a line ("The history of the world's
+    foremost City of Knives…") shows before the 阳江 strike; the hook moved out of the sticky stage, so nothing is cut off.
+  - "nobody tells that story except me" · the opening now starts with Yangjiang's numbers and its 1,400-year claim, then
+    Bryan's Sagan line: "if you want to learn the truth… you must first invent the Qing Dynasty." Bryan said "1,600
+    year"; the sources say 1,400 (557 CE), so 1,400 stays.
+  - Restate "the world's foremost City of Knives", and "The year is [blank], and the world's foremost City of Knives is
+    [STAMP]" between countries · done for Sheffield (1800), the 1887 Act, Solingen (1900), the split (2000) and
+    Yangjiang by volume (2024).
+  - Plate 1: bends and rolls can be straightened "by stropping… those little ceramic poles" · added, as honing on a
+    honing rod (stropping is leather).
+  - "the Made in Germany Stamp is lame as shit compared to the others" · now struck into steel in an oval cartouche.
+  - Philadelphia exhibition, McKinley Tariff and other name-drops need explaining; "There's no 'penalty' for more words
+    in an infographic, especially if they're held behind drill-down menus" · nine "What's…?" drill-downs; facts from
+    the sources or Wikipedia, the latter marked "Claude (check)" in the sources list.
+  - The ban: add the Song steelworks; the cleaver should run on scroll, with a green "okay" stamp flipping to a red
+    "rejected", "definitely not 'try again'" · Han/Song paragraph added; scroll-driven crate and permit: 放行 (cleared),
+    then the cleaver goes in, 不准 (not permitted), and it's thrown back out.
+  - Reuleaux: "we should emphasize it even more" (quality over quantity, Technische Hochschulen) · paragraph added.
+    The tank-repair aside was left out (not in the sources).
+  - "the company histories, you'll notice, prefer to start in 1731": "Not enough context" · rewritten, citing q5b on
+    what the firms' histories skip.
+  - Plate 3: "Absolutely 0% chance these knives go dull cutting 800 millimeters of cardstock… leave that slider
+    unitless" · now "about N× as long as a 50° edge".
+  - The belt "should be visible at all times… a mitosis thing into two belts" · always on; it stretches and buds a
+    second, slimmer belt for Seki, then a third for Yangjiang.
+  - "That wenwudao SVG is rough lol" · redrawn with a curved edge, a ferrule and a round handle, plus the two
+    cross-sections.
+  - The OEM bar's labels overlapped · moved into a legend. The export bars became a pie (donut) of world exports.
+  - "the titles of the 'slides' should be a lot more noticeable" · chapter titles are now large, numbered and ruled.
+  - iPhone/reduced-motion testing: "don't have one + motion rules, sorry nerds" · not tested on a device.

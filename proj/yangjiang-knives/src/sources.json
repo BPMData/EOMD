@@ -8,7 +8,7 @@
  },
  {
   "id": "oec-2024",
-  "text": "China: 51.5% of world knife exports by value (HS 8211), $1.66B, 2024; Germany $292M; Japan $167M. The US is China's largest buyer ($587M in 2024).",
+  "text": "China: 51.5% of world knife exports by value (HS 8211), $1.66B of $3.22B, 2024; Germany $292M (9.1%); Japan $167M (5.2%). The US is China's largest buyer ($587M in 2024).",
   "url": "https://oec.world/en/profile/hs/knives",
   "via": "q3a, q3b",
   "conf": "high"
@@ -211,7 +211,7 @@
  },
  {
   "id": "angles",
-  "text": "Typical factory edges: German about 30–40° inclusive, Japanese about 24–30°. In CATRA tests, a 20° inclusive edge cut about 800 mm of card before dulling, about 450 mm at 34° and about 250 mm at 50° (figures to be re-checked).",
+  "text": "Typical factory edges: German about 30–40° inclusive, Japanese about 24–30°. In standardized CATRA cutting tests, a 20° inclusive edge lasted roughly three times as long as a 50° one (about 800 vs 250 mm of test card, with about 450 at 34°).",
   "url": "https://knifesteelnerds.com/2018/06/18/maximizing-edge-retention/",
   "via": "q4",
   "conf": "medium"
@@ -361,6 +361,132 @@
   "text": "'Sheffield' on cutlery is a certification mark owned by the Company of Cutlers in Hallamshire: the major processes must happen in the Hallamshire district.",
   "url": "https://www.cutlers-hallamshire.org.uk/the-company-does/protection/",
   "via": "q5a, q5b",
+  "conf": "high"
+ },
+ {
+  "id": "yj-exports",
+  "text": "Yangjiang says it handles about 85% of China's knife and scissor exports (by volume; self-reported, unchanged since 2016).",
+  "url": "http://www.yangjiang.gov.cn/yjshangwu/gkmlpt/content/0/812/post_812877.html",
+  "via": "q3a",
+  "conf": "medium (self-reported)"
+ },
+ {
+  "id": "yj-firms",
+  "text": "Yangjiang has 2,000+ knife and scissor producers and 8,500+ related businesses, with about 200,000 direct and indirect jobs.",
+  "url": "http://finance.people.com.cn/n1/2025/0120/c1004-40404945.html",
+  "via": "q3a",
+  "conf": "medium"
+ },
+ {
+  "id": "yj-customs",
+  "text": "Yangjiang's knife and scissor exports (customs category) were ¥3.39 billion in January–September 2026, up 8.1% on the year: the city's biggest export.",
+  "url": "https://www.21jingji.com/article/20261029/herald/638c9855cd774eb90ccc6ac7357246e3.html",
+  "via": "q3a",
+  "conf": "high"
+ },
+ {
+  "id": "lady-xian",
+  "text": "Yangjiang's promotional history dates its blade-making to 557 CE, when Lady Xian (冼夫人) garrisoned the region, and to the smiths said to have settled there with her troops.",
+  "url": "http://www.yangxi.gov.cn/xw/yxxw/content/post_899661.html",
+  "via": "q1",
+  "conf": "high (as the claim); the claim itself is unsupported"
+ },
+ {
+  "id": "han-steel",
+  "text": "Han-dynasty state ironworks ran blast furnaces with double-acting piston bellows, poured cast iron and decarburized it into steel (炒钢); by the 6th century Qiwu Huaiwen described co-fusion steel (灌钢); from the Han through the Song, China had the world's most advanced iron industry, centuries ahead of Europe.",
+  "url": "http://www.csteelnews.com/special/602/605/201206/t20120612_67105.html",
+  "via": "q1, q2",
+  "conf": "high"
+ },
+ {
+  "id": "one-cleaver",
+  "text": "Chinese kitchens relied on variations of a single tool, the caidao (菜刀, cleaver), rather than sets of specialised knives, and blade-making stayed with local smiths serving local markets.",
+  "url": "https://leeknives.com/yangjiang-knife/",
+  "via": "q2",
+  "conf": "medium"
+ },
+ {
+  "id": "sagan",
+  "text": "'If you wish to make an apple pie from scratch, you must first invent the universe.' Carl Sagan, Cosmos (1980).",
+  "url": "https://en.wikiquote.org/wiki/Carl_Sagan",
+  "via": "Claude (check)",
+  "conf": "high"
+ },
+ {
+  "id": "germany-turn",
+  "text": "After the 'cheap and bad' verdict, German industry went after quality rather than volume, investing in technical universities (Technische Hochschulen), research institutes, chemistry (BASF, Bayer, Hoechst), optics (Zeiss, Leitz) and electrical engineering; by 1914 'Made in Germany' was a widely respected mark.",
+  "url": "https://www.cambridge.org/core/books/brands-geographical-origin-and-the-global-economy/made-in-and-country-of-origin-in-the-post1945-period/B99AB0B1",
+  "via": "q5b; Bryan's notes",
+  "conf": "medium–high"
+ },
+ {
+  "id": "pr-silence",
+  "text": "Solingen's knife firms have rarely addressed their wartime labour in their public histories, preferring eighteenth-century craftsmanship and postwar design.",
+  "url": "https://max-leven-zentrum.de/stadtrundfahrt-zur-geschichte-der-ns-zeit-in-solingen/4890/",
+  "via": "q5b",
+  "conf": "medium"
+ },
+ {
+  "id": "honing",
+  "text": "A rolled edge on softer steel such as X50CrMoV15 can be pushed straight again on a honing rod (a 'steel', or a ceramic rod), which is why cooks run their knives along one between sharpenings.",
+  "url": "https://knifesteelnerds.com/2018/08/27/what-is-edge-stability/",
+  "via": "q4",
+  "conf": "medium–high"
+ },
+ {
+  "id": "x-qing",
+  "text": "The Qing dynasty (1644–1912), China's last imperial dynasty, ruled by the Manchus from Beijing.",
+  "url": "https://en.wikipedia.org/wiki/Qing_dynasty",
+  "via": "Claude (check)",
+  "conf": "high"
+ },
+ {
+  "id": "x-canton",
+  "text": "The Canton System (1757–1842) confined Western trade to Guangzhou (Canton), through a small group of licensed Chinese merchants (the Cohong).",
+  "url": "https://en.wikipedia.org/wiki/Canton_System",
+  "via": "q1; Claude (check)",
+  "conf": "high"
+ },
+ {
+  "id": "x-tally",
+  "text": "The tally trade (勘合貿易, kangō bōeki): official Ming–Japanese trade in which each ship carried half of a numbered tally certificate to match the half kept in China.",
+  "url": "https://en.wikipedia.org/wiki/Japanese_missions_to_Ming_China",
+  "via": "Claude (check)",
+  "conf": "high"
+ },
+ {
+  "id": "x-centennial",
+  "text": "The Centennial International Exhibition of 1876 in Philadelphia, the first official world's fair in the United States, marked a hundred years since the Declaration of Independence; nearly 10 million visits were recorded.",
+  "url": "https://en.wikipedia.org/wiki/Centennial_Exposition",
+  "via": "Claude (check)",
+  "conf": "high"
+ },
+ {
+  "id": "x-mckinley",
+  "text": "The McKinley Tariff (Tariff Act of 1890), drafted by Representative William McKinley of Ohio, later the 25th president, raised average US import duties to about 50% to protect American industry, and required imports to be marked with their country of origin.",
+  "url": "https://en.wikipedia.org/wiki/McKinley_Tariff",
+  "via": "q5b; Claude (check)",
+  "conf": "high"
+ },
+ {
+  "id": "x-rgbl",
+  "text": "The Reichsgesetzblatt (Reich Law Gazette) was the official journal in which German laws were published, 1871–1945.",
+  "url": "https://en.wikipedia.org/wiki/Reichsgesetzblatt",
+  "via": "Claude (check)",
+  "conf": "high"
+ },
+ {
+  "id": "x-hrc",
+  "text": "Rockwell C hardness (HRC) is measured by pressing a diamond cone into the steel under a set load and measuring how deep it goes; kitchen knives run from about 52 to 66.",
+  "url": "https://knifesteelnerds.com/2021/10/19/knife-steels-rated-by-a-metallurgist-toughness-edge-retention-and-corrosion-resistance/",
+  "via": "q4",
+  "conf": "high"
+ },
+ {
+  "id": "x-301",
+  "text": "Section 301 tariffs: duties the US has put on Chinese goods since 2018 under Section 301 of the Trade Act of 1974.",
+  "url": "https://en.wikipedia.org/wiki/Section_301_of_the_Trade_Act_of_1974",
+  "via": "Claude (check)",
   "conf": "high"
  }
 ]

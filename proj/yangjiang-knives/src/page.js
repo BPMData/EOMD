@@ -87,6 +87,11 @@ function buildStrike(svg) {
       s.textContent = sub;
     }
   }
+  if (svg.dataset.cartouche) {
+    el("ellipse", { cx: 500, cy: 300, rx: 480, ry: 215, fill: "none", stroke: ink, "stroke-width": 14 }, markG);
+    el("ellipse", { cx: 500, cy: 300, rx: 455, ry: 192, fill: "none", stroke: ink, "stroke-width": 5 }, markG);
+    const s = markG.querySelector("text.m + text"); if (s) { s.setAttribute("font-size", 22); s.style.letterSpacing = ".28em"; }
+  }
   const state = { svg, world, markG, tool, mode, fit: () => fitMark(svg, mode) };
   state.fit();
   return state;
@@ -94,7 +99,8 @@ function buildStrike(svg) {
 function fitMark(svg, mode) {
   const t = svg.querySelector("text.m");
   if (!t) return;
-  const maxW = mode === "label" ? 780 : 900, maxH = 290;
+  const cart = !!svg.dataset.cartouche;
+  const maxW = cart ? 760 : mode === "label" ? 780 : 900, maxH = cart ? 170 : 290;
   t.setAttribute("font-size", 200);
   const b = t.getBBox();
   const k = Math.min(maxW / b.width, maxH / b.height);
@@ -102,7 +108,7 @@ function fitMark(svg, mode) {
   // centre vertically on 280 (cap height ~ .72 of the font size)
   t.setAttribute("y", (280 + 200 * k * .36).toFixed(1));
   const s = t.nextElementSibling;
-  if (s) s.setAttribute("y", (280 + 200 * k * .36 + 80).toFixed(1));
+  if (s) s.setAttribute("y", (280 + 200 * k * .36 + (cart ? 62 : 80)).toFixed(1));
 }
 function renderStrike(s, p) {
   if (RM) p = 1;
@@ -133,6 +139,58 @@ function landing(g, p, at, rot, cx, cy) {
   g.setAttribute("transform", `rotate(${rot} ${cx} ${cy}) translate(${cx} ${cy}) scale(${k.toFixed(3)}) translate(${-cx} ${-cy})`);
 }
 const CUSTOM = {
+  export(svg) {
+    const defs = el("defs", {}, svg);
+    roughFilter(defs, "er", 13);
+    // the crate, holding the allowance: one wok, one axe
+    const crate = el("g", {}, svg);
+    crate.innerHTML = `
+      <path d="M 150 330 Q 240 395 330 330 Z" fill="#2b2b2b" stroke="#111" stroke-width="3"/>
+      <line x1="140" y1="330" x2="340" y2="330" stroke="#111" stroke-width="5"/>
+      <rect x="372" y="200" width="12" height="150" fill="#8d6038" stroke="#111" stroke-width="2.5" transform="rotate(14 378 275)"/>
+      <path d="M 372 212 l 46 -10 l 4 40 l -44 4 z" fill="#9aa0a6" stroke="#111" stroke-width="2.5" transform="rotate(14 378 275)"/>
+      <rect x="100" y="340" width="360" height="150" fill="#8d6038" stroke="#111" stroke-width="3"/>
+      <line x1="100" y1="390" x2="460" y2="390" stroke="#5e3f22" stroke-width="3"/><line x1="100" y1="440" x2="460" y2="440" stroke="#5e3f22" stroke-width="3"/>
+      <text x="280" y="425" text-anchor="middle" font-family="Arch,sans-serif" font-weight="900" font-size="28" letter-spacing="4" fill="#3a2612">CANTON</text>`;
+    // the permit
+    const permit = el("g", {}, svg);
+    permit.innerHTML = `<rect x="560" y="90" width="360" height="420" fill="#F2EDE3"/>
+      <text x="590" y="140" font-family="Arch,sans-serif" font-weight="900" font-size="22" letter-spacing="1" fill="#1B1A17" style="font-stretch:80%">OUTBOUND · PER CREWMAN</text>
+      <line x1="590" y1="156" x2="890" y2="156" stroke="#1B1A17" stroke-width="2.5"/>
+      <g font-family="Serif,serif" font-size="28" fill="#1B1A17"><text x="590" y="210">Cast-iron wok</text><text x="890" y="210" text-anchor="end">× 1</text>
+      <text x="590" y="262">Axe</text><text x="890" y="262" text-anchor="end">× 1</text></g>
+      <g id="eline" font-family="Serif,serif" font-size="28" fill="#B3261E"><text x="590" y="314">Cleaver</text><text x="890" y="314" text-anchor="end">× 1</text></g>`;
+    const eline = permit.querySelector("#eline");
+    const stampG = (txt, color, x, y, rot) => {
+      const g = el("g", { filter: "url(#er)" }, svg);
+      el("rect", { x: x - 120, y: y - 62, width: 240, height: 124, fill: "none", stroke: color, "stroke-width": 9 }, g);
+      el("text", { x, y: y + 30, "text-anchor": "middle", fill: color, "font-family": "Han,serif", "font-weight": 900, "font-size": 86 }, g).textContent = txt;
+      g.dataset.rot = rot; return g;
+    };
+    const ok = stampG("放行", "#1F7A3A", 690, 430, -6), no = stampG("不准", "#C0281E", 790, 250, 7);
+    no.setAttribute("data-big", 1);
+    const cleaver = el("g", {}, svg);
+    cleaver.innerHTML = `<rect x="-60" y="-34" width="120" height="68" fill="#c5c9cd" stroke="#111" stroke-width="3"/>
+      <rect x="60" y="-12" width="54" height="24" fill="#4a2f18" stroke="#111" stroke-width="3"/>
+      <line x1="-58" y1="31" x2="58" y2="31" stroke="#f4f6f8" stroke-width="3"/>`;
+    return p => {
+      if (RM) p = 1;
+      landing(ok, p, .12, -6, 690, 430);
+      if (p > .55) ok.style.opacity = (1 - .65 * smooth(.55, .6, p)).toFixed(2);
+      // in: an arc from off the top right into the crate; out: thrown back off to the left
+      let x, y, r, vis = 1;
+      if (p < .3) { x = 1100; y = -120; r = 0; vis = 0; }
+      else if (p < .5) { const u = easeIn(smooth(.3, .5, p)); x = lerp(1100, 280, u); y = lerp(-120, 300, u) - 260 * Math.sin(Math.PI * u) * .6; r = lerp(-40, 8, u); }
+      else if (p < .62) { x = 280; y = 300; r = 8; }
+      else { const u = easeOut(smooth(.62, .86, p)); x = lerp(280, -260, u); y = lerp(300, -160, u) - 200 * Math.sin(Math.PI * u) * .5; r = lerp(8, -320, u); }
+      cleaver.setAttribute("transform", `translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${r.toFixed(1)})`);
+      cleaver.style.opacity = vis;
+      eline.style.opacity = smooth(.48, .52, p) * (1 - .55 * smooth(.62, .7, p));
+      landing(no, p, .55, 7, 790, 250);
+      const dt = p - .55, sh = dt > 0 && dt < .06 ? 8 * Math.exp(-dt * 60) * Math.sin(dt * 300) : 0;
+      crate.setAttribute("transform", `translate(${sh.toFixed(2)} 0)`);
+    };
+  },
   porcelain(svg) {
     const defs = el("defs", {}, svg);
     roughFilter(defs, "pr", 5);
@@ -188,7 +246,7 @@ const CUSTOM = {
 const scenes = [...document.querySelectorAll(".scene")].map(sc => ({
   sc,
   strikes: [...sc.querySelectorAll("svg.strike")].map(buildStrike),
-  customs: [...sc.querySelectorAll("svg.porcelain, svg.splitname")].map(n => CUSTOM[n.getAttribute("class")](n)),
+  customs: [...sc.querySelectorAll("svg.porcelain, svg.splitname, svg.export")].map(n => CUSTOM[n.getAttribute("class")](n)),
   reveals: [...sc.querySelectorAll("[data-at]")].map(n => ({ n, at: parseFloat(n.dataset.at) }))
 }));
 function sceneProgress(sc) {
@@ -212,53 +270,76 @@ function renderScenes() {
 }
 
 /* ---------- the belt ---------- */
+// each belt: [small top line, the holder, bottom line, light?]; a light belt is drawn slimmer
 const BELT = {
-  sheffield: { plates: [["KNIFE CHAMPION", "SHEFFIELD", "ENGLAND"]], name: "Sheffield",
+  unclaimed: { plates: [["THE TITLE", "UNCLAIMED", "UP FOR GRABS"]], name: "Unclaimed",
+    line: "Up for grabs: under the Qing, the country with the best ironworks in the world wasn’t allowed to sell its knives abroad." },
+  sheffield: { plates: [["CITY OF KNIVES", "SHEFFIELD", "ENGLAND"]], name: "Sheffield",
     line: "Holds the title on crucible steel and the Cutlers’ marks, from the 1700s." },
-  solingen: { plates: [["KNIFE CHAMPION", "SOLINGEN", "GERMANY"]], name: "Solingen",
-    line: "Takes it in the late 1800s, on price, machines and a label meant to shame it." },
-  split: { plates: [["HEAVYWEIGHT", "SOLINGEN", "GERMANY"], ["LIGHTWEIGHT", "JAPAN", "SEKI · SAKAI"]], name: "Split title",
-    line: "By the 2000s the title splits: the heavy forged knives stay German, the light thin ones go Japanese." },
-  volume: { plates: [["HEAVYWEIGHT", "SOLINGEN", "GERMANY"], ["LIGHTWEIGHT", "JAPAN", "SEKI · SAKAI"], ["VOLUME", "YANGJIANG", "CHINA"]], name: "Volume belt",
-    line: "China takes a third belt, for tonnage: more than half the world’s knife exports by 2024." },
-  vacant: { plates: [["KNIFE CHAMPION", "VACANT", "KNIFE BY KNIFE"]], name: "Vacated",
-    line: "Vacated: from here on it’s judged knife by knife, not country by country." }
+  solingen: { plates: [["CITY OF KNIVES", "SOLINGEN", "GERMANY"]], name: "Solingen",
+    line: "Takes it around the turn of the 1900s, on price, machines and a label meant to shame it." },
+  split: { plates: [["HEAVYWEIGHT", "SOLINGEN", "GERMANY"], ["LIGHTWEIGHT", "SEKI", "JAPAN", 1]], name: "Split title",
+    line: "By 2000 the title divides: the heavy forged knives stay in Solingen, the light thin ones go to Seki." },
+  volume: { plates: [["HEAVYWEIGHT", "SOLINGEN", "GERMANY"], ["LIGHTWEIGHT", "SEKI", "JAPAN", 1], ["BY VOLUME", "YANGJIANG", "CHINA"]], name: "Volume belt",
+    line: "Yangjiang takes a third belt, for tonnage: China ships more than half the world’s knife exports by 2024." },
+  vacant: { plates: [["CITY OF KNIVES", "VACANT", "KNIFE BY KNIFE"]], name: "Vacated",
+    line: "Vacated: from here on it’s judged knife by knife, not city by city." }
 };
 const beltBtn = document.getElementById("belt");
-const beltSvg = beltBtn.querySelector("svg");
+beltBtn.innerHTML = "";
 const reached = [];
-let beltState = "none", beltTimer = 0;
-function drawBelt(key) {
-  const P = BELT[key].plates, n = P.length, W = 120 + n * 116;
-  beltSvg.setAttribute("viewBox", `0 0 ${W} 120`);
-  beltSvg.style.width = (W / 2) + "px";
-  let s = `<rect x="0" y="40" width="${W}" height="40" fill="#4a2f18"/>
-    <rect x="0" y="45" width="${W}" height="30" fill="none" stroke="#c9a463" stroke-width="1.2" stroke-dasharray="4 3"/>
-    <rect x="18" y="34" width="34" height="52" fill="#c99a3b"/><rect x="${W - 52}" y="34" width="34" height="52" fill="#c99a3b"/>`;
-  P.forEach(([top, big, small], i) => {
-    const x = 62 + i * 116, vac = big === "VACANT";
-    s += `<rect x="${x}" y="6" width="112" height="108" fill="${vac ? "#d8cfbd" : "#E2B44B"}"/>
-      <rect x="${x + 8}" y="14" width="96" height="92" fill="none" stroke="${vac ? "#8d8574" : "#7a5a16"}" stroke-width="2"/>
-      <text x="${x + 56}" y="38" text-anchor="middle" font-family="Arch,sans-serif" font-weight="800" font-size="9" letter-spacing="1.2" fill="#4a3608">${top}</text>
-      <text x="${x + 56}" y="68" text-anchor="middle" font-family="Arch,sans-serif" font-weight="900" font-size="${big.length > 8 ? 16 : 19}" style="font-stretch:68%" fill="#2e2104">${big}</text>
-      <text x="${x + 56}" y="88" text-anchor="middle" font-family="Arch,sans-serif" font-weight="700" font-size="8.5" letter-spacing="1.2" fill="#4a3608">${small}</text>`;
-  });
-  beltSvg.innerHTML = s;
+let beltState = "", beltPlates = [];
+function beltSVG(pl) {
+  const [top, big, small, light] = pl, vac = big === "VACANT" || big === "UNCLAIMED";
+  const s = el("svg", { viewBox: "0 0 236 120", "aria-hidden": "true" });
+  const strap = light ? [48, 24] : [38, 44];
+  s.innerHTML = `<rect x="0" y="${strap[0]}" width="236" height="${strap[1]}" fill="#4a2f18"/>
+    <rect x="0" y="${strap[0] + 4}" width="236" height="${strap[1] - 8}" fill="none" stroke="#c9a463" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <rect x="16" y="${light ? 40 : 32}" width="34" height="${light ? 40 : 56}" fill="${vac ? "#b9b1a1" : "#c99a3b"}"/>
+    <rect x="186" y="${light ? 40 : 32}" width="34" height="${light ? 40 : 56}" fill="${vac ? "#b9b1a1" : "#c99a3b"}"/>
+    <rect x="${light ? 66 : 60}" y="${light ? 12 : 4}" width="${light ? 104 : 116}" height="${light ? 96 : 112}" fill="${vac ? "#d8cfbd" : "#E2B44B"}"/>
+    <rect x="${light ? 73 : 68}" y="${light ? 19 : 12}" width="${light ? 90 : 100}" height="${light ? 82 : 96}" fill="none" stroke="${vac ? "#8d8574" : "#7a5a16"}" stroke-width="2"/>
+    <text x="118" y="${light ? 40 : 36}" text-anchor="middle" font-family="Arch,sans-serif" font-weight="800" font-size="9" letter-spacing="1.1" fill="#4a3608">${top}</text>
+    <text x="118" y="${light ? 68 : 68}" text-anchor="middle" font-family="Arch,sans-serif" font-weight="900" font-size="${big.length > 8 ? 16 : 20}" style="font-stretch:68%" fill="#2e2104">${big}</text>
+    <text x="118" y="${light ? 88 : 90}" text-anchor="middle" font-family="Arch,sans-serif" font-weight="700" font-size="8.5" letter-spacing="1.1" fill="#4a3608">${small}</text>`;
+  if (light) s.classList.add("light");
+  return s;
 }
+const later = (f, ms) => RM ? f() : setTimeout(f, ms);
 function setBelt(key) {
-  if (key === beltState) return;
+  if (!BELT[key] || key === beltState) return;
   beltState = key;
-  clearTimeout(beltTimer);
   // the lineage is everything up to the furthest holder reached, so skipping ahead never drops a name
   const ORDER = Object.keys(BELT), at = ORDER.indexOf(key);
-  if (at >= 0) ORDER.slice(0, at + 1).forEach(k => { if (!reached.includes(k)) reached.push(k); });
-  const show = () => {
-    if (!BELT[key]) return;
-    drawBelt(key); beltBtn.classList.add("on", "open");
-    beltTimer = setTimeout(() => beltBtn.classList.remove("open"), 3200);   // retract to the strip so it never sits on text
-  };
-  if (beltBtn.classList.contains("on") && !RM) { beltBtn.classList.remove("on", "open"); beltTimer = setTimeout(show, 480); }
-  else { beltBtn.classList.remove("on", "open"); show(); }
+  ORDER.slice(0, at + 1).forEach(k => { if (!reached.includes(k)) reached.push(k); });
+  const next = BELT[key].plates, nodes = [...beltBtn.children];
+  const holders = ps => ps.map(p => p[1]);
+  const prefix = (a, b) => a.length <= b.length && a.every((h, i) => h === b[i]);
+  if (nodes.length && prefix(holders(beltPlates), holders(next))) {
+    // the title divides: the belt stretches, then buds off the new belts (mitosis, more or less)
+    nodes.forEach((n, i) => n.replaceWith(beltSVG(next[i])));
+    const kept = [...beltBtn.children];
+    kept.forEach(n => n.classList.add("stretch"));
+    later(() => {
+      kept.forEach(n => n.classList.remove("stretch"));
+      next.slice(kept.length).forEach(pl => {
+        const s = beltSVG(pl); s.classList.add("bud"); beltBtn.appendChild(s);
+        requestAnimationFrame(() => requestAnimationFrame(() => s.classList.remove("bud")));
+      });
+    }, 380);
+  } else if (nodes.length && prefix(holders(next), holders(beltPlates))) {
+    // scrolling back: the extra belts leave, the rest stay
+    nodes.forEach((n, i) => { if (i < next.length) n.replaceWith(beltSVG(next[i])); else { n.classList.add("out"); later(() => n.remove(), 450); } });
+  } else {
+    // a new holder: the old belts leave, the new one arrives
+    nodes.forEach(n => n.classList.add("out"));
+    later(() => {
+      nodes.forEach(n => n.remove());
+      next.forEach(pl => { const s = beltSVG(pl); s.classList.add("out"); beltBtn.appendChild(s);
+        requestAnimationFrame(() => requestAnimationFrame(() => s.classList.remove("out"))); });
+    }, nodes.length ? 450 : 0);
+  }
+  beltPlates = next;
 }
 const chapters = [...document.querySelectorAll("section.ch[data-belt]")];
 function currentChapter() {
@@ -343,9 +424,9 @@ beltBtn.addEventListener("click", () => {
   if (!fig) return;
   const STEELS = [
     { name: "3Cr13", c: "0.26–0.45% carbon", hrc: [50, 54], out: "bend",
-      say: "a cheap, soft stainless that shrugs off a whack against bone but goes dull fast, which is why it turns up in heavy cleavers." },
+      say: "a cheap, soft stainless that shrugs off a whack against bone but goes dull fast, which is why it turns up in heavy cleavers; a bent edge like this can be pushed back straight on a honing rod, the steel or ceramic rod cooks swipe their knives along between sharpenings." },
     { name: "X50CrMoV15", c: "about 0.5% carbon", hrc: [55, 58], out: "roll",
-      say: "the German standard: tough and forgiving, with an edge that rolls over rather than breaking, so a few strokes on a honing steel stand it back up." },
+      say: "the German standard: tough and forgiving, with an edge that rolls over rather than breaking, so a few strokes on a honing rod stand it back up, which is exactly why you see chefs swiping their knives along one." },
     { name: "VG-10", c: "about 1% carbon", hrc: [60, 62], out: "hold",
       say: "the Japanese workhorse stainless: harder, so it holds a thin edge much longer, though twist it in something hard and it can chip." },
     { name: "Shirogami #1", c: "1.25–1.35% carbon", hrc: [63, 65], out: "chip",
@@ -532,18 +613,18 @@ const T = (x, y, txt, o = {}) => `<text x="${x}" y="${y}" font-family="Arch,sans
   function draw(a) {
     const h = a / 2 * Math.PI / 180, cx = 95, apex = 250, bevelTop = 150;
     const hw = (apex - bevelTop) * Math.tan(h);
-    const mm = Math.round(catra(a) / 10) * 10;
+    const rel = catra(a) / 250;            // relative to a 50° edge
     fig.innerHTML = `<defs><pattern id="hatch3" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line y2="6" stroke="#6d7277" stroke-width="1.2"/></pattern></defs>
       <polygon points="${cx - 30},20 ${cx + 30},20 ${cx + hw},${bevelTop} ${cx},${apex} ${cx - hw},${bevelTop}" fill="#c5c9cd" stroke="#1B1A17" stroke-width="1.8"/>
       <polygon points="${cx + hw},${bevelTop} ${cx},${apex} ${cx - hw},${bevelTop}" fill="url(#hatch3)" stroke="#1B1A17" stroke-width="1.8"/>
       <line x1="${cx}" y1="${apex}" x2="${cx - 80 * Math.sin(h)}" y2="${apex - 80 * Math.cos(h)}" stroke="#B3261E" stroke-dasharray="3 3"/>
       <line x1="${cx}" y1="${apex}" x2="${cx + 80 * Math.sin(h)}" y2="${apex - 80 * Math.cos(h)}" stroke="#B3261E" stroke-dasharray="3 3"/>
       ${T(cx, 278, a + "°", { a: "middle", s: 22, w: 900, c: "#B3261E", ls: 0 })}
-      ${T(190, 40, "CARD CUT BEFORE DULL", { s: 11, w: 800 })}
+      ${T(186, 40, "STAYS SHARP FOR", { s: 11, w: 800 })}
       <rect x="190" y="52" width="150" height="14" fill="#e3dccd"/>
-      <rect x="190" y="52" width="${(mm / 800 * 150).toFixed(1)}" height="14" fill="#1E2A57"/>
-      ${T(340, 86, "about " + mm + " mm", { a: "end", s: 14, w: 800, c: "#1B1A17", ls: 0 })}
-      ${T(190, 104, "tested at 20°, 34° and 50°;", { s: 10, ls: .3 })}${T(190, 118, "in between, interpolated", { s: 10, ls: .3 })}
+      <rect x="190" y="52" width="${(rel / 3.2 * 150).toFixed(1)}" height="14" fill="#1E2A57"/>
+      ${T(340, 86, "about " + rel.toFixed(1) + "× a 50° edge", { a: "end", s: 14, w: 800, c: "#1B1A17", ls: 0 })}
+      ${T(190, 104, "relative, from standard", { s: 10, ls: .3 })}${T(190, 118, "cutting-machine tests", { s: 10, ls: .3 })}
       <g transform="translate(170,150)">
         <line x1="20" y1="40" x2="170" y2="40" stroke="#1B1A17" stroke-width="1.5" transform="scale(1,1)"/>
         ${[24, 30].map(d => `<line x1="${20 + (d - 20) / 30 * 150}" y1="34" x2="${20 + (d - 20) / 30 * 150}" y2="46" stroke="#1B1A17"/>`).join("")}
@@ -589,21 +670,32 @@ const T = (x, y, txt, o = {}) => `<text x="${x}" y="${y}" font-family="Arch,sans
   if (!fig) return;
   let mode = "";
   function frame(t) {
-    let dx = 0, dy = 0;
-    if (mode === "slice") { const u = clamp(t / 1300); dx = -60 * Math.sin(u * Math.PI); dy = 10 * Math.sin(u * Math.PI); }
-    if (mode === "chop") { const u = clamp(t / 900); dy = u < .5 ? lerp(0, -40, easeOut(u / .5)) : lerp(-40, 14, easeIn((u - .5) / .5)); if (u >= 1) dy = 14; }
-    const front = mode === "slice" ? "#E2B44B" : "#c5c9cd", heel = mode === "chop" ? "#E2B44B" : "#c5c9cd";
+    let dx = 0, dy = 0, crack = 0;
+    if (mode === "slice") { const u = clamp(t / 1300); dx = -56 * Math.sin(u * Math.PI); dy = 8 * Math.sin(u * Math.PI); }
+    if (mode === "chop") { const u = clamp(t / 900); dy = u < .5 ? lerp(0, -46, easeOut(u / .5)) : lerp(-46, 10, easeIn((u - .5) / .5)); if (u >= 1) { dy = 10; crack = 1; } }
+    const front = mode === "slice" ? "#E2B44B" : "#c9cdd1", heel = mode === "chop" ? "#E2B44B" : "#b6bbc0";
+    // side view: straight spine, a gently curved edge, a rounded nose, a ferrule and a round wooden handle
     fig.innerHTML = `
-      <rect x="0" y="196" width="360" height="22" fill="#e3dccd"/><line x1="0" y1="196" x2="360" y2="196" stroke="#1B1A17" stroke-width="2"/>
-      <rect x="70" y="170" width="120" height="26" fill="#d98f80" stroke="#1B1A17" stroke-width="1.5"/>${T(130, 188, "MEAT", { a: "middle", s: 11, c: "#1B1A17" })}
-      <rect x="228" y="176" width="56" height="20" fill="#efe9da" stroke="#1B1A17" stroke-width="1.5"/>${T(256, 190, "BONE", { a: "middle", s: 10, c: "#1B1A17" })}
+      <rect x="0" y="176" width="360" height="22" fill="#e3dccd"/><line x1="0" y1="176" x2="360" y2="176" stroke="#1B1A17" stroke-width="2"/>
+      <rect x="44" y="154" width="130" height="22" fill="#d98f80" stroke="#1B1A17" stroke-width="1.5"/>${T(109, 170, "MEAT", { a: "middle", s: 11, c: "#1B1A17" })}
+      <rect x="196" y="160" width="62" height="16" fill="#efe9da" stroke="#1B1A17" stroke-width="1.5"/>${T(227, 172, "BONE", { a: "middle", s: 10, c: "#1B1A17" })}
+      ${crack ? `<path d="M 227 160 l -4 7 l 6 3 l -3 6" fill="none" stroke="#B3261E" stroke-width="2"/>` : ""}
       <g transform="translate(${dx.toFixed(1)} ${dy.toFixed(1)})">
-        <rect x="40" y="60" width="180" height="104" fill="${front}" stroke="#1B1A17" stroke-width="2"/>
-        <rect x="220" y="60" width="90" height="104" fill="${heel}" stroke="#1B1A17" stroke-width="2"/>
-        <rect x="310" y="92" width="44" height="28" fill="#4a2f18" stroke="#1B1A17" stroke-width="2"/>
-        <line x1="220" y1="60" x2="220" y2="164" stroke="#1B1A17" stroke-dasharray="4 4"/>
-        ${T(130, 52, "FRONT TWO-THIRDS: THIN", { a: "middle", s: 10, w: 800, c: "#1B1A17", ls: .6 })}
-        ${T(265, 40, "BACK THIRD:", { a: "middle", s: 10, w: 800, c: "#1B1A17", ls: .6 })}${T(265, 52, "THICK", { a: "middle", s: 10, w: 800, c: "#1B1A17", ls: .6 })}
+        <clipPath id="p4c"><path d="M 30 44 L 262 44 L 262 146 Q 150 152 40 146 Q 28 144 28 132 Z"/></clipPath>
+        <g clip-path="url(#p4c)">
+          <rect x="20" y="40" width="168" height="120" fill="${front}"/>
+          <rect x="188" y="40" width="80" height="120" fill="${heel}"/>
+          <line x1="28" y1="136" x2="262" y2="138" stroke="#eef1f3" stroke-width="3" opacity=".9"/>
+        </g>
+        <path d="M 30 44 L 262 44 L 262 146 Q 150 152 40 146 Q 28 144 28 132 Z" fill="none" stroke="#1B1A17" stroke-width="2.2"/>
+        <line x1="188" y1="44" x2="188" y2="150" stroke="#1B1A17" stroke-dasharray="4 4"/>
+        <rect x="262" y="78" width="16" height="32" fill="#9aa0a6" stroke="#1B1A17" stroke-width="2"/>
+        <path d="M 278 82 L 346 80 Q 354 94 346 108 L 278 106 Z" fill="#6b4423" stroke="#1B1A17" stroke-width="2"/>
+        ${T(108, 34, "FRONT TWO-THIRDS: THIN", { a: "middle", s: 10, w: 800, c: "#1B1A17", ls: .5 })}${T(225, 34, "BACK: THICK", { a: "middle", s: 10, w: 800, c: "#1B1A17", ls: .5 })}
+      </g>
+      <g transform="translate(0 206)">
+        <path d="M 96 0 L 104 0 L 101 20 L 100 24 L 99 20 Z" fill="#c9cdd1" stroke="#1B1A17" stroke-width="1.4"/>${T(114, 16, "thin edge for slicing", { s: 10 })}
+        <path d="M 220 0 L 232 0 L 230 14 L 226 24 L 222 14 Z" fill="#b6bbc0" stroke="#1B1A17" stroke-width="1.4"/>${T(240, 16, "thick, blunter edge", { s: 10 })}
       </g>`;
   }
   [...seg.children].forEach(b => b.addEventListener("click", () => {
@@ -719,20 +811,45 @@ function hbar(box, rows, o) {
   det.innerHTML = `<summary>Show as a table</summary><table>${rows.map(r => `<tr><td>${r[0]}</td><td>${r[2]}</td></tr>`).join("")}</table>`;
   box.appendChild(det);
 }
-hbar(document.getElementById("expchart"), [["China", 1660, "$1.66 bn", 1], ["Germany", 292, "$292 m"], ["Japan", 167, "$167 m"]],
-  { label: "Knife exports by value, 2024: China $1.66 billion, Germany $292 million, Japan $167 million", ink: "#F4EFE6", bar: "#D9D2C4", hi: "#E2B44B" });
+(function exportPie() {
+  const box = document.getElementById("expchart"); if (!box) return;
+  // world knife exports by value, 2024 (HS 8211): $3.22 bn in all
+  const parts = [["China", 51.5, "$1.66 bn", "#E2B44B"], ["Germany", 9.1, "$292 m", "#8d97c2"], ["Japan", 5.2, "$167 m", "#D9D2C4"], ["Everyone else", 34.2, "", "#5f656b"]];
+  const W = 340, H = 300, cx = 150, cy = 150, R = 118, r = 64;
+  const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "World knife exports by value, 2024: China 51.5%, Germany 9.1%, Japan 5.2%, everyone else 34.2%" }, box);
+  svg.style.cssText = "width:100%;max-width:420px;height:auto;display:block";
+  let a0 = -Math.PI / 2;
+  const pt = (a, rad) => [cx + rad * Math.cos(a), cy + rad * Math.sin(a)];
+  parts.forEach(([n, pc, v, c]) => {
+    const a1 = a0 + pc / 100 * Math.PI * 2, big = pc > 50 ? 1 : 0;
+    const [x0, y0] = pt(a0, R), [x1, y1] = pt(a1, R), [x2, y2] = pt(a1, r), [x3, y3] = pt(a0, r);
+    el("path", { d: `M${x0},${y0} A${R},${R} 0 ${big} 1 ${x1},${y1} L${x2},${y2} A${r},${r} 0 ${big} 0 ${x3},${y3} Z`, fill: c, stroke: "#33383D", "stroke-width": 2 }, svg);
+    a0 = a1;
+  });
+  el("text", { x: cx, y: cy - 4, "text-anchor": "middle", "font-family": "Arch,sans-serif", "font-weight": 900, "font-size": 30, fill: "#F4EFE6", style: "font-stretch:72%" }, svg).textContent = "$3.22 bn";
+  el("text", { x: cx, y: cy + 18, "text-anchor": "middle", "font-family": "Arch,sans-serif", "font-size": 12, fill: "#D9D2C4", "letter-spacing": 1 }, svg).textContent = "WORLD, 2024";
+  const legend = document.createElement("ul"); legend.className = "legend";
+  legend.innerHTML = parts.map(([n, pc, v, c]) => `<li><i style="background:${c}"></i><b>${n}</b> ${pc}%${v ? " · " + v : ""}</li>`).join("");
+  box.appendChild(legend);
+  const det = document.createElement("details"); det.className = "tbl";
+  det.innerHTML = `<summary>Show as a table</summary><table>${parts.map(p => `<tr><td>${p[0]}</td><td>${p[1]}%</td><td>${p[2]}</td></tr>`).join("")}</table>`;
+  box.appendChild(det);
+})();
 (function oemChart() {
   const box = document.getElementById("oemchart"); if (!box) return;
-  const W = Math.max(300, Math.min(520, box.clientWidth || 520)), parts = [["Made to a foreign brand’s design", 70, "#1B1A17"], ["Factory design, someone else’s name", 25, "#5C564C"], ["Its own brand", 5, "#B3261E"]];
-  const svg = el("svg", { viewBox: `0 0 ${W} 150`, role: "img", "aria-label": "Yangjiang output: about 70% OEM, 25% ODM, 5% own brands" }, box);
+  const parts = [["Made to a foreign brand’s design (OEM)", 70, "#1B1A17"], ["Factory design, someone else’s name (ODM)", 25, "#5C564C"], ["Its own brand", 5, "#B3261E"]];
+  const W = 520;
+  const svg = el("svg", { viewBox: `0 0 ${W} 52`, role: "img", "aria-label": "Yangjiang output: about 70% OEM, 25% ODM, 5% own brands" }, box);
+  svg.style.cssText = "width:100%;height:auto;display:block";
   let x = 0;
   parts.forEach(([name, pc, c], i) => {
-    const w = W * pc / 100 - (i < 2 ? 2 : 0);
-    el("rect", { x, y: 20, width: w, height: 36, fill: c }, svg);
-    el("text", { x: i === 2 ? W : x, y: 82 + i * 22, "text-anchor": i === 2 ? "end" : "start", "font-family": "Arch,sans-serif", "font-weight": 800, "font-size": 14, fill: "#1B1A17" }, svg)
-      .textContent = `${pc}% · ${name}`;
+    const w = W * pc / 100 - (i < 2 ? 3 : 0);
+    el("rect", { x, y: 6, width: w, height: 40, fill: c }, svg);
     x += W * pc / 100;
   });
+  const legend = document.createElement("ul"); legend.className = "legend ink";
+  legend.innerHTML = parts.map(([n, pc, c]) => `<li><i style="background:${c}"></i><b>${pc}%</b> ${n}</li>`).join("");
+  box.appendChild(legend);
   const det = document.createElement("details"); det.className = "tbl";
   det.innerHTML = `<summary>Show as a table</summary><table>${parts.map(p => `<tr><td>${p[0]}</td><td>${p[1]}%</td></tr>`).join("")}</table>`;
   box.appendChild(det);

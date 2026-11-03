@@ -161,3 +161,49 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;background:var(--pape
 .phrases button[aria-pressed="true"]{background:var(--onfield);color:var(--indigo)}
 .stage svg.porcelain,.stage svg.splitname{width:min(100%,1000px);height:auto;max-height:66vh;margin:0 auto;display:block;overflow:visible}
 .field .plate .readout{color:var(--ink)}
+
+/* round 2 feedback */
+.stage .pre{padding:0 var(--gut);max-width:46rem;margin:0 auto 1.2rem;text-align:center}
+.pre-line{font:400 clamp(1.3rem,4.4vw,2rem)/1.3 var(--serif);font-style:italic;margin:0 auto;max-width:40rem;text-wrap:balance}
+.story .pre-line{text-align:left;margin:2rem 0 1rem}
+/* chapter titles: the question is as loud as the answer */
+.chap{display:flex;align-items:center;gap:.8rem;font:900 clamp(1.5rem,5vw,2.3rem)/1.05 var(--arch);font-stretch:80%;
+  text-transform:uppercase;letter-spacing:.02em;color:var(--red-ink);margin:0 0 1rem;padding-bottom:.8rem;border-bottom:3px solid currentColor;max-width:var(--measure)}
+.chap span{flex:0 0 auto;display:inline-grid;place-items:center;min-width:2.2em;height:2.2em;padding:0 .3em;border:3px solid currentColor;font-size:.62em}
+.field .chap{color:var(--gold)}
+h2{font-size:clamp(1.6rem,5vw,2.7rem);font-weight:800}
+/* opening facts */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(10.5rem,1fr));gap:1.2rem 1.6rem;margin:1.6rem 0 2rem}
+.tiles div{border-top:3px solid var(--ink);padding-top:.5rem}
+.tiles b{display:block;font:900 2.3rem/1 var(--arch);font-stretch:72%;color:var(--red-ink)}
+.tiles span{display:block;font:500 .88rem/1.4 var(--arch);color:var(--mute);margin-top:.3rem}
+/* "what's that?" drill-downs */
+details.why{max-width:var(--measure);margin:-.4rem 0 1.3rem;border-left:3px solid var(--rule);padding:.1rem 0 .1rem .8rem}
+details.why summary{cursor:pointer;font:800 .82rem/1.4 var(--arch);letter-spacing:.06em;text-transform:uppercase;color:var(--red-ink);list-style:none;min-height:32px;display:flex;align-items:center}
+details.why summary::-webkit-details-marker{display:none}
+details.why summary::before{content:"+";display:inline-grid;place-items:center;width:1.2rem;height:1.2rem;border:2px solid currentColor;margin-right:.5rem;font-size:.9rem;line-height:1}
+details.why[open] summary::before{content:"−"}
+details.why p{font-size:1rem;margin:.5rem 0 .3rem}
+.field details.why{border-left-color:rgba(244,239,230,.35)}
+.field details.why summary{color:var(--gold)}
+.field details.tbl summary{color:var(--onfield-mute)}
+.field details.tbl{color:var(--onfield)}
+.field details.tbl td,.field details.tbl th{border-bottom-color:rgba(244,239,230,.25)}
+.stage svg.export{width:min(100%,1000px);height:auto;max-height:66vh;margin:0 auto;display:block;overflow:visible}
+/* the belts: always on, stacked in the corner */
+#belt{transform:none;transition:none;display:flex;flex-direction:column-reverse;align-items:flex-end;gap:4px;right:calc(8px + env(safe-area-inset-right))}
+#belt::before{display:none}
+#belt svg{width:auto;height:44px;transition:transform .7s cubic-bezier(.2,1.35,.4,1),opacity .4s}
+@media (min-width:960px){#belt svg{height:54px}}
+#belt svg.out{transform:translateX(140%);opacity:0;transition:transform .45s cubic-bezier(.55,0,.75,.06),opacity .45s}
+#belt svg.bud{transform:translateY(100%) scale(.9);opacity:.2}
+#belt svg.stretch{transform:scaleY(1.25) scaleX(1.08)}
+ul.legend{list-style:none;padding:0;margin:.8rem 0 0;font:500 .92rem/1.35 var(--arch);color:var(--onfield)}
+ul.legend.ink{color:var(--ink)}
+ul.legend li{display:flex;align-items:baseline;gap:.5rem;padding:.25rem 0}
+ul.legend i{flex:0 0 14px;height:14px;transform:translateY(2px)}
+ul.legend b{font-weight:800}
+#belt svg.light{height:34px}
+@media (min-width:960px){#belt svg.light{height:42px}}
+
+.stage .pre + svg.strike{overflow:hidden}

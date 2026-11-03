@@ -35,8 +35,13 @@ _Last updated: Nov 3, 2026._ Brief: `brief.md` (approved; Stage: build). Storybo
   every plate, the decoder, the scorecard and the belt lineage exercised.
 - Text contrast: every pair ≥ 4.5:1 (lowest: gold on red, 4.67).
 
+- **Round 2 review applied (Nov 3):** new opening, chapter transitions, drill-downs, the scroll-driven export permit,
+  always-on dividing belts, a unitless Plate 3, a redrawn wenwudao, the export donut and the OEM legend, and big chapter
+  titles (see the brief's Decisions log).
+
 ## Open
 - Round 3: polish, QA report, publish to `players/` + `index.html` + `README.md`.
 - To verify before launch: the CATRA edge-angle numbers (Plate 3), the Bourdain quote (don't quote until checked),
   the cut-off carbide line in q4; the Reuleaux source link (Cambridge chapter) may not be the page that quotes him.
-- Not tested yet: Safari/iOS, keyboard-only pass, real reduced-motion run.
+- Not tested: Safari/iOS and reduced motion (Bryan has neither); a keyboard-only pass is still to do.
+- Drill-down facts sourced from Wikipedia are marked "Claude (check)" in the source list: Bryan to skim.
