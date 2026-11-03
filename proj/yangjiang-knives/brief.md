@@ -240,3 +240,6 @@ _Date · the decision or verdict, in the client's words · what changed._
   - The OEM bar's labels overlapped · moved into a legend. The export bars became a pie (donut) of world exports.
   - "the titles of the 'slides' should be a lot more noticeable" · chapter titles are now large, numbered and ruled.
   - iPhone/reduced-motion testing: "don't have one + motion rules, sorry nerds" · not tested on a device.
+- 2026-11-03 · Sources: "you can trust wikipedia as much as me"; Reuleaux source supplied by Bryan
+  (https://digi.ub.uni-heidelberg.de/diglit/reuleaux1877, Briefe aus Philadelphia, 1877, p. 16) · Wikipedia drill-downs
+  unflagged; the Reuleaux line now quotes his "Konkurrenz durch Qualität" and links the book.

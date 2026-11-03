@@ -64,9 +64,9 @@
  },
  {
   "id": "reuleaux",
-  "text": "At the 1876 Philadelphia Centennial Exhibition, German commissioner Franz Reuleaux called German goods 'cheap and bad' (billig und schlecht).",
-  "url": "https://www.cambridge.org/core/books/brands-geographical-origin-and-the-global-economy/made-in-and-country-of-origin-in-the-post1945-period/B99AB0B1",
-  "via": "q5b",
+  "text": "Franz Reuleaux, Briefe aus Philadelphia (Braunschweig: Vieweg, 1877), third letter, p. 16: the phrase »billig und schlecht« (cheap and bad) had been hurled at German industry, which price competition had pushed that way, while 'the other industrial nations have, by majority, gone the way of competition through quality' (der Konkurrenz durch Qualität).",
+  "url": "https://digi.ub.uni-heidelberg.de/diglit/reuleaux1877",
+  "via": "primary source (found by Bryan)",
   "conf": "high"
  },
  {
@@ -409,7 +409,7 @@
   "id": "sagan",
   "text": "'If you wish to make an apple pie from scratch, you must first invent the universe.' Carl Sagan, Cosmos (1980).",
   "url": "https://en.wikiquote.org/wiki/Carl_Sagan",
-  "via": "Claude (check)",
+  "via": "Wikipedia",
   "conf": "high"
  },
  {
@@ -437,42 +437,42 @@
   "id": "x-qing",
   "text": "The Qing dynasty (1644–1912), China's last imperial dynasty, ruled by the Manchus from Beijing.",
   "url": "https://en.wikipedia.org/wiki/Qing_dynasty",
-  "via": "Claude (check)",
+  "via": "Wikipedia",
   "conf": "high"
  },
  {
   "id": "x-canton",
   "text": "The Canton System (1757–1842) confined Western trade to Guangzhou (Canton), through a small group of licensed Chinese merchants (the Cohong).",
   "url": "https://en.wikipedia.org/wiki/Canton_System",
-  "via": "q1; Claude (check)",
+  "via": "q1; Wikipedia",
   "conf": "high"
  },
  {
   "id": "x-tally",
   "text": "The tally trade (勘合貿易, kangō bōeki): official Ming–Japanese trade in which each ship carried half of a numbered tally certificate to match the half kept in China.",
   "url": "https://en.wikipedia.org/wiki/Japanese_missions_to_Ming_China",
-  "via": "Claude (check)",
+  "via": "Wikipedia",
   "conf": "high"
  },
  {
   "id": "x-centennial",
   "text": "The Centennial International Exhibition of 1876 in Philadelphia, the first official world's fair in the United States, marked a hundred years since the Declaration of Independence; nearly 10 million visits were recorded.",
   "url": "https://en.wikipedia.org/wiki/Centennial_Exposition",
-  "via": "Claude (check)",
+  "via": "Wikipedia",
   "conf": "high"
  },
  {
   "id": "x-mckinley",
   "text": "The McKinley Tariff (Tariff Act of 1890), drafted by Representative William McKinley of Ohio, later the 25th president, raised average US import duties to about 50% to protect American industry, and required imports to be marked with their country of origin.",
   "url": "https://en.wikipedia.org/wiki/McKinley_Tariff",
-  "via": "q5b; Claude (check)",
+  "via": "q5b; Wikipedia",
   "conf": "high"
  },
  {
   "id": "x-rgbl",
   "text": "The Reichsgesetzblatt (Reich Law Gazette) was the official journal in which German laws were published, 1871–1945.",
   "url": "https://en.wikipedia.org/wiki/Reichsgesetzblatt",
-  "via": "Claude (check)",
+  "via": "Wikipedia",
   "conf": "high"
  },
  {
@@ -486,7 +486,7 @@
   "id": "x-301",
   "text": "Section 301 tariffs: duties the US has put on Chinese goods since 2018 under Section 301 of the Trade Act of 1974.",
   "url": "https://en.wikipedia.org/wiki/Section_301_of_the_Trade_Act_of_1974",
-  "via": "Claude (check)",
+  "via": "Wikipedia",
   "conf": "high"
  }
 ]

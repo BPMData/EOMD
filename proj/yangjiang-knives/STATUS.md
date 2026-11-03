@@ -42,6 +42,5 @@ _Last updated: Nov 3, 2026._ Brief: `brief.md` (approved; Stage: build). Storybo
 ## Open
 - Round 3: polish, QA report, publish to `players/` + `index.html` + `README.md`.
 - To verify before launch: the CATRA edge-angle numbers (Plate 3), the Bourdain quote (don't quote until checked),
-  the cut-off carbide line in q4; the Reuleaux source link (Cambridge chapter) may not be the page that quotes him.
+  the cut-off carbide line in q4.
 - Not tested: Safari/iOS and reduced motion (Bryan has neither); a keyboard-only pass is still to do.
-- Drill-down facts sourced from Wikipedia are marked "Claude (check)" in the source list: Bryan to skim.
