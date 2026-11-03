@@ -3,7 +3,7 @@
 > **Visitors:** this is the project's working log, kept for the people and AI assistants working on it. For what
 > EOMD is and how to use it, start with [README.md](README.md).
 
-_Last updated: Nov 3, 2026 (Knife Country round 2 built). Each piece's history, limits and open questions live in its
+_Last updated: Nov 3, 2026 (Knife Country published). Each piece's history, limits and open questions live in its
 folder's `STATUS.md`; repo-wide history in `notes/history.md`._
 
 ## Pieces
@@ -12,7 +12,7 @@ folder's `STATUS.md`; repo-wide history in `notes/history.md`._
 | CS Lab Screensaver ("CD-ROM") | Stage 4 on Bryan's Mac; extras through 9h built | Check the 9h builds; stage 5 extras | `proj/cdrom/STATUS.md` |
 | Academies hallway film | Done; Bryan rendered the MP4 (Oct 20) | Watch hero size and chip icons | `academies-film/STATUS.md` |
 | Living posters (SSR, CS, Exploration) | Done | Parked items (5-min timer, random vine entry); rebuild CS + SSR | `living/STATUS.md` |
-| Knife Country, Yangjiang knives page (new, full creative) | Rounds 1–2 of 3 built: the whole page, all 7 plates (`proj/yangjiang-knives/knife-country.html`) | Bryan reacts; round 3: polish, QA report, publish | `proj/yangjiang-knives/STATUS.md` |
+| Knife Country, Yangjiang knives page (new, full creative) | Done; published as `players/yangjiang-knives.html` (QA in `proj/yangjiang-knives/QA.md`) | Merge to go live; final title | `proj/yangjiang-knives/STATUS.md` |
 | CSE hallway loop (new, full creative) | Done; published Oct 25 (`players/cse-loop.html`) | ES/PT check; real-TV check | `proj/cse-loop/STATUS.md` |
 | PLTW CSE promo | r2 published ("cheesy as hell, but exactly what I asked for") | The PLTW test below | `proj/pltw/STATUS.md` |
 | gen library (incl. Dust Type) | Working; `tools/gen_export.py` | Check Dust Type knobs | `gen/STATUS.md` |

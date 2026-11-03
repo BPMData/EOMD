@@ -623,8 +623,8 @@ const T = (x, y, txt, o = {}) => `<text x="${x}" y="${y}" font-family="Arch,sans
       ${T(186, 40, "STAYS SHARP FOR", { s: 11, w: 800 })}
       <rect x="190" y="52" width="150" height="14" fill="#e3dccd"/>
       <rect x="190" y="52" width="${(rel / 3.2 * 150).toFixed(1)}" height="14" fill="#1E2A57"/>
-      ${T(340, 86, "about " + rel.toFixed(1) + "× a 50° edge", { a: "end", s: 14, w: 800, c: "#1B1A17", ls: 0 })}
-      ${T(190, 104, "relative, from standard", { s: 10, ls: .3 })}${T(190, 118, "cutting-machine tests", { s: 10, ls: .3 })}
+      ${T(340, 86, a <= 26 ? "longest" : a <= 38 ? "middling" : "shortest", { a: "end", s: 14, w: 800, c: "#1B1A17", ls: 0 })}
+      ${T(190, 104, "illustration of the trend", { s: 10, ls: .3 })}${T(190, 118, "in cutting-machine tests", { s: 10, ls: .3 })}
       <g transform="translate(170,150)">
         <line x1="20" y1="40" x2="170" y2="40" stroke="#1B1A17" stroke-width="1.5" transform="scale(1,1)"/>
         ${[24, 30].map(d => `<line x1="${20 + (d - 20) / 30 * 150}" y1="34" x2="${20 + (d - 20) / 30 * 150}" y2="46" stroke="#1B1A17"/>`).join("")}

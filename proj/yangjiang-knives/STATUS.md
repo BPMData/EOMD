@@ -1,6 +1,6 @@
 # STATUS: Knife Country (Yangjiang knives scrolling page)
 
-_Last updated: Nov 3, 2026._ Brief: `brief.md` (approved; Stage: build). Storyboard: `storyboard.md` (approved).
+_Last updated: Nov 3, 2026 (published)._ Brief: `brief.md` (approved; Stage: build). Storyboard: `storyboard.md` (approved).
 
 ## Where it is
 - **Round 1 built (stage 2, playable rough):** chapters 0–4 (cold open, the 1,400-year story, the ban, Sheffield
@@ -40,7 +40,8 @@ _Last updated: Nov 3, 2026._ Brief: `brief.md` (approved; Stage: build). Storybo
   titles (see the brief's Decisions log).
 
 ## Open
-- Round 3: polish, QA report, publish to `players/` + `index.html` + `README.md`.
-- To verify before launch: the CATRA edge-angle numbers (Plate 3), the Bourdain quote (don't quote until checked),
-  the cut-off carbide line in q4.
-- Not tested: Safari/iOS and reduced motion (Bryan has neither); a keyboard-only pass is still to do.
+- **Published:** `players/yangjiang-knives.html`, linked from `index.html` and `README.md`. It goes live on Pages once
+  this branch is merged.
+- QA report: `QA.md`.
+- Not tested on iPhone/Safari or with reduced motion (Bryan has neither).
+- Possible later: a final title, and a portrait MP4 or stills for social.

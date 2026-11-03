@@ -1,6 +1,6 @@
 # Brief: Yangjiang knives (scrolling infographic)
 
-Status: APPROVED 2026-11-02 by Bryan Murphy · Stage: build · Mode: full creative · Client: Bryan Murphy · Sign-off: Bryan
+Status: APPROVED 2026-11-02 by Bryan Murphy · Stage: build (published) · Mode: full creative · Client: Bryan Murphy · Sign-off: Bryan
 Usage: Opus 5.5 (cloud session) · shares of the 5-hour limit not visible from inside the session; Bryan to note them
 
 _**ASK** = missing, **DRAFT** = Claude's draft, **Claude's call** = delegated by the client._
@@ -243,3 +243,7 @@ _Date · the decision or verdict, in the client's words · what changed._
 - 2026-11-03 · Sources: "you can trust wikipedia as much as me"; Reuleaux source supplied by Bryan
   (https://digi.ub.uni-heidelberg.de/diglit/reuleaux1877, Briefe aus Philadelphia, 1877, p. 16) · Wikipedia drill-downs
   unflagged; the Reuleaux line now quotes his "Konkurrenz durch Qualität" and links the book.
+- 2026-11-03 · Bourdain checked against Bryan's PDF ("Global", quoted word for word); Plate 3 numbers couldn't be read
+  from the source (blocked), so the bar shows the verified trend and the 30°→20° = 75% fact; "check whatever you need to
+  yourself" · checks done, keyboard pass done, published to `players/yangjiang-knives.html` with a landing-page card.
+  The working title "Knife Country" stays until Bryan renames it.

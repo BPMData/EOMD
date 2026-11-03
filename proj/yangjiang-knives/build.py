@@ -7,7 +7,7 @@ The first run downloads the three open-licensed fonts into font_cache/ (licenses
 """
 # ============================ SETTINGS (edit these) ============================
 OUT = "knife-country.html"            # written next to this file
-PUBLISH_TO = ""   # set to "../../players/yangjiang-knives.html" once it is ready to publish
+PUBLISH_TO = "../../players/yangjiang-knives.html"   # set to "" to skip copying into players/
 FONT_CACHE = "../../font_cache"
 GF = "https://raw.githubusercontent.com/google/fonts/main/ofl/"
 FONTS = {   # css name -> (cache file, download path)

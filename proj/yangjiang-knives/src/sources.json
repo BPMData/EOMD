@@ -211,10 +211,10 @@
  },
  {
   "id": "angles",
-  "text": "Typical factory edges: German about 30–40° inclusive, Japanese about 24–30°. In standardized CATRA cutting tests, a 20° inclusive edge lasted roughly three times as long as a 50° one (about 800 vs 250 mm of test card, with about 450 at 34°).",
+  "text": "Typical factory edges: German about 30–40° inclusive, Japanese about 24–30°. In Knife Steel Nerds' CATRA tests of 154CM at 20°, 34° and 50°, edge angle had by far the biggest effect on edge retention; the more acute edges cut better from the start and stayed ahead; taking an edge from 30° to 20° matched switching to a steel with about 75% more wear resistance.",
   "url": "https://knifesteelnerds.com/2018/06/18/maximizing-edge-retention/",
-  "via": "q4",
-  "conf": "medium"
+  "via": "q4; checked by search (the article's own charts not read)",
+  "conf": "high (the trend); the bar's exact proportions are illustrative"
  },
  {
   "id": "single-bevel",
@@ -487,6 +487,13 @@
   "text": "Section 301 tariffs: duties the US has put on Chinese goods since 2018 under Section 301 of the Trade Act of 1974.",
   "url": "https://en.wikipedia.org/wiki/Section_301_of_the_Trade_Act_of_1974",
   "via": "Wikipedia",
+  "conf": "high"
+ },
+ {
+  "id": "bourdain",
+  "text": "Anthony Bourdain, Kitchen Confidential (2000): 'Most of the professionals I know have for years been retiring their Wusthofs and replacing them with the lightweight, easy-to-sharpen and relatively inexpensive vanadium steel Global knives, very good Japanese products that have—in addition to their many other fine qualities—the added attraction of looking really cool.'",
+  "url": "",
+  "via": "Bryan's copy of the book",
   "conf": "high"
  }
 ]
