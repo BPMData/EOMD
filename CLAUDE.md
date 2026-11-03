@@ -46,6 +46,7 @@ polished and lost.
 ## Where to go
 | Task | Go to |
 |---|---|
+| An infographic (a page that explains something with numbers) | **Not here:** it belongs in the sister repo [ProofEr](https://github.com/BPMData/ProofEr). Knife Country (Nov 2026) was built here by mistake and moved there |
 | A new piece | `/new-piece`; `/toolbox` at its gate |
 | A change to an existing piece | Its folder: `proj/cdrom/` (CS Lab Screensaver), `academies-film/` (Academies hallway film), `living/` (SSR, CS and Exploration living posters), `proj/pltw/` (PLTW promo). Each folder's `CLAUDE.md` loads by itself when you open a file there; its `STATUS.md` holds the history |
 | Library or tool work | That folder: `gen/`, `audio/` + `score/`, `engine/`, `jukebox/`, `tools/` (each has a `CLAUDE.md`) |
