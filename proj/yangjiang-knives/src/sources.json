@@ -211,10 +211,10 @@
  },
  {
   "id": "angles",
-  "text": "Typical factory edges: German about 30–40° inclusive, Japanese about 24–30°. In Knife Steel Nerds' CATRA tests of 154CM at 20°, 34° and 50°, edge angle had by far the biggest effect on edge retention; the more acute edges cut better from the start and stayed ahead; taking an edge from 30° to 20° matched switching to a steel with about 75% more wear resistance.",
-  "url": "https://knifesteelnerds.com/2018/06/18/maximizing-edge-retention/",
-  "via": "q4; checked by search (the article's own charts not read)",
-  "conf": "high (the trend); the bar's exact proportions are illustrative"
+  "text": "Typical factory edges: German about 30–40° inclusive, Japanese about 24–30°. Across hundreds of CATRA tests (steels at 46–69 Rc, edges 20–61°), Larrin Thomas's regression gives about −17.8 mm of test card per extra degree of edge angle and +15.8 mm per point of hardness, with angle's effect growing at low angles; at a fixed 30°, steels ranged from about 180 to 850 mm; 'sharpening in terms of grit finish and edge angle have a greater effect on performance than steel choice.' Taking a 154CM edge from 30° to 20° matched a steel with about 75% more wear resistance.",
+  "url": "https://knifesteelnerds.com/2018/11/19/steel-edge-retention/",
+  "via": "Knife Steel Nerds PDFs supplied by Bryan (Edge Retention Part 1; Testing the Edge Retention of 48 Knife Steels)",
+  "conf": "high"
  },
  {
   "id": "single-bevel",
@@ -288,9 +288,9 @@
  },
  {
   "id": "heat-treat",
-  "text": "Heat treatment sets a steel's real performance: a premium steel badly treated to 57 HRC is out-cut by an ordinary one properly treated to 61; each point of hardness changes CATRA edge life by roughly 5–10%. Well-treated 10Cr15CoMoV matched VG-10 in testing; badly treated samples rusted where VG-10 didn't.",
+  "text": "Heat treatment sets a steel's real performance: each point of hardness is worth about 15.8 mm of CATRA test card (Knife Steel Nerds regression), and high retained austenite from poor heat treatment softens the edge. Well-treated 10Cr15CoMoV matched VG-10 in testing; badly treated samples rusted where VG-10 didn't.",
   "url": "https://www.culinaryknifebible.com/steels/10cr15comov",
-  "via": "q3a, q4",
+  "via": "q3a, q4; Knife Steel Nerds PDFs supplied by Bryan",
   "conf": "medium–high"
  },
  {

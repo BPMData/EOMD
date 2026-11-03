@@ -747,8 +747,8 @@ const T = (x, y, txt, o = {}) => `<text x="${x}" y="${y}" font-family="Arch,sans
       <g style="opacity:${smooth(.75, 1, u).toFixed(2)}">
         ${T(10, 244, good ? "≈ 61 HRC" : "≈ 57 HRC", { s: 16, w: 900, c: "#1B1A17", ls: 0 })}
         <rect x="100" y="232" width="250" height="14" fill="#e3dccd"/>
-        <rect x="100" y="232" width="${good ? 250 : 150}" height="14" fill="#1E2A57"/>
-        ${good ? "" : `<rect x="250" y="232" width="50" height="14" fill="#8d97c2"/>`}
+        <rect x="100" y="232" width="${good ? 250 : 200}" height="14" fill="#1E2A57"/>
+        ${good ? "" : `<rect x="300" y="232" width="25" height="14" fill="#8d97c2"/>`}
       </g>`;
   }
   [...seg.children].forEach(b => b.addEventListener("click", () => {
@@ -756,7 +756,7 @@ const T = (x, y, txt, o = {}) => `<text x="${x}" y="${y}" font-family="Arch,sans
     [...seg.children].forEach(x => x.setAttribute("aria-pressed", x === b));
     out.textContent = h === "good"
       ? "Careful: a long, controlled heat, a deep freeze to finish the hardening, and two tempers; full hardness and full edge life."
-      : "Rushed: a short heat and a single temper leave it around four points softer; at roughly 5–10% of edge life per point, that’s a fifth to two-fifths gone (the pale band), and badly treated samples of this steel also rusted where VG-10 didn’t.";
+      : "Rushed: a short heat and a single temper leave it around four points softer; at about 16 mm of test card per point, that’s roughly a tenth to a fifth of a typical result gone (the pale band shows the range), and badly treated samples of this steel also rusted where VG-10 didn’t.";
     clip(1400, t => frame(h, t));
   }));
   frame("good", 1400);

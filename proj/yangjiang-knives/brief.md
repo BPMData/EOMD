@@ -247,3 +247,6 @@ _Date · the decision or verdict, in the client's words · what changed._
   from the source (blocked), so the bar shows the verified trend and the 30°→20° = 75% fact; "check whatever you need to
   yourself" · checks done, keyboard pass done, published to `players/yangjiang-knives.html` with a landing-page card.
   The working title "Knife Country" stays until Bryan renames it.
+- 2026-11-03 · Bryan supplied two Knife Steel Nerds PDFs · Plate 3 now cites the regression (edge angle the largest
+  factor; steels at 30° ranged about 180–850 mm); Plate 6 corrected: a point of hardness is about 15.8 mm of test card
+  (a few percent), not the 5–10% the q4 report gave; the rushed furnace now costs "a tenth to a fifth".

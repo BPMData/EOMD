@@ -14,8 +14,9 @@ offline file (fonts subset and inlined; the build fails if anything would load f
 - **Facts:** every figure on the page links to a numbered source (71 in all), each with a confidence note.
   - Reuleaux is cited from his own *Briefe aus Philadelphia* (1877, p. 16), found by Bryan.
   - The Bourdain passage is quoted word for word from Bryan's copy of *Kitchen Confidential*.
-  - The edge-angle trend on Plate 3 was checked by search (the source site is blocked from the build machine). The
-    bar's proportions are labelled as an illustration.
+  - Plates 3 and 6 were checked against the Knife Steel Nerds articles Bryan supplied. One error was found and fixed
+    on Plate 6: a point of hardness is about 15.8 mm of test card, not 5–10% of edge life. Plate 3's bar is still
+    labelled as an illustration of the trend.
 - **Copy:** in Bryan's voice (house taste T35). Name-drops are explained in drill-downs (T36). Chapter titles are
   as loud as their answers (T37).
 
