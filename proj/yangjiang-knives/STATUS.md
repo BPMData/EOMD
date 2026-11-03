@@ -1,6 +1,6 @@
 # STATUS: Knife Country (Yangjiang knives scrolling page)
 
-_Last updated: Nov 2, 2026._ Brief: `brief.md` (approved; Stage: build). Storyboard: `storyboard.md` (approved).
+_Last updated: Nov 3, 2026._ Brief: `brief.md` (approved; Stage: build). Storyboard: `storyboard.md` (approved).
 
 ## Where it is
 - **Round 1 built (stage 2, playable rough):** chapters 0–4 (cold open, the 1,400-year story, the ban, Sheffield
@@ -15,13 +15,27 @@ _Last updated: Nov 2, 2026._ Brief: `brief.md` (approved; Stage: build). Storybo
 
 - Plate 1 animates: the edge drops onto bone and bends, rolls, holds or chips (Bryan's request after round 1).
 
+- **Round 2 built (stage 4, full page):** chapters 5–11, all in the page now:
+  - Solingen with Plate 2 (bolster hang), the 1938 law, the war, and the plain forced-labor panel
+  - Japan with the scroll-driven porcelain stamps, the 関 strike and Plate 3 (an edge-angle slider; a cut that
+    shows the single bevel steering)
+  - Yangjiang with Plate 4 (the wenwudao: slice or chop), Plate 5 (the sandwich steels overlaid) and the 李 → 十八子
+    split
+  - the OEM years with a stacked bar
+  - the comeback with a VG-10 composition chart, Plate 6 (heat treatment), Plate 7 (the garlic smash) and an
+    export bar chart
+  - the scorecard
+  - the label decoder
+  - The belt has five states (Sheffield, Solingen, split, the volume belt, vacant); the lineage lists every holder
+    up to the current one.
+- 52 sources, all cited; build is about 850 KB.
+
 ## Checked
-- No script errors on phone (390×844) or laptop (1440×900) in Chromium; screenshots looked over at 14 scroll points.
+- No script errors on phone (390×844) or laptop (1440×900) in Chromium: the whole page walked screen by screen, and
+  every plate, the decoder, the scorecard and the belt lineage exercised.
 - Text contrast: every pair ≥ 4.5:1 (lowest: gold on red, 4.67).
 
 ## Open
-- Round 2: chapters 5–12 (Solingen with the war and forced-labor panel, Japan, 十八子, OEM, the comeback, the
-  scorecard, the label decoder) and plates 2–7.
 - Round 3: polish, QA report, publish to `players/` + `index.html` + `README.md`.
 - To verify before launch: the CATRA edge-angle numbers (Plate 3), the Bourdain quote (don't quote until checked),
   the cut-off carbide line in q4; the Reuleaux source link (Cambridge chapter) may not be the page that quotes him.

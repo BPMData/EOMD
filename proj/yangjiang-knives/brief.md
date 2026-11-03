@@ -208,3 +208,4 @@ _Date · the decision or verdict, in the client's words · what changed._
 - 2026-11-02 · Round 1: "Overall though it looks fucking sick as hell"; Plate 1: "If it could actually show the knife
   descending and then bending, rolling, holding or chipping it would be awesome" · Plate 1 now animates the blow
   (time-based, replays on each pick, plays once when the plate scrolls into view; reduced motion shows the result).
+- 2026-11-03 · Round 2: "Go" · chapters 5–11 and plates 2–7 built.

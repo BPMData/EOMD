@@ -80,8 +80,9 @@ def main():
     items = []
     for i, sid in enumerate(order, 1):
         s = by_id[sid]
-        items.append(f'<li id="src-{i}">{esc(s["text"])}<small><a href="{esc(s["url"])}" rel="noopener">{esc(s["url"])}</a>'
-                     f' · via {esc(s["via"])} · confidence: {esc(s["conf"])}</small></li>')
+        link = f'<a href="{esc(s["url"])}" rel="noopener">{esc(s["url"])}</a> · ' if s["url"] else ""
+        items.append(f'<li id="src-{i}">{esc(s["text"])}<small>{link}'
+                     f'via {esc(s["via"])} · confidence: {esc(s["conf"])}</small></li>')
     src_list = "<ol>" + "".join(items) + "</ol>"
     src_json = json.dumps([{"n": i + 1, **by_id[sid]} for i, sid in enumerate(order)], ensure_ascii=False)
 

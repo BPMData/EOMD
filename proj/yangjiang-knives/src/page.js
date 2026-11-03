@@ -121,10 +121,74 @@ function renderStrike(s, p) {
   s.world.setAttribute("transform", `translate(0 ${shake.toFixed(2)})`);
 }
 
+/* ---------- custom scenes: the porcelain stamps (ch 6) and 李 → 十八子 (ch 7) ---------- */
+function roughFilter(defs, id, seed) {
+  el("filter", { id }, defs).innerHTML = `<feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="${seed}"/><feDisplacementMap in="SourceGraphic" scale="3.5"/>`;
+}
+// a stamp landing: overshoot in scale and opacity over a short stretch of scroll, then rest
+function landing(g, p, at, rot, cx, cy) {
+  const t = smooth(at, at + .035, p);
+  const k = p < at ? 1.25 : 1 + .25 * (1 - easeOut(clamp((p - at) / .035)));
+  g.style.opacity = t.toFixed(2);
+  g.setAttribute("transform", `rotate(${rot} ${cx} ${cy}) translate(${cx} ${cy}) scale(${k.toFixed(3)}) translate(${-cx} ${-cy})`);
+}
+const CUSTOM = {
+  porcelain(svg) {
+    const defs = el("defs", {}, svg);
+    roughFilter(defs, "pr", 5);
+    el("circle", { cx: 500, cy: 300, r: 290, fill: "#F6F2EA" }, svg);
+    el("circle", { cx: 500, cy: 300, r: 175, fill: "none", stroke: "#d9d2c4", "stroke-width": 12 }, svg);
+    el("circle", { cx: 500, cy: 300, r: 168, fill: "none", stroke: "#c9c1b1", "stroke-width": 2 }, svg);
+    const ink = "#2F4AA0";
+    const mk = (y, txt, size, sub) => {
+      const g = el("g", { filter: "url(#pr)" }, svg);
+      const t = el("text", { x: 500, y, "text-anchor": "middle", fill: ink, "font-family": "Arch,sans-serif", "font-weight": 900,
+        "font-size": size, style: "font-stretch:80%;letter-spacing:.12em" }, g);
+      t.textContent = txt;
+      if (sub) { const s = el("text", { x: 500, y: y + 34, "text-anchor": "middle", fill: "#5C564C", "font-family": "Arch,sans-serif",
+        "font-weight": 700, "font-size": 24, style: "letter-spacing:.2em" }, svg); s.textContent = sub; s.style.opacity = 0; g.sub = s; }
+      return g;
+    };
+    const nip = mk(222, "NIPPON", 72, "1891–1921"), jap = mk(338, "JAPAN", 92, "FROM SEPT 1, 1921"), occ = mk(450, "MADE IN OCCUPIED JAPAN", 34, "1947–1952");
+    const strike = el("line", { x1: 360, y1: 220, x2: 640, y2: 178, stroke: "#B3261E", "stroke-width": 9, "stroke-linecap": "square",
+      pathLength: 1, "stroke-dasharray": 1, "stroke-dashoffset": 1 }, svg);
+    return p => {
+      if (RM) p = 1;
+      landing(nip, p, .14, -5, 500, 200); nip.sub.style.opacity = smooth(.17, .2, p);
+      strike.setAttribute("stroke-dashoffset", (1 - smooth(.4, .46, p)).toFixed(3));
+      landing(jap, p, .5, 2, 500, 310); jap.sub.style.opacity = smooth(.53, .56, p);
+      landing(occ, p, .78, -2, 500, 440); occ.sub.style.opacity = smooth(.81, .84, p);
+    };
+  },
+  splitname(svg) {
+    const gold = "#E2B44B";
+    const mk = (c, x, size) => {
+      const t = el("text", { x, y: 340, "text-anchor": "middle", fill: gold, "font-family": "Han,serif", "font-weight": 900, "font-size": size }, svg);
+      t.textContent = c; return t;
+    };
+    const li = mk("李", 500, 380);
+    const parts = [["十", 230], ["八", 500], ["子", 770]].map(([c, x]) => ({ t: mk(c, 500, 240), x }));
+    const labels = [["ten", 230], ["eight", 500], ["son", 770]].map(([w, x]) => {
+      const t = el("text", { x, y: 420, "text-anchor": "middle", fill: "#F4EFE6", "font-family": "Arch,sans-serif", "font-weight": 700,
+        "font-size": 30, style: "letter-spacing:.2em" }, svg); t.textContent = w.toUpperCase(); return t; });
+    return p => {
+      if (RM) p = 1;
+      const k = easeOut(smooth(.3, .62, p));
+      li.style.opacity = (smooth(.05, .14, p) * (1 - smooth(.3, .4, p))).toFixed(2);
+      parts.forEach(({ t, x }) => {
+        t.setAttribute("x", lerp(500, x, k).toFixed(1));
+        t.style.opacity = smooth(.3, .42, p).toFixed(2);
+      });
+      labels.forEach(t => t.style.opacity = smooth(.6, .68, p).toFixed(2));
+    };
+  }
+};
+
 /* ---------- scenes: progress through a tall box with a sticky stage ---------- */
 const scenes = [...document.querySelectorAll(".scene")].map(sc => ({
   sc,
   strikes: [...sc.querySelectorAll("svg.strike")].map(buildStrike),
+  customs: [...sc.querySelectorAll("svg.porcelain, svg.splitname")].map(n => CUSTOM[n.getAttribute("class")](n)),
   reveals: [...sc.querySelectorAll("[data-at]")].map(n => ({ n, at: parseFloat(n.dataset.at) }))
 }));
 function sceneProgress(sc) {
@@ -138,6 +202,7 @@ function renderScenes() {
     if (r.bottom < -50 || r.top > innerHeight + 50) continue;
     const p = RM ? 1 : sceneProgress(S.sc);
     S.strikes.forEach(s => renderStrike(s, p));
+    S.customs.forEach(c => c(p));
     for (const { n, at } of S.reveals) {
       const v = at < 0 ? 1 - smooth(0, .12, p) : smooth(at, at + .07, p);
       n.style.opacity = v.toFixed(3);
@@ -148,30 +213,45 @@ function renderScenes() {
 
 /* ---------- the belt ---------- */
 const BELT = {
-  sheffield: { a: "SHEFFIELD", b: "ENGLAND", line: "Holds the title on crucible steel and the Cutlers’ marks, from the 1700s." },
-  solingen: { a: "SOLINGEN", b: "GERMANY", line: "Takes it in the late 1800s, on price, machines and a label meant to shame it." }
+  sheffield: { plates: [["KNIFE CHAMPION", "SHEFFIELD", "ENGLAND"]], name: "Sheffield",
+    line: "Holds the title on crucible steel and the Cutlers’ marks, from the 1700s." },
+  solingen: { plates: [["KNIFE CHAMPION", "SOLINGEN", "GERMANY"]], name: "Solingen",
+    line: "Takes it in the late 1800s, on price, machines and a label meant to shame it." },
+  split: { plates: [["HEAVYWEIGHT", "SOLINGEN", "GERMANY"], ["LIGHTWEIGHT", "JAPAN", "SEKI · SAKAI"]], name: "Split title",
+    line: "By the 2000s the title splits: the heavy forged knives stay German, the light thin ones go Japanese." },
+  volume: { plates: [["HEAVYWEIGHT", "SOLINGEN", "GERMANY"], ["LIGHTWEIGHT", "JAPAN", "SEKI · SAKAI"], ["VOLUME", "YANGJIANG", "CHINA"]], name: "Volume belt",
+    line: "China takes a third belt, for tonnage: more than half the world’s knife exports by 2024." },
+  vacant: { plates: [["KNIFE CHAMPION", "VACANT", "KNIFE BY KNIFE"]], name: "Vacated",
+    line: "Vacated: from here on it’s judged knife by knife, not country by country." }
 };
 const beltBtn = document.getElementById("belt");
 const beltSvg = beltBtn.querySelector("svg");
 const reached = [];
 let beltState = "none", beltTimer = 0;
 function drawBelt(key) {
-  const d = BELT[key];
-  beltSvg.innerHTML = `
-    <rect x="0" y="40" width="236" height="40" fill="#4a2f18"/>
-    <rect x="0" y="45" width="236" height="30" fill="none" stroke="#c9a463" stroke-width="1.2" stroke-dasharray="4 3"/>
-    <rect x="18" y="34" width="34" height="52" fill="#c99a3b"/><rect x="184" y="34" width="34" height="52" fill="#c99a3b"/>
-    <rect x="62" y="6" width="112" height="108" fill="#E2B44B"/>
-    <rect x="70" y="14" width="96" height="92" fill="none" stroke="#7a5a16" stroke-width="2"/>
-    <text x="118" y="38" text-anchor="middle" font-family="Arch,sans-serif" font-weight="800" font-size="9" letter-spacing="1.5" fill="#4a3608">KNIFE CHAMPION</text>
-    <text x="118" y="68" text-anchor="middle" font-family="Arch,sans-serif" font-weight="900" font-size="${d.a.length > 8 ? 17 : 20}" style="font-stretch:70%" fill="#2e2104">${d.a}</text>
-    <text x="118" y="88" text-anchor="middle" font-family="Arch,sans-serif" font-weight="700" font-size="10" letter-spacing="2" fill="#4a3608">${d.b}</text>`;
+  const P = BELT[key].plates, n = P.length, W = 120 + n * 116;
+  beltSvg.setAttribute("viewBox", `0 0 ${W} 120`);
+  beltSvg.style.width = (W / 2) + "px";
+  let s = `<rect x="0" y="40" width="${W}" height="40" fill="#4a2f18"/>
+    <rect x="0" y="45" width="${W}" height="30" fill="none" stroke="#c9a463" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <rect x="18" y="34" width="34" height="52" fill="#c99a3b"/><rect x="${W - 52}" y="34" width="34" height="52" fill="#c99a3b"/>`;
+  P.forEach(([top, big, small], i) => {
+    const x = 62 + i * 116, vac = big === "VACANT";
+    s += `<rect x="${x}" y="6" width="112" height="108" fill="${vac ? "#d8cfbd" : "#E2B44B"}"/>
+      <rect x="${x + 8}" y="14" width="96" height="92" fill="none" stroke="${vac ? "#8d8574" : "#7a5a16"}" stroke-width="2"/>
+      <text x="${x + 56}" y="38" text-anchor="middle" font-family="Arch,sans-serif" font-weight="800" font-size="9" letter-spacing="1.2" fill="#4a3608">${top}</text>
+      <text x="${x + 56}" y="68" text-anchor="middle" font-family="Arch,sans-serif" font-weight="900" font-size="${big.length > 8 ? 16 : 19}" style="font-stretch:68%" fill="#2e2104">${big}</text>
+      <text x="${x + 56}" y="88" text-anchor="middle" font-family="Arch,sans-serif" font-weight="700" font-size="8.5" letter-spacing="1.2" fill="#4a3608">${small}</text>`;
+  });
+  beltSvg.innerHTML = s;
 }
 function setBelt(key) {
   if (key === beltState) return;
   beltState = key;
   clearTimeout(beltTimer);
-  if (BELT[key] && !reached.includes(key)) reached.push(key);
+  // the lineage is everything up to the furthest holder reached, so skipping ahead never drops a name
+  const ORDER = Object.keys(BELT), at = ORDER.indexOf(key);
+  if (at >= 0) ORDER.slice(0, at + 1).forEach(k => { if (!reached.includes(k)) reached.push(k); });
   const show = () => {
     if (!BELT[key]) return;
     drawBelt(key); beltBtn.classList.add("on", "open");
@@ -188,7 +268,7 @@ function currentChapter() {
 }
 beltBtn.addEventListener("click", () => {
   const list = document.getElementById("linlist");
-  list.innerHTML = reached.map(k => `<li><b>${BELT[k].a}</b><span>${BELT[k].line}</span></li>`).join("");
+  list.innerHTML = reached.map(k => `<li><b>${BELT[k].name}</b><span>${BELT[k].line}</span></li>`).join("");
   document.getElementById("lineage").showModal();
 });
 
@@ -398,6 +478,333 @@ beltBtn.addEventListener("click", () => {
   det.innerHTML = `<summary>Show as a table</summary><table><tr><th>Year</th><th>Workers</th></tr>${
     D.map(([a, b], i) => `<tr><td>${i === D.length - 1 ? "2020s" : a}</td><td>${i === D.length - 1 ? "under 1,000" : "~" + b.toLocaleString("en-US")}</td></tr>`).join("")}</table>`;
   box.appendChild(det);
+})();
+
+/* ---------- shared: a time-based clip, as a pure function of elapsed ms ---------- */
+function clip(ms, f) {
+  if (clip.raf) cancelAnimationFrame(clip.raf);
+  if (RM) { f(ms); return; }
+  const t0 = performance.now();
+  const tick = now => { const t = Math.min(now - t0, ms); f(t); if (t < ms) requestAnimationFrame(tick); };
+  requestAnimationFrame(tick);
+}
+function onFirstView(node, fn, threshold = .6) {
+  const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { io.disconnect(); fn(); } }, { threshold });
+  io.observe(node);
+}
+const T = (x, y, txt, o = {}) => `<text x="${x}" y="${y}" font-family="Arch,sans-serif" font-size="${o.s || 13}" font-weight="${o.w || 500}"` +
+  ` ${o.a ? `text-anchor="${o.a}"` : ""} letter-spacing="${o.ls ?? 1.2}" fill="${o.c || "#5C564C"}"${o.st ? ` style="${o.st}"` : ""}>${txt}</text>`;
+
+/* ---------- plate 2: the bolster ---------- */
+(function plate2() {
+  const fig = document.getElementById("p2fig"), r = document.getElementById("p2r"), v = document.getElementById("p2v"), out = document.getElementById("p2out");
+  if (!fig) return;
+  function draw(n) {
+    const w = n * 2.1;                                   // steel ground off the edge, drawing units (illustration)
+    const edgeY = 150 - w;
+    // the edge rises toward the heel; the bolster (dark) still reaches the board
+    const gap = w > 0 ? `<path d="M 96 ${edgeY} L 150 ${edgeY + w * .55} L 210 ${150} L 210 150 L 96 150 Z" fill="url(#hatch2)" stroke="#B3261E" stroke-width="1.2"/>` : "";
+    fig.innerHTML = `<defs><pattern id="hatch2" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line y2="6" stroke="#B3261E" stroke-width="1.2"/></pattern></defs>
+      <path d="M 96 26 L 350 26 L 350 140 Q 300 150 210 150 L 150 ${(edgeY + w * .55).toFixed(1)} L 96 ${edgeY.toFixed(1)} Z" fill="#c5c9cd" stroke="#1B1A17" stroke-width="2"/>
+      <rect x="60" y="26" width="36" height="124" fill="#8c9095" stroke="#1B1A17" stroke-width="2"/>
+      <rect x="8" y="40" width="52" height="70" fill="#4a2f18" stroke="#1B1A17" stroke-width="2"/>
+      <line x1="0" y1="152" x2="360" y2="152" stroke="#1B1A17" stroke-width="3"/>
+      <rect x="0" y="153" width="360" height="22" fill="#e3dccd"/>
+      ${gap}
+      ${T(62, 192, "BOLSTER", { c: "#1B1A17", w: 800 })}${T(230, 192, "CUTTING BOARD")}
+      ${w > 6 ? T(110, edgeY - 8, "GAP", { c: "#B3261E", w: 800 }) : ""}`;
+    v.textContent = n;
+    out.textContent = n === 0 ? "New: heel to tip, the whole edge meets the board."
+      : n < 6 ? "The edge is wearing back, the bolster isn’t; the heel is starting to lift off the board."
+      : "The bolster now hits the board first, so the back of the edge never reaches it: a dead patch exactly where you’d want to rock a cut. The fix is to grind the bolster down, which is why many newer knives have half bolsters or none at all. (Illustration, not to scale.)";
+  }
+  r.addEventListener("input", () => draw(+r.value));
+  draw(0);
+})();
+
+/* ---------- plate 3: edge angle and bevel ---------- */
+(function plate3() {
+  const fig = document.getElementById("p3fig"), r = document.getElementById("p3r"), v = document.getElementById("p3v");
+  const cut = document.getElementById("p3cut"), seg = document.getElementById("p3seg"), out = document.getElementById("p3out");
+  if (!fig) return;
+  const catra = a => a <= 34 ? lerp(800, 450, (a - 20) / 14) : lerp(450, 250, (a - 34) / 16);   // between the three tested angles
+  const ax = a => 20 + (a - 20) / 30 * 320;
+  function draw(a) {
+    const h = a / 2 * Math.PI / 180, cx = 95, apex = 250, bevelTop = 150;
+    const hw = (apex - bevelTop) * Math.tan(h);
+    const mm = Math.round(catra(a) / 10) * 10;
+    fig.innerHTML = `<defs><pattern id="hatch3" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line y2="6" stroke="#6d7277" stroke-width="1.2"/></pattern></defs>
+      <polygon points="${cx - 30},20 ${cx + 30},20 ${cx + hw},${bevelTop} ${cx},${apex} ${cx - hw},${bevelTop}" fill="#c5c9cd" stroke="#1B1A17" stroke-width="1.8"/>
+      <polygon points="${cx + hw},${bevelTop} ${cx},${apex} ${cx - hw},${bevelTop}" fill="url(#hatch3)" stroke="#1B1A17" stroke-width="1.8"/>
+      <line x1="${cx}" y1="${apex}" x2="${cx - 80 * Math.sin(h)}" y2="${apex - 80 * Math.cos(h)}" stroke="#B3261E" stroke-dasharray="3 3"/>
+      <line x1="${cx}" y1="${apex}" x2="${cx + 80 * Math.sin(h)}" y2="${apex - 80 * Math.cos(h)}" stroke="#B3261E" stroke-dasharray="3 3"/>
+      ${T(cx, 278, a + "°", { a: "middle", s: 22, w: 900, c: "#B3261E", ls: 0 })}
+      ${T(190, 40, "CARD CUT BEFORE DULL", { s: 11, w: 800 })}
+      <rect x="190" y="52" width="150" height="14" fill="#e3dccd"/>
+      <rect x="190" y="52" width="${(mm / 800 * 150).toFixed(1)}" height="14" fill="#1E2A57"/>
+      ${T(340, 86, "about " + mm + " mm", { a: "end", s: 14, w: 800, c: "#1B1A17", ls: 0 })}
+      ${T(190, 104, "tested at 20°, 34° and 50°;", { s: 10, ls: .3 })}${T(190, 118, "in between, interpolated", { s: 10, ls: .3 })}
+      <g transform="translate(170,150)">
+        <line x1="20" y1="40" x2="170" y2="40" stroke="#1B1A17" stroke-width="1.5" transform="scale(1,1)"/>
+        ${[24, 30].map(d => `<line x1="${20 + (d - 20) / 30 * 150}" y1="34" x2="${20 + (d - 20) / 30 * 150}" y2="46" stroke="#1B1A17"/>`).join("")}
+        <rect x="${20 + 4 / 30 * 150}" y="16" width="${6 / 30 * 150}" height="12" fill="#2F4AA0"/>
+        <rect x="${20 + 10 / 30 * 150}" y="16" width="${10 / 30 * 150}" height="12" fill="#5C564C"/>
+        ${T(20 + 7 / 30 * 150, 10, "JAPAN", { s: 10, w: 800, c: "#2F4AA0", a: "end" })}${T(20 + 10 / 30 * 150, 10, "GERMANY", { s: 10, w: 800, c: "#1B1A17" })}
+        <path d="M ${20 + (a - 20) / 30 * 150} 48 l -6 10 h 12 z" fill="#B3261E"/>
+        ${T(20, 74, "20°", { s: 10 })}${T(170, 74, "50°", { s: 10, a: "end" })}
+      </g>`;
+    v.textContent = a + "°";
+  }
+  r.addEventListener("input", () => draw(+r.value));
+  draw(34);
+  // the bevel: a cut down through a cucumber; the single bevel steers toward its flat side
+  let mode = "double";
+  function cutFrame(t) {
+    const u = easeOut(clamp(t / 1200)), drift = mode === "single" ? 22 * u * u : 0, y = lerp(-10, 150, u);
+    const kx = 180 + drift, half = mode === "single" ? [0, 12] : [6, 6];
+    const blade = mode === "single"
+      ? `M ${kx - 2} ${y - 110} L ${kx + 12} ${y - 110} L ${kx + 12} ${y - 30} L ${kx} ${y} L ${kx - 2} ${y - 30} Z`
+      : `M ${kx - 6} ${y - 110} L ${kx + 6} ${y - 110} L ${kx + 6} ${y - 30} L ${kx} ${y} L ${kx - 6} ${y - 30} Z`;
+    cut.innerHTML = `<rect x="0" y="176" width="360" height="22" fill="#e3dccd"/><line x1="0" y1="176" x2="360" y2="176" stroke="#1B1A17" stroke-width="2"/>
+      <circle cx="180" cy="120" r="56" fill="#9bb27a" stroke="#1B1A17" stroke-width="2"/><circle cx="180" cy="120" r="42" fill="#d9e3b8"/>
+      ${u > 0 ? `<path d="M 180 ${Math.max(64, Math.min(y, 176))} L ${180 + drift * clamp((y - 64) / 112)} ${Math.min(y, 176)}" stroke="#1B1A17" stroke-width="1.6"/>` : ""}
+      <path d="${blade}" fill="#c5c9cd" stroke="#1B1A17" stroke-width="1.8"/>
+      ${T(14, 24, mode === "single" ? "SINGLE BEVEL: STEERS TOWARD THE FLAT SIDE" : "DOUBLE BEVEL: STRAIGHT DOWN", { s: 11, w: 800 })}`;
+    out.textContent = mode === "single"
+      ? "Ground on one side only: pressure on the bevelled side pushes the blade toward the flat back, so a straight cut takes practice; the payoff is a clean release on thin slices of raw fish."
+      : "Ground equally on both sides: the food pushes back evenly, and the knife goes where you aim it.";
+  }
+  [...seg.children].forEach(b => b.addEventListener("click", () => {
+    mode = b.dataset.b;
+    [...seg.children].forEach(x => x.setAttribute("aria-pressed", x === b));
+    clip(1500, cutFrame);
+  }));
+  cutFrame(0);
+  onFirstView(cut, () => clip(1500, cutFrame));
+})();
+
+/* ---------- plate 4: the wenwudao ---------- */
+(function plate4() {
+  const fig = document.getElementById("p4fig"), seg = document.getElementById("p4seg"), out = document.getElementById("p4out");
+  if (!fig) return;
+  let mode = "";
+  function frame(t) {
+    let dx = 0, dy = 0;
+    if (mode === "slice") { const u = clamp(t / 1300); dx = -60 * Math.sin(u * Math.PI); dy = 10 * Math.sin(u * Math.PI); }
+    if (mode === "chop") { const u = clamp(t / 900); dy = u < .5 ? lerp(0, -40, easeOut(u / .5)) : lerp(-40, 14, easeIn((u - .5) / .5)); if (u >= 1) dy = 14; }
+    const front = mode === "slice" ? "#E2B44B" : "#c5c9cd", heel = mode === "chop" ? "#E2B44B" : "#c5c9cd";
+    fig.innerHTML = `
+      <rect x="0" y="196" width="360" height="22" fill="#e3dccd"/><line x1="0" y1="196" x2="360" y2="196" stroke="#1B1A17" stroke-width="2"/>
+      <rect x="70" y="170" width="120" height="26" fill="#d98f80" stroke="#1B1A17" stroke-width="1.5"/>${T(130, 188, "MEAT", { a: "middle", s: 11, c: "#1B1A17" })}
+      <rect x="228" y="176" width="56" height="20" fill="#efe9da" stroke="#1B1A17" stroke-width="1.5"/>${T(256, 190, "BONE", { a: "middle", s: 10, c: "#1B1A17" })}
+      <g transform="translate(${dx.toFixed(1)} ${dy.toFixed(1)})">
+        <rect x="40" y="60" width="180" height="104" fill="${front}" stroke="#1B1A17" stroke-width="2"/>
+        <rect x="220" y="60" width="90" height="104" fill="${heel}" stroke="#1B1A17" stroke-width="2"/>
+        <rect x="310" y="92" width="44" height="28" fill="#4a2f18" stroke="#1B1A17" stroke-width="2"/>
+        <line x1="220" y1="60" x2="220" y2="164" stroke="#1B1A17" stroke-dasharray="4 4"/>
+        ${T(130, 52, "FRONT TWO-THIRDS: THIN", { a: "middle", s: 10, w: 800, c: "#1B1A17", ls: .6 })}
+        ${T(265, 40, "BACK THIRD:", { a: "middle", s: 10, w: 800, c: "#1B1A17", ls: .6 })}${T(265, 52, "THICK", { a: "middle", s: 10, w: 800, c: "#1B1A17", ls: .6 })}
+      </g>`;
+  }
+  [...seg.children].forEach(b => b.addEventListener("click", () => {
+    mode = b.dataset.m;
+    [...seg.children].forEach(x => x.setAttribute("aria-pressed", x === b));
+    out.textContent = mode === "slice" ? "Slice: the thin front two-thirds draws through boneless meat and vegetables."
+      : "Chop: the thick back third takes the blow when the cleaver comes down through poultry bone.";
+    clip(mode === "slice" ? 1300 : 900, frame);
+  }));
+  frame(0);
+})();
+
+/* ---------- plate 5: the sandwich ---------- */
+(function plate5() {
+  const fig = document.getElementById("p5fig"), r = document.getElementById("p5r"), v = document.getElementById("p5v");
+  if (!fig) return;
+  const section = (x, core, soft, label, sub) => `
+    <polygon points="${x - 22},20 ${x + 22},20 ${x + 14},170 ${x},214 ${x - 14},170" fill="${soft}" stroke="#1B1A17" stroke-width="1.8"/>
+    <polygon points="${x - 4},20 ${x + 4},20 ${x + 4},170 ${x},214 ${x - 4},170" fill="${core}" stroke="#1B1A17" stroke-width="1"/>
+    ${T(x, 236, label, { a: "middle", s: 12, w: 800, c: "#1B1A17" })}${T(x, 252, sub, { a: "middle", s: 10.5 })}`;
+  function draw(n) {
+    const k = easeOut(n / 100), jx = lerp(270, 90, k);
+    fig.innerHTML = `${section(90, "#3b4046", "#b9bfc6", "YANGJIANG 夹钢", "hard core, soft iron cheeks")}
+      <g style="opacity:${(1 - .45 * k).toFixed(2)}">${section(jx, "#1E2A57", "#c9d1e6", k > .9 ? "" : "JAPAN SAN-MAI", k > .9 ? "" : "hagane core, jigane cheeks")}</g>
+      ${T(200, 112, "HARD STEEL CORE", { s: 11, w: 800, c: "#1B1A17" })}<line x1="196" y1="108" x2="${(98 + (jx > 120 ? 0 : 0)).toFixed(0)}" y2="108" stroke="#1B1A17"/>
+      ${T(200, 64, "SOFT CHEEKS", { s: 11, w: 800, c: "#1B1A17" })}<line x1="196" y1="60" x2="110" y2="60" stroke="#1B1A17"/>
+      ${k > .9 ? T(270, 160, "SAME DRAWING", { a: "middle", s: 20, w: 900, c: "#B3261E", ls: 0, st: "font-stretch:72%" }) : ""}`;
+    v.textContent = n >= 92 ? "the same drawing" : "";
+  }
+  r.addEventListener("input", () => draw(+r.value));
+  draw(0);
+})();
+
+/* ---------- plate 6: heat treatment ---------- */
+(function plate6() {
+  const fig = document.getElementById("p6fig"), seg = document.getElementById("p6seg"), out = document.getElementById("p6out");
+  if (!fig) return;
+  // schematic temperature-time schedules (no numbers but the deep freeze, which the sources give)
+  const GOOD = "M 10 160 L 50 40 L 110 40 L 125 150 L 150 150 L 160 205 L 185 205 L 195 150 L 215 128 L 240 128 L 250 150 L 270 128 L 295 128 L 305 150 L 350 150";
+  const BAD = "M 10 160 L 50 40 L 75 40 L 90 150 L 120 150 L 140 128 L 165 128 L 175 150 L 350 150";
+  function frame(which, t) {
+    const u = clamp(t / 1400), good = which === "good";
+    fig.innerHTML = `
+      <line x1="10" y1="150" x2="350" y2="150" stroke="#C9C0AE"/>${T(352, 146, "ROOM", { a: "end", s: 9 })}
+      <path d="${good ? GOOD : BAD}" fill="none" stroke="#1B1A17" stroke-width="2.2" pathLength="1" stroke-dasharray="1" stroke-dashoffset="${(1 - u).toFixed(3)}"/>
+      ${T(52, 32, "HEAT", { s: 10, w: 800 })}${T(good ? 150 : 92, good ? 222 : 168, good ? "DEEP FREEZE, −196°C" : "QUENCH", { s: 10, w: 800, c: good ? "#2F4AA0" : "#5C564C" })}
+      ${T(good ? 208 : 134, 120, good ? "TEMPER ×2" : "TEMPER ×1", { s: 10, w: 800 })}
+      ${T(10, 14, "TEMPERATURE OVER TIME (SCHEMATIC)", { s: 9.5 })}
+      <g style="opacity:${smooth(.75, 1, u).toFixed(2)}">
+        ${T(10, 244, good ? "≈ 61 HRC" : "≈ 57 HRC", { s: 16, w: 900, c: "#1B1A17", ls: 0 })}
+        <rect x="100" y="232" width="250" height="14" fill="#e3dccd"/>
+        <rect x="100" y="232" width="${good ? 250 : 150}" height="14" fill="#1E2A57"/>
+        ${good ? "" : `<rect x="250" y="232" width="50" height="14" fill="#8d97c2"/>`}
+      </g>`;
+  }
+  [...seg.children].forEach(b => b.addEventListener("click", () => {
+    const h = b.dataset.h;
+    [...seg.children].forEach(x => x.setAttribute("aria-pressed", x === b));
+    out.textContent = h === "good"
+      ? "Careful: a long, controlled heat, a deep freeze to finish the hardening, and two tempers; full hardness and full edge life."
+      : "Rushed: a short heat and a single temper leave it around four points softer; at roughly 5–10% of edge life per point, that’s a fifth to two-fifths gone (the pale band), and badly treated samples of this steel also rusted where VG-10 didn’t.";
+    clip(1400, t => frame(h, t));
+  }));
+  frame("good", 1400);
+  seg.children[0].setAttribute("aria-pressed", "true");
+  out.textContent = "Pick a furnace.";
+})();
+
+/* ---------- plate 7: the garlic smash ---------- */
+(function plate7() {
+  const fig = document.getElementById("p7fig"), r = document.getElementById("p7r"), v = document.getElementById("p7v"),
+    go = document.getElementById("p7go"), out = document.getElementById("p7out");
+  if (!fig) return;
+  function frame(hrc, t) {
+    const u = clamp(t / 1100), drop = u < .35 ? lerp(-30, 0, easeIn(u / .35)) : 0, hit = u >= .35;
+    const snaps = hrc >= 61, after = clamp((u - .35) / .65);
+    const squash = hit && !snaps ? easeOut(after) : 0;
+    const crack = hit && snaps;
+    const rotL = crack ? -10 * easeOut(after) : 0, rotR = crack ? 14 * easeOut(after) : 0, sep = crack ? 10 * easeOut(after) : 0;
+    const blade = (x0, x1) => `<rect x="${x0}" y="${96 + drop}" width="${x1 - x0}" height="16" fill="#c5c9cd" stroke="#1B1A17" stroke-width="2"/>`;
+    fig.innerHTML = `
+      <rect x="0" y="150" width="360" height="24" fill="#e3dccd"/><line x1="0" y1="150" x2="360" y2="150" stroke="#1B1A17" stroke-width="2"/>
+      <ellipse cx="170" cy="${(132 + 12 * squash).toFixed(1)}" rx="${(22 + 20 * squash).toFixed(1)}" ry="${(18 - 12 * squash).toFixed(1)}" fill="#f3ead0" stroke="#1B1A17" stroke-width="1.8"/>
+      ${crack ? `<g transform="rotate(${rotL.toFixed(1)} 40 104) translate(${-sep} 0)">${blade(20, 172)}</g>
+                 <g transform="rotate(${rotR.toFixed(1)} 300 104) translate(${sep} 0)">${blade(172, 300)}<rect x="300" y="${94 + drop}" width="44" height="20" fill="#4a2f18" stroke="#1B1A17" stroke-width="2"/></g>`
+        : `${blade(20, 300)}<rect x="300" y="${94 + drop}" width="44" height="20" fill="#4a2f18" stroke="#1B1A17" stroke-width="2"/>`}
+      <path d="M 158 ${42 + drop} l 0 34 m -10 -12 l 10 14 l 10 -14" fill="none" stroke="#1B1A17" stroke-width="2.5"/>
+      ${T(176, 54 + drop, "SLAP", { s: 12, w: 800 })}
+      ${hit ? T(20, 200, snaps ? "SNAPS" : hrc >= 59 ? "SURVIVES, JUST" : "GARLIC CRUSHED", { s: 18, w: 900, c: snaps ? "#B3261E" : "#1B1A17", ls: 0, st: "font-stretch:72%" }) : ""}`;
+    if (t >= 1100) out.textContent = snaps
+      ? "Too hard for a blade this thin and too little toughness to go with it: the flat of the cleaver cracks before the garlic does."
+      : hrc >= 59 ? "It survives this time; a harder, thinner blade is holding a longer edge in exchange for less margin when you slap it."
+      : "Softer steel flexes and comes back: the garlic loses, the cleaver doesn’t, and you’ll sharpen it a bit more often.";
+  }
+  r.addEventListener("input", () => { v.textContent = r.value; frame(+r.value, 0); out.textContent = ""; });
+  go.addEventListener("click", () => clip(1100, t => frame(+r.value, t)));
+  frame(56, 0);
+})();
+
+/* ---------- charts ---------- */
+function hbar(box, rows, o) {
+  if (!box) return;
+  const W = Math.max(300, Math.min(520, box.clientWidth || 520)), rowH = o.rowH || 46, L = o.L || 96, R = 16;
+  const H = rows.length * rowH + 30, max = o.max || Math.max(...rows.map(r => r[1]));
+  const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": o.label }, box);
+  rows.forEach(([name, val, txt, hi], i) => {
+    const y = 10 + i * rowH, w = (W - L - R - 70) * val / max;
+    el("text", { x: L - 10, y: y + 20, "text-anchor": "end", "font-family": "Arch,sans-serif", "font-weight": 800, "font-size": 14, fill: o.ink }, svg).textContent = name;
+    el("rect", { x: L, y: y + 6, width: Math.max(2, w), height: 20, fill: hi ? o.hi : o.bar }, svg);
+    el("text", { x: L + w + 8, y: y + 21, "font-family": "Arch,sans-serif", "font-weight": 700, "font-size": 14, fill: o.ink }, svg).textContent = txt;
+  });
+  const det = document.createElement("details"); det.className = "tbl";
+  det.innerHTML = `<summary>Show as a table</summary><table>${rows.map(r => `<tr><td>${r[0]}</td><td>${r[2]}</td></tr>`).join("")}</table>`;
+  box.appendChild(det);
+}
+hbar(document.getElementById("expchart"), [["China", 1660, "$1.66 bn", 1], ["Germany", 292, "$292 m"], ["Japan", 167, "$167 m"]],
+  { label: "Knife exports by value, 2024: China $1.66 billion, Germany $292 million, Japan $167 million", ink: "#F4EFE6", bar: "#D9D2C4", hi: "#E2B44B" });
+(function oemChart() {
+  const box = document.getElementById("oemchart"); if (!box) return;
+  const W = Math.max(300, Math.min(520, box.clientWidth || 520)), parts = [["Made to a foreign brand’s design", 70, "#1B1A17"], ["Factory design, someone else’s name", 25, "#5C564C"], ["Its own brand", 5, "#B3261E"]];
+  const svg = el("svg", { viewBox: `0 0 ${W} 150`, role: "img", "aria-label": "Yangjiang output: about 70% OEM, 25% ODM, 5% own brands" }, box);
+  let x = 0;
+  parts.forEach(([name, pc, c], i) => {
+    const w = W * pc / 100 - (i < 2 ? 2 : 0);
+    el("rect", { x, y: 20, width: w, height: 36, fill: c }, svg);
+    el("text", { x: i === 2 ? W : x, y: 82 + i * 22, "text-anchor": i === 2 ? "end" : "start", "font-family": "Arch,sans-serif", "font-weight": 800, "font-size": 14, fill: "#1B1A17" }, svg)
+      .textContent = `${pc}% · ${name}`;
+    x += W * pc / 100;
+  });
+  const det = document.createElement("details"); det.className = "tbl";
+  det.innerHTML = `<summary>Show as a table</summary><table>${parts.map(p => `<tr><td>${p[0]}</td><td>${p[1]}%</td></tr>`).join("")}</table>`;
+  box.appendChild(det);
+})();
+(function steelChart() {
+  const box = document.getElementById("steelchart"); if (!box) return;
+  const rows = [["Carbon", .95, 1.05, 1.05, 1.5], ["Chromium", 14.5, 15.5, 15.0, 20], ["Molybdenum", .9, 1.2, 1.2, 1.6], ["Vanadium", .1, .3, .3, .5], ["Cobalt", 1.3, 1.5, 1.5, 2]];
+  const W = Math.max(300, Math.min(520, box.clientWidth || 520)), L = 104, R = 40, rowH = 44;
+  const svg = el("svg", { viewBox: `0 0 ${W} ${rows.length * rowH + 40}`, role: "img", "aria-label": "Composition of VG-10 (ranges) and 10Cr15CoMoV (points): every 10Cr15CoMoV value falls inside the VG-10 range" }, box);
+  rows.forEach(([n, lo, hi, cn, max], i) => {
+    const y = 16 + i * rowH, sx = v => L + v / max * (W - L - R);
+    el("text", { x: L - 10, y: y + 15, "text-anchor": "end", "font-family": "Arch,sans-serif", "font-weight": 800, "font-size": 13, fill: "#F4EFE6" }, svg).textContent = n;
+    el("line", { x1: L, x2: W - R, y1: y + 10, y2: y + 10, stroke: "rgba(244,239,230,.3)" }, svg);
+    el("rect", { x: sx(lo), y: y + 2, width: Math.max(4, sx(hi) - sx(lo)), height: 16, fill: "#8d97c2" }, svg);
+    el("circle", { cx: sx(cn), cy: y + 10, r: 6, fill: "#E2B44B", stroke: "#33383D", "stroke-width": 2 }, svg);
+    el("text", { x: W - R + 6, y: y + 15, "font-family": "Arch,sans-serif", "font-size": 12, fill: "#D9D2C4" }, svg).textContent = cn + "%";
+  });
+  const ly = rows.length * rowH + 26;
+  el("rect", { x: L, y: ly - 10, width: 18, height: 12, fill: "#8d97c2" }, svg);
+  el("text", { x: L + 24, y: ly, "font-family": "Arch,sans-serif", "font-size": 12, fill: "#F4EFE6" }, svg).textContent = "VG-10 range";
+  el("circle", { cx: L + 140, cy: ly - 4, r: 6, fill: "#E2B44B" }, svg);
+  el("text", { x: L + 152, y: ly, "font-family": "Arch,sans-serif", "font-size": 12, fill: "#F4EFE6" }, svg).textContent = "10Cr15CoMoV";
+  const det = document.createElement("details"); det.className = "tbl"; det.style.color = "#F4EFE6";
+  det.innerHTML = `<summary style="color:#D9D2C4">Show as a table</summary><table><tr><th>Element</th><th>VG-10</th><th>10Cr15CoMoV</th></tr>${rows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}–${r[2]}%</td><td>${r[3]}%</td></tr>`).join("")}</table>`;
+  box.appendChild(det);
+})();
+
+/* ---------- the scorecard ---------- */
+(function score() {
+  const list = document.getElementById("checks"), out = document.getElementById("scoreout");
+  if (!list) return;
+  const bs = [...list.querySelectorAll("button")];
+  const upd = () => {
+    const n = bs.filter(b => b.getAttribute("aria-pressed") === "true").length;
+    out.textContent = `Tick what your knife has: ${n} of 5.` + (n === 5 ? " A good knife, wherever it was made." : n === 0 ? "" : " The flag on the box doesn’t move this number.");
+  };
+  bs.forEach(b => b.addEventListener("click", () => { b.setAttribute("aria-pressed", b.getAttribute("aria-pressed") !== "true"); upd(); }));
+})();
+
+/* ---------- 11: the label decoder ---------- */
+(function decoder() {
+  const svg = document.getElementById("decoder"), box = document.getElementById("phrases"), out = document.getElementById("decout");
+  if (!svg) return;
+  const P = [
+    ["SOLINGEN", "Protected by law", "German law since 1938, now the decree of 1994: every essential stage was done in Solingen or neighbouring Haan."],
+    ["SHEFFIELD", "Protected", "A certification mark held by the Company of Cutlers in Hallamshire: the major processes were done in the Hallamshire district."],
+    ["日本製 · MADE IN JAPAN", "Means it", "The forging, hardening and grinding that make it a knife happened in Japan."],
+    ["GERMAN STEEL", "Says little", "Where the raw steel came from; the knife itself can be cut, hardened and ground anywhere, Yangjiang included."],
+    ["DESIGNED IN GERMANY", "Says little", "Where somebody drew it; nothing at all about where it was made."],
+    ["JAPANESE STEEL CORE", "Says little", "The core steel came from a Japanese mill; the blanking, heat treatment and grinding can happen anywhere."],
+    ["MADE IN CHINA", "Means it", "Under US rules it’s marked with the country of its last substantial transformation: it was made, or at least finished, in China."]
+  ];
+  const defs = `<defs><filter id="dr"><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="11"/><feDisplacementMap in="SourceGraphic" scale="3"/></filter></defs>`;
+  const blank = `${defs}<path d="M 10 40 L 290 40 L 290 110 L 60 110 Q 22 104 10 80 Z" fill="#c5c9cd" stroke="#F4EFE6" stroke-width="2"/>
+    <rect x="290" y="56" width="66" height="34" fill="#4a2f18" stroke="#F4EFE6" stroke-width="2"/>`;
+  svg.innerHTML = blank;
+  P.forEach(([txt, tag, say], i) => {
+    const b = document.createElement("button"); b.type = "button"; b.textContent = txt; b.setAttribute("aria-pressed", "false");
+    b.addEventListener("click", () => {
+      [...box.children].forEach(x => x.setAttribute("aria-pressed", x === b));
+      const han = /[⺀-鿿]/.test(txt), size = txt.length > 16 ? 15 : 19;
+      const draw = t => {
+        const u = clamp(t / 260), k = 1.25 - .25 * easeOut(u);
+        svg.innerHTML = blank + `<g filter="url(#dr)" style="opacity:${u.toFixed(2)}" transform="translate(150 78) scale(${k.toFixed(3)}) translate(-150 -78)">
+          <text x="150" y="84" text-anchor="middle" font-family="${han ? "Han,Arch" : "Arch"},sans-serif" font-weight="900" font-size="${size}" style="font-stretch:75%;letter-spacing:.08em" fill="#1B1A17">${txt}</text></g>
+          <text x="150" y="138" text-anchor="middle" font-family="Arch,sans-serif" font-weight="800" font-size="12" letter-spacing="2" fill="${tag === "Says little" ? "#E2B44B" : "#F4EFE6"}">${tag.toUpperCase()}</text>`;
+      };
+      clip(260, draw);
+      out.textContent = say;
+    });
+    box.appendChild(b);
+  });
 })();
 
 /* ---------- the loop: scroll drives everything ---------- */

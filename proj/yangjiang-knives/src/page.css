@@ -122,3 +122,42 @@ details.tbl td,details.tbl th{padding:.2rem .9rem .2rem 0;text-align:left;border
   .stage{position:relative;height:auto;min-height:0;padding:3rem 0}
   #belt,#belt.on{transition:none}
 }
+
+/* round 2 */
+.f-blue{background:#24405A}
+:root{--blue:#24405A}
+/* the forced-labor panel: colour drains to plain paper, no interaction, no jokes */
+.plain{background:#EEEAE2;color:var(--ink);padding:4rem var(--gut)}
+.plain .txt{max-width:var(--measure);margin:0 auto}
+.plain sup.fn a{color:var(--mute)}
+.nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));gap:1.4rem 2rem;margin:2rem 0}
+.nums div{border-top:2px solid var(--ink);padding-top:.6rem}
+.nums b{display:block;font:900 2.6rem/1 var(--arch);font-stretch:72%}
+.nums span{display:block;font:500 .9rem/1.4 var(--arch);color:var(--mute);margin-top:.3rem}
+/* range sliders: square thumb, ink track */
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:44px;background:transparent;margin:0;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:2px;background:var(--ink)}
+input[type=range]::-moz-range-track{height:2px;background:var(--ink)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;margin-top:-12px;background:var(--paper);border:2px solid var(--ink)}
+input[type=range]::-moz-range-thumb{width:22px;height:22px;background:var(--paper);border:2px solid var(--ink);border-radius:0}
+.ctl{margin-top:.6rem}
+.lab{display:flex;justify-content:space-between;font:500 .72rem/1.2 var(--arch);letter-spacing:.14em;color:var(--mute)}
+.lab b{font:800 .95rem/1 var(--arch);letter-spacing:.02em;color:var(--ink)}
+/* a short timeline */
+.tl{list-style:none;padding:0;margin:0 0 1.4rem;max-width:var(--measure)}
+.tl li{display:grid;grid-template-columns:4.2rem 1fr;gap:.8rem;padding:.8rem 0;border-top:1px solid rgba(244,239,230,.35)}
+.tl b{font:900 1.5rem/1 var(--arch);font-stretch:72%;color:var(--gold)}
+.tl span{font-size:1.02rem;line-height:1.5}
+/* the scorecard */
+.checks{list-style:none;padding:0;margin:.4rem 0 .6rem}
+.checks li{padding:.5rem 0;border-bottom:1px solid var(--rule)}
+.checks button{display:flex;align-items:center;gap:.7rem;width:100%;text-align:left;background:none;border:0;padding:.4rem 0;min-height:44px;cursor:pointer;font:800 1rem/1.2 var(--arch);font-stretch:85%;color:var(--ink)}
+.checks button::before{content:"";flex:0 0 22px;height:22px;border:2px solid var(--ink);background:var(--paper)}
+.checks button[aria-pressed="true"]::before{background:var(--ink);box-shadow:inset 0 0 0 4px var(--paper)}
+.checks span{display:block;font:400 .92rem/1.4 var(--serif);color:var(--mute);padding-left:calc(22px + .7rem)}
+/* the label decoder */
+.phrases{display:flex;flex-wrap:wrap;gap:.5rem;margin:1rem 0}
+.phrases button{font:800 .78rem/1.1 var(--arch);font-stretch:85%;letter-spacing:.1em;text-transform:uppercase;background:transparent;color:var(--onfield);border:2px solid var(--onfield);padding:.65rem .75rem;min-height:44px;cursor:pointer}
+.phrases button[aria-pressed="true"]{background:var(--onfield);color:var(--indigo)}
+.stage svg.porcelain,.stage svg.splitname{width:min(100%,1000px);height:auto;max-height:66vh;margin:0 auto;display:block;overflow:visible}
+.field .plate .readout{color:var(--ink)}

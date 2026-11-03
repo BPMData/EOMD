@@ -1,18 +1,366 @@
 [
- {"id":"yj-share","text":"Yangjiang makes about 75% of China's knives and scissors (earlier official figures: 70%). Self-reported by the city's Industry and IT Bureau.","url":"http://gd.people.com.cn/n2/2025/0401/c123932-41182689.html","via":"q3a","conf":"medium"},
- {"id":"oec-2024","text":"China: 51.5% of world knife exports by value (HS 8211), $1.66B, 2024; Germany $292M; Japan $167M.","url":"https://oec.world/en/profile/hs/knives","via":"q3a, q3b","conf":"high"},
- {"id":"qing-code","text":"Qing Code, Military Statutes, Frontier Passes (兵律·关津): illicit export of iron goods, 100 strokes of the heavy bamboo; exporting weapons, strangulation.","url":"https://ctext.org/wiki.pl?if=gb&chapter=496731","via":"q1","conf":"high"},
- {"id":"canton-wok","text":"Under the Canton System (1757–1842), outgoing ships were allowed one cast-iron wok and one axe per crewman; excess iron goods were seized.","url":"https://www.sohu.com/a/478799004_824793","via":"q1","conf":"medium"},
- {"id":"ming-swords","text":"Ming China imported over 100,000 Japanese swords through the official tally trade, from 1404 into the mid-1500s (one count: 128,000+).","url":"https://en.wikipedia.org/wiki/Japanese_missions_to_Ming_China","via":"q2","conf":"medium"},
- {"id":"feng-saber","text":"The '1,400 years' story traces to one line in a Qing-era Feng clan genealogy: the saber of General Feng Ang (d. 646 CE) was buried in his tomb.","url":"http://www.yangxi.gov.cn/xw/yxxw/content/post_899661.html","via":"q1","conf":"high (as the origin of the claim)"},
- {"id":"datie-xiang","text":"Commercial knife-making in Yangjiang is documented from the Tongzhi reign (1862–1874) on Blacksmith Lane (打铁巷), with a dozen-odd family forges.","url":"https://news.qq.com/rain/a/20241018A01IH000","via":"q1","conf":"high"},
- {"id":"gazetteer-1925","text":"Yangjiang gazetteer, 1925: 铜器·小刀花剪俱佳，货行远近 (copperware, pocketknives and patterned shears are all fine; the goods travel near and far).","url":"https://news.qq.com/rain/a/20241018A01IH000","via":"q1","conf":"high"},
- {"id":"huntsman","text":"Benjamin Huntsman developed crucible steel near Sheffield in the 1740s; the Company of Cutlers in Hallamshire was incorporated by Act of Parliament in 1624.","url":"https://www.sheffieldcutlerymap.org.uk/history-of-the-cutlery-industry/","via":"q5a, q5b","conf":"high"},
- {"id":"reuleaux","text":"At the 1876 Philadelphia Centennial Exhibition, German commissioner Franz Reuleaux called German goods 'cheap and bad' (billig und schlecht).","url":"https://www.cambridge.org/core/books/brands-geographical-origin-and-the-global-economy/made-in-and-country-of-origin-in-the-post1945-period/B99AB0B1","via":"q5b","conf":"high"},
- {"id":"mma-1887","text":"The UK Merchandise Marks Act 1887 required foreign goods to show their origin, creating the 'Made in Germany' label; within about two decades it had become a mark of quality.","url":"https://supplystudies.com/2017/07/26/the-making-of-made-in/","via":"q5a, q5b","conf":"high"},
- {"id":"mckinley","text":"The US McKinley Tariff of 1890 raised duties on imported cutlery (reported at 50–70%) and cut Sheffield off from its largest export market.","url":"https://www.govinfo.gov/content/pkg/SERIALSET-03187_00_00-004-0437-0000/pdf/SERIALSET-03187_00_00-004-0437-0000.pdf","via":"q5b","conf":"medium–high"},
- {"id":"sheffield-jobs","text":"Sheffield cutlery workforce, approximate: 15,500 (1881), 15,000 (1891), 14,500 (1901), 14,200 (1911), 10,500 (1951), 5,500 (1971), 2,500 (1981), under 1,000 (2020s).","url":"https://etheses.whiterose.ac.uk/id/eprint/5990/2/259670_VOL2.pdf","via":"q5b","conf":"medium (rounded census figures)"},
- {"id":"steels","text":"Typical kitchen-knife steels, carbon content and hardness: 3Cr13/4Cr13 0.26–0.45% C, 50–54 HRC; X50CrMoV15 0.45–0.55% C, 55–58 HRC; VG-10 0.95–1.05% C, 60–62 HRC; Shirogami #1 1.25–1.35% C, 63–65 HRC.","url":"https://knifesteelnerds.com/2021/10/19/knife-steels-rated-by-a-metallurgist-toughness-edge-retention-and-corrosion-resistance/","via":"q4","conf":"high"},
- {"id":"hard-tough","text":"In knife steel, hardness and wear resistance trade off against toughness: harder edges hold longer but chip and snap more readily.","url":"https://knifesteelnerds.com/2018/08/27/what-is-edge-stability/","via":"q4","conf":"high"},
- {"id":"solingen-cheap","text":"Late-1800s Solingen used drop-forging and die-stamping while Sheffield relied on small outworker shops ('little mesters'); Solingen knives were reported 20–40% cheaper.","url":"https://www.cambridge.org/core/books/world-of-possibilities/rise-and-decline-of-flexible-production-the-cutlery-industry-of-solingen-since-the-eighteenth-century/B6519B778788FD00157C927EFC6F6305","via":"q2, q5b","conf":"medium"}
+ {
+  "id": "yj-share",
+  "text": "Yangjiang makes about 75% of China's knives and scissors (earlier official figures: 70%). Self-reported by the city's Industry and IT Bureau.",
+  "url": "http://gd.people.com.cn/n2/2025/0401/c123932-41182689.html",
+  "via": "q3a",
+  "conf": "medium"
+ },
+ {
+  "id": "oec-2024",
+  "text": "China: 51.5% of world knife exports by value (HS 8211), $1.66B, 2024; Germany $292M; Japan $167M. The US is China's largest buyer ($587M in 2024).",
+  "url": "https://oec.world/en/profile/hs/knives",
+  "via": "q3a, q3b",
+  "conf": "high"
+ },
+ {
+  "id": "qing-code",
+  "text": "Qing Code, Military Statutes, Frontier Passes (兵律·关津): illicit export of iron goods, 100 strokes of the heavy bamboo; exporting weapons, strangulation.",
+  "url": "https://ctext.org/wiki.pl?if=gb&chapter=496731",
+  "via": "q1",
+  "conf": "high"
+ },
+ {
+  "id": "canton-wok",
+  "text": "Under the Canton System (1757–1842), outgoing ships were allowed one cast-iron wok and one axe per crewman; excess iron goods were seized.",
+  "url": "https://www.sohu.com/a/478799004_824793",
+  "via": "q1",
+  "conf": "medium"
+ },
+ {
+  "id": "ming-swords",
+  "text": "Ming China imported over 100,000 Japanese swords through the official tally trade, from 1404 into the mid-1500s (one count: 128,000+).",
+  "url": "https://en.wikipedia.org/wiki/Japanese_missions_to_Ming_China",
+  "via": "q2",
+  "conf": "medium"
+ },
+ {
+  "id": "feng-saber",
+  "text": "The '1,400 years' story traces to one line in a Qing-era Feng clan genealogy: the saber of General Feng Ang (d. 646 CE) was buried in his tomb.",
+  "url": "http://www.yangxi.gov.cn/xw/yxxw/content/post_899661.html",
+  "via": "q1",
+  "conf": "high (as the origin of the claim)"
+ },
+ {
+  "id": "datie-xiang",
+  "text": "Commercial knife-making in Yangjiang is documented from the Tongzhi reign (1862–1874) on Blacksmith Lane (打铁巷), with a dozen-odd family forges.",
+  "url": "https://news.qq.com/rain/a/20241018A01IH000",
+  "via": "q1",
+  "conf": "high"
+ },
+ {
+  "id": "gazetteer-1925",
+  "text": "Yangjiang gazetteer, 1925: 铜器·小刀花剪俱佳，货行远近 (copperware, pocketknives and patterned shears are all fine; the goods travel near and far).",
+  "url": "https://news.qq.com/rain/a/20241018A01IH000",
+  "via": "q1",
+  "conf": "high"
+ },
+ {
+  "id": "huntsman",
+  "text": "Benjamin Huntsman developed crucible steel near Sheffield in the 1740s; the Company of Cutlers in Hallamshire was incorporated by Act of Parliament in 1624.",
+  "url": "https://www.sheffieldcutlerymap.org.uk/history-of-the-cutlery-industry/",
+  "via": "q5a, q5b",
+  "conf": "high"
+ },
+ {
+  "id": "reuleaux",
+  "text": "At the 1876 Philadelphia Centennial Exhibition, German commissioner Franz Reuleaux called German goods 'cheap and bad' (billig und schlecht).",
+  "url": "https://www.cambridge.org/core/books/brands-geographical-origin-and-the-global-economy/made-in-and-country-of-origin-in-the-post1945-period/B99AB0B1",
+  "via": "q5b",
+  "conf": "high"
+ },
+ {
+  "id": "mma-1887",
+  "text": "The UK Merchandise Marks Act 1887 required foreign goods to show their origin, creating the 'Made in Germany' label; within about two decades it had become a mark of quality.",
+  "url": "https://supplystudies.com/2017/07/26/the-making-of-made-in/",
+  "via": "q5a, q5b",
+  "conf": "high"
+ },
+ {
+  "id": "mckinley",
+  "text": "The US McKinley Tariff of 1890 raised duties on imported cutlery (reported at 50–70%) and cut Sheffield off from its largest export market.",
+  "url": "https://www.govinfo.gov/content/pkg/SERIALSET-03187_00_00-004-0437-0000/pdf/SERIALSET-03187_00_00-004-0437-0000.pdf",
+  "via": "q5b",
+  "conf": "medium–high"
+ },
+ {
+  "id": "sheffield-jobs",
+  "text": "Sheffield cutlery workforce, approximate: 15,500 (1881), 15,000 (1891), 14,500 (1901), 14,200 (1911), 10,500 (1951), 5,500 (1971), 2,500 (1981), under 1,000 (2020s).",
+  "url": "https://etheses.whiterose.ac.uk/id/eprint/5990/2/259670_VOL2.pdf",
+  "via": "q5b",
+  "conf": "medium (rounded census figures)"
+ },
+ {
+  "id": "steels",
+  "text": "Typical kitchen-knife steels, carbon content and hardness: 3Cr13/4Cr13 0.26–0.45% C, 50–54 HRC; X50CrMoV15 0.45–0.55% C, 55–58 HRC; VG-10 0.95–1.05% C, 60–62 HRC; Shirogami #1 1.25–1.35% C, 63–65 HRC.",
+  "url": "https://knifesteelnerds.com/2021/10/19/knife-steels-rated-by-a-metallurgist-toughness-edge-retention-and-corrosion-resistance/",
+  "via": "q4",
+  "conf": "high"
+ },
+ {
+  "id": "hard-tough",
+  "text": "In knife steel, hardness and wear resistance trade off against toughness: harder edges hold longer but chip and snap more readily.",
+  "url": "https://knifesteelnerds.com/2018/08/27/what-is-edge-stability/",
+  "via": "q4",
+  "conf": "high"
+ },
+ {
+  "id": "solingen-cheap",
+  "text": "Late-1800s Solingen used drop-forging and die-stamping while Sheffield relied on small outworker shops ('little mesters'); Solingen knives were reported 20–40% cheaper.",
+  "url": "https://www.cambridge.org/core/books/world-of-possibilities/rise-and-decline-of-flexible-production-the-cutlery-industry-of-solingen-since-the-eighteenth-century/B6519B778788FD00157C927EFC6F6305",
+  "via": "q2, q5b",
+  "conf": "medium"
+ },
+ {
+  "id": "solingen-guilds",
+  "text": "Solingen's blade guilds got their charters from the Dukes of Berg: hardeners and grinders 1401, assemblers 1412 and 1420, bladesmiths 1472; the Zwilling mark was entered in the cutlers' roll in 1731; Wüsthof was founded in 1814.",
+  "url": "https://de.wikipedia.org/wiki/Geschichte_der_Stadt_Solingen",
+  "via": "q2",
+  "conf": "high"
+ },
+ {
+  "id": "bolster",
+  "text": "A full bolster runs down to the heel; because a sharpening stone can't reach it, the edge wears back over the years while the bolster doesn't, leaving a gap at the heel ('bolster hang').",
+  "url": "https://www.tophamknifeco.com/advanced-chef-knife-grinds/",
+  "via": "q4",
+  "conf": "medium"
+ },
+ {
+  "id": "solingen-1938",
+  "text": "The Act for the Protection of the Name Solingen was enacted on July 25, 1938 (Reichsgesetzblatt I p. 953), after lobbying by Solingen's chamber of commerce and cutlery makers; it fitted Nazi economic policy: cartels, export earnings for rearmament, and 'German quality work' (deutsche Wertarbeit).",
+  "url": "https://de.wikipedia.org/wiki/Solingenverordnung",
+  "via": "q5a, q5b",
+  "conf": "high (date); medium (motives)"
+ },
+ {
+  "id": "solingen-war",
+  "text": "Solingen firms including J.A. Henckels (Zwilling), Wüsthof, Böker and Eickhorn made bayonets, military knives and Nazi party and service daggers under the Reichszeugmeisterei (RZM) licensing system.",
+  "url": "https://www.weitze.com/militaria/Blankwaffen_Deutschlandall.html",
+  "via": "q5a, q5b",
+  "conf": "high (that they did); low (the exact codes, which the two reports disagree on)"
+ },
+ {
+  "id": "forced-labor",
+  "text": "Solingen had fewer than 1,000 foreign forced workers at the end of 1941, more than 8,000 by December 1943, and 10,800 registered on November 1, 1944 (about 6,800 men and 4,000 women), plus about 2,000 prisoners of war.",
+  "url": "https://max-leven-zentrum.de/stadtrundfahrt-zur-geschichte-der-ns-zeit-in-solingen/4890/",
+  "via": "q5b",
+  "conf": "high"
+ },
+ {
+  "id": "henckels-camps",
+  "text": "J.A. Henckels held over 700 civilian forced laborers from the Soviet Union and Poland and 36 prisoners of war in three camps; at least 150 forced laborers died in the RAF raids of November 4–5, 1944, many kept in wooden barracks while German workers used shelters.",
+  "url": "https://max-leven-zentrum.de/closedbutopen-zwangsarbeit/2239/",
+  "via": "q5b",
+  "conf": "high"
+ },
+ {
+  "id": "solingen-1994",
+  "text": "The current Solingen decree (SolingenV) was issued on December 16, 1994 and took effect on January 1, 1995: 'Solingen' may only go on blades whose essential stages were all done in Solingen or Haan.",
+  "url": "https://www.gesetze-im-internet.de/solingenv/BJNR383300994.html",
+  "via": "q5a, q5b",
+  "conf": "high"
+ },
+ {
+  "id": "nippon",
+  "text": "Under the US McKinley Tariff of 1890, Japanese export porcelain was marked 'Nippon' from 1891; US Customs ruled from September 1, 1921 that the English 'Japan' was required; exports from 1947 to 1952 were marked 'Made in Occupied Japan'.",
+  "url": "https://gotheborg.com/marks/noritake.shtml",
+  "via": "q5a, q5b",
+  "conf": "high"
+ },
+ {
+  "id": "haitorei",
+  "text": "On March 28, 1876 the Meiji government's Haitōrei banned carrying swords in public; Seki's swordsmiths turned to pocket knives, farm tools and Western-style cutlery.",
+  "url": "https://seidoknives.com/blogs/knife-guides/regions-of-japanese-knife-making",
+  "via": "q2",
+  "conf": "high"
+ },
+ {
+  "id": "seki-stamp",
+  "text": "From about 1940 a small 関 'Seki stamp' on the tang marked military swords made from industrial steel by machine rather than traditionally; Seki's registered swordsmiths rose from 1 in 1938 to 232 by September 1944. Such swords still can't be registered as art swords in Japan.",
+  "url": "https://japanese-blades.com/schools/type-95-nco/",
+  "via": "q5a, q5b",
+  "conf": "high (the stamp); medium (counts)"
+ },
+ {
+  "id": "seki-postwar",
+  "text": "After 1945 the occupation banned edged weapons and seized swords; Seki's factories, which had not been bombed, turned to pocket knives, razors and kitchen knives, first for US military stores and then for export.",
+  "url": "https://www.scribd.com/document/1005002537/GIFU-TOSHO-LIST-1937",
+  "via": "q5a, q5b",
+  "conf": "medium"
+ },
+ {
+  "id": "export-law",
+  "text": "Japan's Export Inspection Law of 1957 required government inspection of designated exports, cutlery among them, and barred goods that failed.",
+  "url": "https://www.cambridge.org/core/books/brands-geographical-origin-and-the-global-economy/made-in-and-country-of-origin-in-the-post1945-period/B99AB0B1",
+  "via": "q5a, q5b",
+  "conf": "high"
+ },
+ {
+  "id": "mac-global",
+  "text": "MAC (Seki, 1964) made thin stamped chef's knives Western chefs at first dismissed as flimsy; Global, designed by Komin Yamada for Yoshikin in Niigata, launched in 1985; Anthony Bourdain recommended Global in Kitchen Confidential (2000).",
+  "url": "https://okamiblades.com/pages/mac",
+  "via": "q2, q5b",
+  "conf": "medium–high"
+ },
+ {
+  "id": "weights",
+  "text": "Typical weights: Western chef's knife 220–280 g; Japanese wa-gyuto 120–160 g (laser) to 190–250 g (workhorse).",
+  "url": "",
+  "via": "q4 (its weight table gives no single source)",
+  "conf": "medium"
+ },
+ {
+  "id": "angles",
+  "text": "Typical factory edges: German about 30–40° inclusive, Japanese about 24–30°. In CATRA tests, a 20° inclusive edge cut about 800 mm of card before dulling, about 450 mm at 34° and about 250 mm at 50° (figures to be re-checked).",
+  "url": "https://knifesteelnerds.com/2018/06/18/maximizing-edge-retention/",
+  "via": "q4",
+  "conf": "medium"
+ },
+ {
+  "id": "single-bevel",
+  "text": "A single-bevel knife is ground on one side only, with a hollow back (urasuki); it steers toward the flat side in a cut, and releases thin slices of raw fish cleanly.",
+  "url": "https://www.tophamknifeco.com/advanced-chef-knife-grinds/",
+  "via": "q4",
+  "conf": "medium"
+ },
+ {
+  "id": "wenwudao",
+  "text": "In the 1920s Yangjiang smith He Quanli made the wenwudao (文武刀, 'civil-military knife'): the front two-thirds ground thin for slicing, the rear third left thick for chopping bone; it sold for four hao of silver.",
+  "url": "http://www.yangxi.gov.cn/xw/yxxw/content/post_899661.html",
+  "via": "q1",
+  "conf": "medium–high"
+ },
+ {
+  "id": "jifu",
+  "text": "In the 1930s Liang Jifu (梁季芙), a former jeweller, made pocketknives from spring steel salvaged from vehicles and rail scrap, with buffalo-horn handles stamped 季芙.",
+  "url": "http://www.yangxi.gov.cn/xw/yxxw/content/post_899661.html",
+  "via": "q1",
+  "conf": "medium–high"
+ },
+ {
+  "id": "xiagang",
+  "text": "Yangjiang smiths forge-welded a thin hard steel core between soft iron cheeks (夹钢, xiagang); Japanese makers do the same with hard hagane between soft jigane (san-mai).",
+  "url": "https://www.tophamknifeco.com/advanced-chef-knife-grinds/",
+  "via": "q1, q2, q4",
+  "conf": "high"
+ },
+ {
+  "id": "yj-1949",
+  "text": "By 1949 Yangjiang had more than 300 knife-making artisans producing about 600,000 knives a year (county gazetteer).",
+  "url": "http://www.yangxi.gov.cn/xw/yxxw/content/post_899661.html",
+  "via": "q1",
+  "conf": "high"
+ },
+ {
+  "id": "yj-1958",
+  "text": "In 1958 four cooperatives were merged into the State-Owned Yangjiang County Knife Factory; in 1983 master smith Li Lianghui and seven co-workers left it to start the forge that became Shibazi (十八子, from the surname 李 = 十 + 八 + 子).",
+  "url": "https://www.shibazi.com/news/html.asp?id=98",
+  "via": "q1",
+  "conf": "high"
+ },
+ {
+  "id": "yj-2001",
+  "text": "In 2001 Yangjiang was named 'Knife and Scissors Capital of China' (中国刀剪之都) by the China Productivity Promotion Center Association and the National Daily Hardware Industry Productivity Promotion Center.",
+  "url": "https://news.qq.com/rain/a/20241018A01IH000",
+  "via": "q1",
+  "conf": "high"
+ },
+ {
+  "id": "oem",
+  "text": "Yangjiang's output is reported as about 70% made to foreign brands' designs (OEM), 25% factory designs sold under other names (ODM) and 5% its own brands.",
+  "url": "https://sourcingnova.com/blog/yangjiang-knife-industry/",
+  "via": "q2, q4",
+  "conf": "medium"
+ },
+ {
+  "id": "fake-jp",
+  "text": "Many online knife brands with Japanese-sounding names and samurai marketing sell knives made in Yangjiang.",
+  "url": "https://oishii-desu.com/2022/06/23/japanese-knife-amazon/",
+  "via": "q3a, q3b",
+  "conf": "medium–high"
+ },
+ {
+  "id": "vg10-clone",
+  "text": "10Cr15CoMoV: about 1.05% C, 15% Cr, 1.2% Mo, 0.3% V, 1.5% Co; VG-10: 0.95–1.05% C, 14.5–15.5% Cr, 0.9–1.2% Mo, 0.1–0.3% V, 1.3–1.5% Co. Likewise 5Cr15MoV is the Chinese counterpart of the German X50CrMoV15.",
+  "url": "https://www.culinaryknifebible.com/steels/10cr15comov",
+  "via": "q3a, q4",
+  "conf": "high"
+ },
+ {
+  "id": "heat-treat",
+  "text": "Heat treatment sets a steel's real performance: a premium steel badly treated to 57 HRC is out-cut by an ordinary one properly treated to 61; each point of hardness changes CATRA edge life by roughly 5–10%. Well-treated 10Cr15CoMoV matched VG-10 in testing; badly treated samples rusted where VG-10 didn't.",
+  "url": "https://www.culinaryknifebible.com/steels/10cr15comov",
+  "via": "q3a, q4",
+  "conf": "medium–high"
+ },
+ {
+  "id": "cluster",
+  "text": "In Yangjiang the whole chain (steel slitting, blanking and forging, heat treatment, grinding, handles, packing) sits within about 15–30 km; a local mill runs a 400,000-ton-a-year line for cutlery strip steel; the fair's organisers call it a 'one-hour supply-chain circle'.",
+  "url": "https://finance.sina.com.cn/money/future/indu/2025-03-20/doc-ineqhfms5012588.shtml",
+  "via": "q3a, q3b, q4",
+  "conf": "medium (the 'one-hour circle' is promotional)"
+ },
+ {
+  "id": "jinhui",
+  "text": "Jinhui (owner of the Wangmazi brand) runs automatic stamping at 120,000 pieces a day, which it says equals 24 skilled workers on 10-hour shifts.",
+  "url": "https://static.nfapp.southcn.com/content/202310/17/c8203148.html",
+  "via": "q3a",
+  "conf": "medium (company claim)"
+ },
+ {
+  "id": "old-brands",
+  "text": "Zhang Xiaoquan (Hangzhou) and Wangmazi (Beijing, founded 1651) have moved or expanded production into Yangjiang.",
+  "url": "https://news.ycwb.com/2021-10/29/content_40358275.htm",
+  "via": "q2, q3a",
+  "conf": "high"
+ },
+ {
+  "id": "garlic",
+  "text": "In July 2022 a Zhang Xiaoquan 50Cr15MoV cleaver snapped while smashing garlic; the company said the model had sold 60,000+ since 2018 with 11 formal complaints. Hard, thin blades without enough toughness can break under a sideways blow.",
+  "url": "http://news.youth.cn/jsxw/202207/t20220715_13847603.htm",
+  "via": "q3a, q3b",
+  "conf": "high"
+ },
+ {
+  "id": "tariff-2026",
+  "text": "US duty on a Chinese kitchen knife (HTS 8211.92.20) since July 24, 2026: 0.8¢ + 4.6% normal duty + 7.5% Section 301 + 12.5% Section 301 forced-labor duty, about 0.8¢ + 24.6%.",
+  "url": "https://content.govdelivery.com/accounts/USDHSCBP/bulletins/421d887",
+  "via": "q3a",
+  "conf": "high (rates); medium (under legal challenge)"
+ },
+ {
+  "id": "scorecard",
+  "text": "What measurably separates a good knife from a bad one, wherever it's made: thinness behind the edge, even hardness along the blade, toughness from a sound heat treatment, a true and clean edge, and fit and finish.",
+  "url": "https://knifesteelnerds.com/2018/08/27/what-is-edge-stability/",
+  "via": "q4",
+  "conf": "medium"
+ },
+ {
+  "id": "atk",
+  "text": "America's Test Kitchen has repeatedly rated the budget Victorinox Fibrox Pro 8-inch chef's knife (stamped, Swiss-made) above forged German knives costing several times more, for its thin blade and light weight.",
+  "url": "https://sharponsight.com/cutting-remarks-the-sharp-on-sight-blog-of-superior-edges/why-americas-test-kitchens-favorite-chefs-knife-might-not-be-your-best-bet",
+  "via": "q4",
+  "conf": "medium"
+ },
+ {
+  "id": "cangshan",
+  "text": "Cangshan, a California brand that owns factories in Yangjiang, reported CATRA results for its Sandvik 14C28N blades of 850 mm total card cut, against 601 mm for its own German X50CrMoV15 blades.",
+  "url": "https://prudentreviews.com/cangshan-review/",
+  "via": "q4",
+  "conf": "medium (company-reported test)"
+ },
+ {
+  "id": "labels",
+  "text": "'German steel' or 'Japanese steel core' describes where the raw steel came from, and 'Designed in Germany' where it was designed; none says where the knife was made. 'Made in Japan' (日本製) requires the forging, hardening and grinding to happen in Japan; US law marks a knife with the country of its last substantial transformation.",
+  "url": "https://knifeorbit.com/japanese-knives-made-in-japan/",
+  "via": "q4",
+  "conf": "medium–high"
+ },
+ {
+  "id": "sheffield-mark",
+  "text": "'Sheffield' on cutlery is a certification mark owned by the Company of Cutlers in Hallamshire: the major processes must happen in the Hallamshire district.",
+  "url": "https://www.cutlers-hallamshire.org.uk/the-company-does/protection/",
+  "via": "q5a, q5b",
+  "conf": "high"
+ }
 ]
