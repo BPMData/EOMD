@@ -495,5 +495,12 @@
   "url": "",
   "via": "Bryan's copy of the book",
   "conf": "high"
+ },
+ {
+  "id": "catra",
+  "text": "The CATRA edge-retention test: a stack of card containing 5% silica (sand) is pressed onto the edge at a fixed 50 newtons while the knife slides back and forth; it runs a fixed 120 strokes (60 cycles) and adds up how deep into the card each stroke cut, reported as total cardstock cut (TCC) in mm.",
+  "url": "https://knifesteelnerds.com/2020/05/01/testing-the-edge-retention-of-48-knife-steels/",
+  "via": "Knife Steel Nerds PDFs supplied by Bryan",
+  "conf": "high"
  }
 ]
