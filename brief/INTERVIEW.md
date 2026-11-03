@@ -46,6 +46,8 @@ It works in any chat, not only in this repo: paste this file and `TEMPLATE.md` i
 ★ = every piece, both modes. The rest: full creative pieces, where they apply. Numbers = sections of `TEMPLATE.md`.
 
 **1. The ask**
+- ★ First, check it belongs here: motion pieces, players, posters and screen loops do. An infographic (a page that
+  explains something with numbers) belongs in ProofEr (`BPMData/ProofEr`); say so and stop.
 - ★ What is it, where will it be seen, and by when? *"A 90-second video for the robotics club's open-house night,
   shown once on a projector, by Nov 15."*
 - ★ How to build it, in Claude-usage terms (numbers from "Usage estimates" below; say they are rough):
