@@ -130,3 +130,19 @@ What is possible here:
 - Does the ending land, or the loop breathe?
 - Is every fact and word from the brief, nothing invented?
 - Is it free of the subject's clichés?
+## 11. Fresh-eyes review before a gallery or the full player
+Whoever made a frame sees what they meant to draw. So before a choice panel or a storyboard's stills reach the client
+(stage 1), and again before the full player (stage 4), one reviewer agent looks at the work cold. Skip it for
+changes to an existing piece; the self-check (§10) is enough there.
+- **What it sees:** the brief and the images only: every option's stills at their real size and aspect ratio, and for
+  clips or the player, a frame every 2 s plus the frames on either side of each cut and the loop seam. Not the code,
+  the storyboard's reasoning or the pitch text.
+- **What it checks:** mistakes, not taste. Text off the edge, clipped or overlapping; copy that isn't word for word
+  from the brief, or a fact the brief doesn't hold; type too small for the brief's viewing distance; text/background
+  pairs below WCAG AA; anything that would flash more than 3×/s; a loop seam on a cut. In a gallery, also: which
+  options are really the same idea (same structure and signature idea, different colors).
+- **What it never does:** rank options, cut one, or judge taste. Every option still reaches the client, the bold one
+  included. Its notes are not verdicts and don't go in the Decisions log.
+- **After it:** fix the clear mistakes, then show the gallery with one short line per option: what was fixed and
+  anything still flagged ("A: caption overflow fixed. B and C are close; C is the safer one"). Measured checks stay
+  with the tools (loudness and true peak with ffmpeg `ebur128`, contrast ratios computed), not with the reviewer's eye.

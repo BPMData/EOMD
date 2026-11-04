@@ -3,7 +3,7 @@
 > **Visitors:** this is the project's working log, kept for the people and AI assistants working on it. For what
 > EOMD is and how to use it, start with [README.md](README.md).
 
-_Last updated: Nov 4, 2026 (Academies film: clock + timer version). Each piece's history, limits and open questions live in its
+_Last updated: Nov 4, 2026 (fresh-eyes review added to the design stages; Academies film: clock + timer version). Each piece's history, limits and open questions live in its
 folder's `STATUS.md`; repo-wide history in `notes/history.md`._
 
 ## Pieces
@@ -35,4 +35,5 @@ folder's `STATUS.md`; repo-wide history in `notes/history.md`._
 3. **First-question eval:** add an `ANTHROPIC_API_KEY` repo secret to run it in CI, or run `tools/eval_new_piece.py`
    locally (Bryan's call).
 4. Choice panels: used for the CSE loop's concepts and three rounds of sound (16-s samples inlined); they worked.
-
+5. **Fresh-eyes review (new, Nov 4):** a reviewer agent that sees only the brief and the images checks galleries,
+   stills and the full player for mistakes (not taste) before the client sees them (`brief/CRAFT.md` §11). Untried.
