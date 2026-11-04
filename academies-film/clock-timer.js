@@ -1,5 +1,6 @@
-/* Academies hallway film: classroom add-on (Nov 4, 2026). Injected by tools/build_academies_clock.py into a copy of the
-   master; the master itself stays clock-free (its MP4 renders are unchanged).
+/* Academies classroom add-on (Nov 4, 2026). Injected by tools/build_academies_clock.py into a copy of the hallway film's
+   master (the master stays clock-free, so its MP4 renders are unchanged), and by source/tools/build-study.js into the
+   Sanctioned Corporate Calm study loop.
    1. Wall clock, always on, top-right: h:mm (12-hour, no AM/PM, like the CD-ROM's status-bar clock).
    2. Session timer, from the CD-ROM screensaver (living/sound-timer.js): Start timer + Minutes (5-30, Other... 1-240),
       key T, ?min=. While it runs: the time left just left of the wall clock in 10-s steps rounded up (20:00, 19:50 ... 00:00)
@@ -66,13 +67,21 @@
   }
 
   // draw on top of every frame; the film itself is still a pure function of t
-  const render = DHS.film.render;
-  DHS.film.render = (ctx, t, W, H, scale = 1) => { render(ctx, t, W, H, scale); checkDone(); overlay(ctx, W, H, scale); };
+  // DHS.clockTimer.wrap() hooks the current DHS.film.render; it runs now if DHS.film exists (the hallway film), or the page
+  // calls it once it has set DHS.film (the study loop). DHS.clockTimer.audio = () => AudioContext lets the chime use the
+  // page's own context.
+  const CTX = (DHS.clockTimer = { audio: null });
+  CTX.wrap = () => {
+    const render = DHS.film.render;
+    DHS.film.render = (ctx, t, W, H, scale) => { render(ctx, t, W, H, scale); checkDone(); overlay(ctx, W || 1920, H || 1080, scale || 1); };
+  };
+  if (DHS.film && DHS.film.render) CTX.wrap();
 
   /* ---------- the chime (from living/sound-timer.js) ---------- */
   let cctx = null;
   function chimeCtx() {
     const P = G.__dhs; if (P && P.st.audio) return P.st.audio;
+    const A = CTX.audio && CTX.audio(); if (A) return A;
     if (!cctx) { const AC = G.AudioContext || G.webkitAudioContext; if (AC) cctx = new AC(); }
     return cctx;
   }

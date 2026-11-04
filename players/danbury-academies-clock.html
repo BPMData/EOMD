@@ -3,7 +3,7 @@
 <style>html,body{margin:0;height:100%;background:#0033A0;overflow:hidden}body{display:flex;align-items:center;justify-content:center}
 canvas{max-width:100vw;max-height:100vh;width:auto;height:auto;display:block}body.idle{cursor:none}
 #bar{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);display:flex;gap:10px;align-items:center;background:rgba(10,22,51,.82);color:#fff;font:600 16px system-ui,sans-serif;padding:10px 14px;border-radius:12px;transition:opacity .4s}
-body.idle #bar{opacity:0;pointer-events:none}#bar button{background:#fff;color:#0A1633;border:0;border-radius:8px;padding:8px 14px;font:inherit;cursor:pointer}#bar select,#bar input{font:inherit;border:0;border-radius:8px;padding:7px 8px;background:#fff;color:#0A1633}#bar input{width:70px}#bar label{display:flex;gap:6px;align-items:center}#tbox{display:flex;gap:10px;align-items:center}#bar{padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));flex-wrap:wrap;justify-content:center;max-width:calc(100vw - 32px)}</style></head>
+body.idle #bar{opacity:0;pointer-events:none}#bar button{background:#fff;color:#0A1633;border:0;border-radius:8px;padding:8px 14px;font:inherit;cursor:pointer}#bar select,#bar input{font:inherit;border:0;border-radius:8px;padding:7px 8px;background:#fff;color:#0A1633}#bar input{width:70px}#bar label{display:flex;gap:6px;align-items:center}#tbox{display:flex;gap:10px;align-items:center}#bar{flex-wrap:wrap;justify-content:center;max-width:calc(100vw - 32px)}</style></head>
 <body><canvas id="c"></canvas><div id="bar"><button id="pp">Pause</button><button id="mu">Sound on</button><button id="fs">Fullscreen</button><span id="tbox"><button id="tmr" type="button">Start timer</button><label>Minutes <select id="tmin"><option>5</option><option>10</option><option>15</option><option selected>20</option><option>25</option><option>30</option><option value="c">Other…</option></select></label><input id="tcus" type="number" min="1" max="240" value="20" aria-label="Custom minutes" hidden></span><span id="st"></span></div>
 <script type="text/plain" id="dhs-audio-src">/* ============================================================================
    THE ACADEMIES OF DANBURY HIGH SCHOOL — HALLWAY LOOP
@@ -2343,8 +2343,9 @@ DHSText:"AAEAAAAQAQAABAAAR0RFRjQlNTkAALnAAAAA4EdQT1OHc20ZAAC6oAAAm8RHU1VCVhQy+gA
 })(globalThis);
 </script>
 <script>
-/* Academies hallway film: classroom add-on (Nov 4, 2026). Injected by tools/build_academies_clock.py into a copy of the
-   master; the master itself stays clock-free (its MP4 renders are unchanged).
+/* Academies classroom add-on (Nov 4, 2026). Injected by tools/build_academies_clock.py into a copy of the hallway film's
+   master (the master stays clock-free, so its MP4 renders are unchanged), and by source/tools/build-study.js into the
+   Sanctioned Corporate Calm study loop.
    1. Wall clock, always on, top-right: h:mm (12-hour, no AM/PM, like the CD-ROM's status-bar clock).
    2. Session timer, from the CD-ROM screensaver (living/sound-timer.js): Start timer + Minutes (5-30, Other... 1-240),
       key T, ?min=. While it runs: the time left just left of the wall clock in 10-s steps rounded up (20:00, 19:50 ... 00:00)
@@ -2411,13 +2412,21 @@ DHSText:"AAEAAAAQAQAABAAAR0RFRjQlNTkAALnAAAAA4EdQT1OHc20ZAAC6oAAAm8RHU1VCVhQy+gA
   }
 
   // draw on top of every frame; the film itself is still a pure function of t
-  const render = DHS.film.render;
-  DHS.film.render = (ctx, t, W, H, scale = 1) => { render(ctx, t, W, H, scale); checkDone(); overlay(ctx, W, H, scale); };
+  // DHS.clockTimer.wrap() hooks the current DHS.film.render; it runs now if DHS.film exists (the hallway film), or the page
+  // calls it once it has set DHS.film (the study loop). DHS.clockTimer.audio = () => AudioContext lets the chime use the
+  // page's own context.
+  const CTX = (DHS.clockTimer = { audio: null });
+  CTX.wrap = () => {
+    const render = DHS.film.render;
+    DHS.film.render = (ctx, t, W, H, scale) => { render(ctx, t, W, H, scale); checkDone(); overlay(ctx, W || 1920, H || 1080, scale || 1); };
+  };
+  if (DHS.film && DHS.film.render) CTX.wrap();
 
   /* ---------- the chime (from living/sound-timer.js) ---------- */
   let cctx = null;
   function chimeCtx() {
     const P = G.__dhs; if (P && P.st.audio) return P.st.audio;
+    const A = CTX.audio && CTX.audio(); if (A) return A;
     if (!cctx) { const AC = G.AudioContext || G.webkitAudioContext; if (AC) cctx = new AC(); }
     return cctx;
   }
