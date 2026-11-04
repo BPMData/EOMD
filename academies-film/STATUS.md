@@ -3,6 +3,18 @@
 _Moved from the root `STATUS.md` on Oct 25, 2026 (context plan step 2); the root file is now a short index. Update this file when working on the Academies film._
 
 ## Status
+- **Classroom version: wall clock + session timer (Nov 4, 2026, Bryan asked; built, not yet watched on a screen).**
+  `players/danbury-academies-clock.html`, built by `tools/build_academies_clock.py` from the master + `academies-film/clock-timer.js`
+  (the master is unchanged). Top-right row: the time left (when a timer runs) and the wall clock (h:mm, 12-hour, no AM/PM, like
+  the CD-ROM's status-bar clock). The timer is the CD-ROM's: Start timer + Minutes 5–30 or Other… (1–240), key T, `?min=`;
+  readout in 10-s steps rounded up; a progress bar along the bottom in minute segments; one soft two-note chime at the end
+  (plays even with the sound off); the readout holds 00:00 until Reset timer. **No end card** (no approved copy for this
+  piece; same as the Exploration poster). Wake lock on; a tap shows the control bar. `?noclock`, `?notimer`.
+  Contrast (plate = ink at 88 % over the worst backgrounds): white clock 12.8:1, yellow `#FFD100` readout 8.7:1. Sizes: clock
+  60 px, readout 84 px (1080-px frame). Checked every 2.5 s of the loop in both orientations: covers no copy; the Medicine
+  caduceus hero (landscape) comes within a few px of the readout's left edge. Tested in Chromium: no script errors, timer ends,
+  chimes, resets.
+  - **Bryan, Nov 4:** no end card ("leave it"); 12-hour without AM/PM is "fine"; "publish it" (PR to main).
 - **Academies hallway film: master = `academies-film/danbury-academies-player.html`** (heroes, new icons and the trilingual word
   blocks on all 7 academies; edit it directly, both config copies). `academies-film/source/` is the older Sep 29 source and lacks
   those changes. Bryan rendered the master to MP4 with `tools/html_to_mp4.py` (Oct 20).
