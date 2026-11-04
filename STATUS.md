@@ -10,7 +10,7 @@ folder's `STATUS.md`; repo-wide history in `notes/history.md`._
 | Piece | State | Next | Status file |
 |---|---|---|---|
 | CS Lab Screensaver ("CD-ROM") | Stage 4 on Bryan's Mac; extras through 9h built | Check the 9h builds; stage 5 extras | `proj/cdrom/STATUS.md` |
-| Academies hallway film | Done; Bryan rendered the MP4 (Oct 20). Clock + timer version built Nov 4 (`players/danbury-academies-clock.html`) | Watch the clock + timer version on a classroom screen; hero size and chip icons | `academies-film/STATUS.md` |
+| Academies hallway film | Done; Bryan rendered the MP4 (Oct 20). Clock + timer versions published Nov 4: the film (`players/danbury-academies-clock.html`) and the Sanctioned Corporate Calm study loop (`players/sanctioned-corporate-calm.html`) | Watch the clock + timer version on a classroom screen; hero size and chip icons | `academies-film/STATUS.md` |
 | Living posters (SSR, CS, Exploration) | Done | Parked items (5-min timer, random vine entry); rebuild CS + SSR | `living/STATUS.md` |
 | CSE hallway loop (new, full creative) | Done; published Oct 25 (`players/cse-loop.html`) | ES/PT check; real-TV check | `proj/cse-loop/STATUS.md` |
 | PLTW CSE promo | r2 published ("cheesy as hell, but exactly what I asked for") | The PLTW test below | `proj/pltw/STATUS.md` |

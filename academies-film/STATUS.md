@@ -3,6 +3,12 @@
 _Moved from the root `STATUS.md` on Oct 25, 2026 (context plan step 2); the root file is now a short index. Update this file when working on the Academies film._
 
 ## Status
+- **Sanctioned Corporate Calm study loop: published with the clock + timer (Nov 4, Bryan: it "should be" on the site and "should
+  also have the wall clock and timer features").** Master = `academies-film/sanctioned-corporate-calm.html`, Bryan's copy (he said
+  don't rebuild it from scratch; it is newer than `source/tools/build-study.js`'s output). `tools/build_academies_clock.py` now
+  builds both pieces → `players/sanctioned-corporate-calm.html`. Same clock + timer as the hallway version; on this page the chime
+  uses its own sound when the music is paused, so it never un-pauses the music. 1920×1080 only (the master has no portrait layout).
+  Tested in Chromium: no script errors, music streams, timer ends + chimes, Pause stays paused. Not yet watched on a screen.
 - **Classroom version: wall clock + session timer (Nov 4, 2026, Bryan asked; built, not yet watched on a screen).**
   `players/danbury-academies-clock.html`, built by `tools/build_academies_clock.py` from the master + `academies-film/clock-timer.js`
   (the master is unchanged). Top-right row: the time left (when a timer runs) and the wall clock (h:mm, 12-hour, no AM/PM, like

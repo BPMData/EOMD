@@ -13,7 +13,7 @@ Status, the regression history and known limits: `tools/STATUS.md`.
 |---|---|
 | `build.py` | Living posters + jukebox (`living/CLAUDE.md`, `jukebox/CLAUDE.md`) |
 | `build_cdrom.py`, `cdrom_ambient.py` | The CD-ROM screensaver and its ambient version (`proj/cdrom/CLAUDE.md`) |
-| `build_academies_clock.py` | The Academies film's classroom version: the master + `academies-film/clock-timer.js` (wall clock + session timer) → `dist/danbury-academies-clock.html`, copied to `players/` (`academies-film/CLAUDE.md`) |
+| `build_academies_clock.py` | Clock + timer versions of the Academies pieces: each master in `academies-film/` + `academies-film/clock-timer.js` (wall clock + session timer) → `dist/danbury-academies-clock.html` (hallway film) and `dist/sanctioned-corporate-calm.html` (study loop), copied to `players/` (`academies-film/CLAUDE.md`) |
 | `gen_export.py` | Tk GUI for one gen cartridge → standalone HTML and/or MP4 with its music (`gen/CLAUDE.md`) |
 | `html_to_mp4.py` | Tk GUI: pick a player .html, get an .mp4. FILM players (the Academies master: `DHS.film`) render frame-exact with offline music; STEPPED players (`?manual` + `advance()`: CD-ROM, living posters, gen with `cart=<name>`) are stepped frame by frame and their music is recorded from a real-time run (not locked to the picture). Needs ffmpeg (found automatically, or BROWSE) and Playwright + Chromium |
 | `render_piece.py` | Renders a one-off score (`proj/<name>/music.js` setting `PIECE.render(sr)`) to WAV + MP3 at `TARGET_LUFS`, true-peak limited, ffmpeg-checked |
@@ -30,7 +30,7 @@ Never render an MP4 by hand in a sandbox: use `html_to_mp4.py` (it drives `?manu
 
 ## Publishing a build
 `players/` holds published copies of `dist/jukebox.html`, `pltw-cse.html`, `cdrom-player.html`, `cdrom-ambient.html`,
-`living-player.html`, `living-player-cs.html`, `living-player-ex.html`, `danbury-academies-clock.html` (its build copies it there itself), `gen/dist/gen-player.html` and
+`living-player.html`, `living-player-cs.html`, `living-player-ex.html`, `danbury-academies-clock.html` and `sanctioned-corporate-calm.html` (their build copies them there itself), `gen/dist/gen-player.html` and
 `proj/cse-loop/cse-loop.html` (built in place by `proj/cse-loop/build.py`, published as `players/cse-loop.html`). After rebuilding
 one, copy it into `players/` and commit, so the public copies don't go stale. Only publish a build that loads without
 script errors. Adding or renaming a player: update `index.html` (the Pages landing page; `.nojekyll` must stay, or Pages
