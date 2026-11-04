@@ -9,6 +9,12 @@ _Moved from the root `STATUS.md` on Oct 25, 2026 (context plan step 2); the root
   builds both pieces → `players/sanctioned-corporate-calm.html`. Same clock + timer as the hallway version; on this page the chime
   uses its own sound when the music is paused, so it never un-pauses the music. 1920×1080 only (the master has no portrait layout).
   Tested in Chromium: no script errors, music streams, timer ends + chimes, Pause stays paused. Not yet watched on a screen.
+  - **One-time MP3 (Nov 4, Bryan wanted it for studying on his phone):** rendered from the master's own embedded music code
+    (`<script id="wsrc">`, run in Node), 20:00, 192 kbps, −16.1 LUFS, true peak −1.7 dBTP (ffmpeg `ebur128`), no clipped samples.
+    Sent to Bryan in the session, not committed. Bryan: "Nah it's good as-is": no MP3 on the site, no Download button.
+    To make it again: run the page's `wsrc` text in Node, step `DHS.longform.stream()` through `LF.plan`, write a WAV, encode
+    with ffmpeg (as `source/tools/render-study.js` does for the old source).
+  - On phones: the hallway film switches to its vertical layout when the phone is upright; the study page is widescreen only.
 - **Classroom version: wall clock + session timer (Nov 4, 2026, Bryan asked; built, not yet watched on a screen).**
   `players/danbury-academies-clock.html`, built by `tools/build_academies_clock.py` from the master + `academies-film/clock-timer.js`
   (the master is unchanged). Top-right row: the time left (when a timer runs) and the wall clock (h:mm, 12-hour, no AM/PM, like
