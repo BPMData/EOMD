@@ -131,18 +131,32 @@ What is possible here:
 - Is every fact and word from the brief, nothing invented?
 - Is it free of the subject's clichés?
 ## 11. Fresh-eyes review before a gallery or the full player
-Whoever made a frame sees what they meant to draw. So before a choice panel or a storyboard's stills reach the client
-(stage 1), and again before the full player (stage 4), one reviewer agent looks at the work cold. Skip it for
-changes to an existing piece; the self-check (§10) is enough there.
-- **What it sees:** the brief and the images only: every option's stills at their real size and aspect ratio, and for
-  clips or the player, a frame every 2 s plus the frames on either side of each cut and the loop seam. Not the code,
-  the storyboard's reasoning or the pitch text.
-- **What it checks:** mistakes, not taste. Text off the edge, clipped or overlapping; copy that isn't word for word
-  from the brief, or a fact the brief doesn't hold; type too small for the brief's viewing distance; text/background
-  pairs below WCAG AA; anything that would flash more than 3×/s; a loop seam on a cut. In a gallery, also: which
-  options are really the same idea (same structure and signature idea, different colors).
-- **What it never does:** rank options, cut one, or judge taste. Every option still reaches the client, the bold one
-  included. Its notes are not verdicts and don't go in the Decisions log.
+Whoever made a frame or a sound hears and sees what they meant to make. So before a choice panel or a storyboard's
+stills reach the client (stage 1), before music samples (stage 3), and again before the full player (stage 4), one
+reviewer agent looks at the work cold. Skip it for changes to an existing piece; the self-check (§10) is enough there.
+- **What it sees:** the brief and the work only, not the code, the storyboard's reasoning or the pitch text.
+  - **Picture:** every option's stills at their real size and aspect ratio; for clips or the player, a frame every
+    2 s plus the frames on either side of each cut and the loop seam.
+  - **Sound:** the reviewer can't listen, so it gets a sheet for each sample or the player's mix, made with ffmpeg:
+    a spectrogram (`showspectrumpic`) and waveform (`showwavespic`) of the whole thing; a close-up waveform of the
+    1 s around the loop point and around each cut; the `ebur128` summary (integrated loudness, loudness range, true
+    peak) and short-term loudness over time; `silencedetect` gaps; the length; and the cut times from the
+    storyboard.
+- **What it checks:** mistakes, not taste.
+  - **Picture:** text off the edge, clipped or overlapping; copy that isn't word for word from the brief, or a fact
+    the brief doesn't hold; type too small for the brief's viewing distance; text/background pairs below WCAG AA;
+    anything that would flash more than 3×/s; a loop seam on a cut.
+  - **Sound:** loudness or true peak off the brief's targets; a click, jump or gap at the loop point; a length that
+    doesn't match the picture; key moves that don't land on a beat or phrase (visible attacks in the waveform near
+    the cut times); for a piece that repeats, big drops or swings in short-term loudness and bright, sustained high
+    tones (bell- or alarm-like bands in the spectrogram) that the brief or house taste rules out; silences the
+    storyboard doesn't call for.
+  - **In a gallery:** which options are really the same idea. For pictures, same structure and signature idea in
+    different colors; for sound samples, the same pulse, density and range in the spectrogram.
+- **What it never does:** rank options, cut one, or judge taste. Whether music is warm, fitting or good is the
+  client's call: the reviewer only says what the measurements show. Every option still reaches the client, the bold
+  one included. Its notes are not verdicts and don't go in the Decisions log.
 - **After it:** fix the clear mistakes, then show the gallery with one short line per option: what was fixed and
-  anything still flagged ("A: caption overflow fixed. B and C are close; C is the safer one"). Measured checks stay
-  with the tools (loudness and true peak with ffmpeg `ebur128`, contrast ratios computed), not with the reviewer's eye.
+  anything still flagged ("A: caption overflow fixed. B and C are close; C is the safer one"; "Sample 2: click at the
+  loop point fixed"). Measured checks stay with the tools (loudness and true peak with ffmpeg `ebur128`, contrast
+  ratios computed), not with the reviewer's eye.

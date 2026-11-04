@@ -36,4 +36,4 @@ folder's `STATUS.md`; repo-wide history in `notes/history.md`._
    locally (Bryan's call).
 4. Choice panels: used for the CSE loop's concepts and three rounds of sound (16-s samples inlined); they worked.
 5. **Fresh-eyes review (new, Nov 4):** a reviewer agent that sees only the brief and the images checks galleries,
-   stills and the full player for mistakes (not taste) before the client sees them (`brief/CRAFT.md` §11). Untried.
+   stills, music samples (from ffmpeg measurements and spectrograms) and the full player for mistakes (not taste) before the client sees them (`brief/CRAFT.md` §11). Untried.
