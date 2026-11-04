@@ -14,7 +14,7 @@ _Moved from the root `STATUS.md` on Oct 25, 2026 (context plan step 2); the root
   60 px, readout 84 px (1080-px frame). Checked every 2.5 s of the loop in both orientations: covers no copy; the Medicine
   caduceus hero (landscape) comes within a few px of the readout's left edge. Tested in Chromium: no script errors, timer ends,
   chimes, resets.
-  - **Open:** an end-of-timer card? (copy would have to come from Bryan); AM/PM or 24-hour?
+  - **Bryan, Nov 4:** no end card ("leave it"); 12-hour without AM/PM is "fine"; "publish it" (PR to main).
 - **Academies hallway film: master = `academies-film/danbury-academies-player.html`** (heroes, new icons and the trilingual word
   blocks on all 7 academies; edit it directly, both config copies). `academies-film/source/` is the older Sep 29 source and lacks
   those changes. Bryan rendered the master to MP4 with `tools/html_to_mp4.py` (Oct 20).
