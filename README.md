@@ -55,6 +55,7 @@ Start sound for the music. Move the mouse to see the controls.
 | `players/living-player-ex.html` | Living poster with trilingual cards for a 9th-grade Exploration Seminar |
 | `players/pltw-cse.html` | The PLTW Computer Science Essentials promo above (60 s, with music) |
 | `players/cse-loop.html` | Computer Science Essentials hallway loop (48 s, with music): MakeCode-style blocks snap together and become an app, a self-driving car, Python, a self-watering micro:bit plant and a drone. Built by `proj/cse-loop/build.py` |
+| `players/danbury-academies-clock.html` | The Academies film below with a wall clock and a session timer, for a classroom screen |
 | `players/gen-player.html` | The generative library below as one self-contained file (USB-stick ready) |
 
 - **Generative motion library:** double-click **`gen/player.html`**. Press **G** for the gallery of ready-made
@@ -75,6 +76,7 @@ so they run from Thonny or any editor's Run button, or from a terminal (`python3
 | The **jukebox** (every music cartridge, endless and seeded) | `tools/build.py` with `TARGETS = ['jukebox']` | `dist/jukebox.html` |
 | A **living poster** (vines that grow and write words) | `tools/build.py` with `TARGETS = ['living']`, pick `LIVING_VARIANT` and `LIVING_SCORE` | `dist/living-player*.html` |
 | The **CD-ROM screensaver** (five retro computer worlds, chip music) | `tools/build_cdrom.py` (and `tools/cdrom_ambient.py` for the version without tip cards) | `dist/cdrom-player.html` |
+| The **Academies film with a wall clock + timer** | `tools/build_academies_clock.py` (re-run after any change to the film) | `dist/danbury-academies-clock.html` |
 | A **self-contained gen player** to put on a USB stick | `python3 gen/build.py` | `gen/dist/gen-player.html` |
 | **One gen cartridge as its own HTML and/or an MP4 with its music** | run `tools/gen_export.py` (pick cartridge + folder) | the folder you picked |
 

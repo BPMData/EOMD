@@ -14,6 +14,11 @@ Status, approvals and things to watch: `academies-film/STATUS.md`. The brief it 
 - `proj/academies/heroes.js` (`DHS.heroes.draw`) and `proj/academies/icons-new.js` are stand-alone sources of the hero
   marks and icons, already inside the master. Open them for demo sheets or to compare with the master.
 
+## The classroom version (clock + timer)
+`clock-timer.js` adds a wall clock (always on) and the CD-ROM's session timer on top of the film; `tools/build_academies_clock.py`
+injects it into a copy of the master → `dist/danbury-academies-clock.html` and `players/`. The master stays clock-free (its MP4s
+are unchanged). After any master edit, re-run the build.
+
 ## Its music
 `audio/instruments-film.js`, `audio/style-film24.js`, `audio/style-rounds.js`, `score/academies-hallway.json`,
 `score/corporate-calm.json`. These are shared audio files: read `audio/CLAUDE.md` before changing them.
