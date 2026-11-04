@@ -60,6 +60,8 @@ polished and lost.
   block at the top (`tools/CLAUDE.md`).
 - **Edit in place, commit per stage:** change the source files directly (no patcher scripts), and commit at the end
   of each stage or delivered change with a message that says what changed.
+- **Bryan works through GitHub:** when the person in the session is Bryan, push each delivered change to the
+  session's branch and open a pull request for it (or update the open one), without waiting to be asked.
 - **Open only the files the task needs.** Don't read `dist/` builds unless the task is debugging a build.
 - **Verdicts are kept:** every client verdict ("approved", "looks cheesy") goes into the brief's Decisions log, in the
   client's words. A verdict that would hold for other pieces becomes or adjusts an item in `brief/taste/house.md`.

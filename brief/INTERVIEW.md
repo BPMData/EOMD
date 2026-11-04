@@ -150,16 +150,19 @@ stage commit.
      this subject (never another piece's look or music).
 4. **Concepts** (`Stage: concepts`): read `CRAFT.md` first (brief to concept, how to pitch, choice panels, storyboard
    and still formats, the self-check). Then 2–3 distinct directions, a few lines each (signature idea, structure,
-   look, sound). The client picks or mixes, ideally from a choice panel.
+   look, sound). The client picks or mixes, ideally from a choice panel. Before the panel goes out, run the
+   fresh-eyes review (`CRAFT.md` §11).
 5. **Storyboard, stills and sound concept** (`Stage: storyboard`; full creative mode): copy `STORYBOARD.md` to
    `proj/<name>/storyboard.md`: the table (time | on screen | sound), 2–3 still frames and the written sound concept
    (what sound does, pulse, instruments and textures as sounds, how it meets the key moments, how it ends, which
-   taste items apply), made from the brief alone. Until the client approves them, stay out of everything on the
-   restricted list (`notes/context-plan.md`): the picture, sound and tool folders and other pieces' folders.
+   taste items apply), made from the brief alone; the stills get the fresh-eyes review (`CRAFT.md` §11). Until
+   the client approves them, stay out of everything on the restricted list (`notes/context-plan.md`): the
+   picture, sound and tool folders and other pieces' folders.
    - **Full creative mode: the gate opens here.** Once storyboard, stills and sound concept are approved, run
      `/toolbox`. In efficient mode, the sound concept is written right after `/toolbox` opens.
 6. **Build** (`Stage: build`): the build plan from `/toolbox` first, then the stages of CLAUDE.md's Process. Every
-   verdict ("approved", "looks cheesy") goes into the brief's Decisions log, in the client's words.
+   verdict ("approved", "looks cheesy") goes into the brief's Decisions log, in the client's words. The full
+   player (stage 4) gets the fresh-eyes review before the client sees it.
 
 ## Usage estimates
 Written for the people this kit is for: someone with a Pro plan ($20/month) who has never made a video, not a
