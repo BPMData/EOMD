@@ -89,7 +89,15 @@ PRESS_SOUND_JS = r"""
 
 FILM_AUDIO_JS = r"""
 () => { eval(document.getElementById('dhs-audio-src').textContent);
-  const r = DHS.audio.render(), b = new Uint8Array(DHS.audio.wav(r.master, r.sr, 16)); let s = '';
+  const cues = (DHS.film.tl || DHS.film.build()).cues, r = DHS.audio.render({ cues });
+  const wav16 = (m, sr) => {   // players whose DHS.audio has no .wav(): write a 16-bit stereo WAV here
+    const n = m.L.length, v = new DataView(new ArrayBuffer(44 + n * 4)), u = (o, t) => { for (let i = 0; i < t.length; i++) v.setUint8(o + i, t.charCodeAt(i)); };
+    u(0, 'RIFF'); v.setUint32(4, 36 + n * 4, true); u(8, 'WAVEfmt '); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 2, true);
+    v.setUint32(24, sr, true); v.setUint32(28, sr * 4, true); v.setUint16(32, 4, true); v.setUint16(34, 16, true); u(36, 'data'); v.setUint32(40, n * 4, true);
+    const q = (x) => Math.max(-32768, Math.min(32767, Math.round(x * 32767)));
+    for (let i = 0; i < n; i++) { v.setInt16(44 + i * 4, q(m.L[i]), true); v.setInt16(46 + i * 4, q(m.R[i]), true); }
+    return v.buffer; };
+  const b = new Uint8Array(DHS.audio.wav ? DHS.audio.wav(r.master, r.sr, 16) : wav16(r.master, r.sr)); let s = '';
   for (let i = 0; i < b.length; i += 0x8000) s += String.fromCharCode.apply(null, b.subarray(i, i + 0x8000)); return btoa(s); }
 """
 
