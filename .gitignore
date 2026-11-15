@@ -15,3 +15,6 @@ MakeCode/
 
 # Bryan's own copy of the Maker Bench version (not published; Pages serves the whole repo)
 proj/cse-loop/cse-loop-maker.html
+
+# Claude desktop app preview config (local only)
+.claude/launch.json
