@@ -458,7 +458,7 @@ class Dungeon extends GSim{constructor(){super('ascii');Object.assign(this,{B:{x
 /* ================= Dud 3D: glossy voxels on the same parts; rotation frames pre-rendered at boot ================= */
 const D3N=36,DV=[[1,0],[0,1],[-1,0],[0,-1]];
 const nrm=v=>{const l=Math.hypot(...v);return v.map(x=>x/l)},dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
-function dud3d(tr,S){const rows=DUD.make(tr),P=Object.assign({},DUD.INK,DUD.PAL[tr.pal]),V=[],at=(r,q)=>r>=0&&r<15&&q>=0&&q<16?rows[r][q]:'.';
+function* dud3d(tr,S){const rows=DUD.make(tr),P=Object.assign({},DUD.INK,DUD.PAL[tr.pal]),V=[],at=(r,q)=>r>=0&&r<15&&q>=0&&q<16?rows[r][q]:'.';
  for(let r=0;r<15;r++)for(let q=0;q<16;q++){const ch=rows[r][q];if(ch==='.')continue;const D=r>=3&&r<=12?2:0,rim=ch==='K'&&DV.some(([a,b])=>at(r+b,q+a)==='.');
   for(let z=-D;z<=D;z++){const c=z>-D&&!rim?(z===D?'y':'Y'):ch;V.push([q-7.5,r-7,z,hx(P[c])])}}       // front face = sprite; inside = body color; back = shade
  const Ld=nrm([-.5,-.75,-.55]),Hv=nrm([Ld[0],Ld[1],Ld[2]-1]),ph=.32,sc=S/19,out=[];
@@ -468,11 +468,20 @@ function dud3d(tr,S){const rows=DUD.make(tr),P=Object.assign({},DUD.INK,DUD.PAL[
   const b=buf(S,S),c=b.getContext('2d'),vs=V.map(v=>({p:rot(v),c:v[3]})).sort((a,b)=>b.p[2]-a.p[2]);c.lineJoin='round';c.lineWidth=.6;
   for(const v of vs)for(const F of faces){const o=[v.p[0]+F.n[0]*.5,v.p[1]+F.n[1]*.5],q=[[.5,.5],[.5,-.5],[-.5,-.5],[-.5,.5]].map(([i,j])=>[S/2+(o[0]+F.u[0]*i+F.w[0]*j)*sc,S/2+(o[1]+F.u[1]*i+F.w[1]*j)*sc]);
    const col='rgb('+v.c.map(x=>Math.min(255,Math.round(x*F.sh+F.sp*170))).join(',')+')';c.fillStyle=c.strokeStyle=col;c.beginPath();q.forEach((p,k)=>k?c.lineTo(p[0],p[1]):c.moveTo(p[0],p[1]));c.closePath();c.fill();c.stroke()}
-  out.push(b)}return out}
+  out.push(b);yield}return out}   // a generator: yields after each rotation frame so the build can be spread over many animation frames
 let D3={boss:[],planet:[]};
-function makeD3(){const r=rng(21),pals=Object.keys(DUD.PAL),seen=new Set(),muts=[];while(muts.length<11){const m=DUD.random(r);m.pal=pals[muts.length%pals.length];const k=m.ant+m.eyes+m.mouth+m.legs;if(seen.has(k))continue;seen.add(k);muts.push(m)}
- D3.boss=muts.slice(0,8).map(m=>dud3d(m,64).map(b=>new Uint32Array(b.getContext('2d').getImageData(0,0,64,64).data.buffer.slice(0))));
- D3.planet=muts.slice(8).map(m=>dud3d(m,200))}
+// Nov 21 (Bryan: the airship link took ~20 s to start on a school machine): this used to be one 1.9 s block at boot (8 bosses +
+// 3 planets x 36 voxel frames), but only the Lab Maze and Starfield draw them. Now it is a generator that the frame loop works
+// through in ~3 ms slices (d3Pump; 8 ms while the boot card waits), and make('maze'|'stars') finishes it first (ensureD3).
+// Same seed and same order as before, so the frames are identical.
+function* d3Steps(){const r=rng(21),pals=Object.keys(DUD.PAL),seen=new Set(),muts=[];while(muts.length<11){const m=DUD.random(r);m.pal=pals[muts.length%pals.length];const k=m.ant+m.eyes+m.mouth+m.legs;if(seen.has(k))continue;seen.add(k);muts.push(m)}
+ const boss=[],planet=[];
+ for(const m of muts.slice(0,8))boss.push((yield* dud3d(m,64)).map(b=>new Uint32Array(b.getContext('2d').getImageData(0,0,64,64).data.buffer.slice(0))));
+ for(const m of muts.slice(8))planet.push(yield* dud3d(m,200));
+ D3.boss=boss;D3.planet=planet}
+let D3gen=d3Steps();
+const d3Pump=ms=>{if(!D3gen)return;const end=performance.now()+ms;while(performance.now()<end){if(D3gen.next().done){D3gen=null;return}}},
+ ensureD3=()=>{while(D3gen){if(D3gen.next().done)D3gen=null}};
  
 /* ================= Channel 2: Lab Maze (raycaster 320x180, upscaled) ================= */
 const RCW=320,RCH=180,TT=64;let MZ=null;
@@ -771,7 +780,8 @@ const ORDER=['ascii','dos','stars','desk','maze'],eraKey=k=>k==='airship'?'desk'
 // ?go skips the boot card and starts the sound at once, but only if the browser lets this page start audio (see canSound);
 // otherwise the boot card shows as usual and its click starts the sound.
 const GO=Q.has('go')||Q.has('airship'),FIRST=LOCK||(ORDER.includes(eraKey(Q.get('start')))?eraKey(Q.get('start')):Q.has('airship')?'desk':ORDER[0]);
-const make=k=>k==='desk'?new Desk():k==='maze'?new Maze():k==='stars'?new Stars():k==='ascii'?new Dungeon():new GSim(k);
+if(GO)MUS.prefetch(FIRST);   // ?go / ?airship: start rendering the opening (the intro first) in the audio worker NOW, in parallel with the boot below, not after it
+const make=k=>{if(k==='maze'||k==='stars')ensureD3();return k==='desk'?new Desk():k==='maze'?new Maze():k==='stars'?new Stars():k==='ascii'?new Dungeon():new GSim(k)};
 let CUR,NXT=null,disT0=0,chEnd=0,RT=0;   // RT: real seconds; the era dwell runs on it because T lags when frames are slow or the tab is throttled
 const hold=()=>SURF||240+R()*60;
 let WAIT=null;
@@ -797,7 +807,8 @@ function draw(){const s=cv.width/W;
 // Can this page start audio without a click? A throwaway AudioContext tells: it runs only if the browser counts the visit as
 // activated (a same-origin link click, or an iframe the page opened with allow="autoplay"). Resolves false after 250 ms if not.
 function canSound(){return new Promise(res=>{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return res(false);let p;try{p=new AC()}catch(e){return res(false)}
- try{p.resume().catch(()=>{})}catch(e){}setTimeout(()=>{const ok=p.state==='running';try{p.close()}catch(e){}res(ok)},250)})}
+ let done=false;const fin=ok=>{if(done)return;done=true;try{p.close()}catch(e){}res(ok)};   // answers as soon as resume() settles (a blocked context never settles: the 250 ms cap decides)
+ try{p.resume().then(()=>fin(p.state==='running'),()=>fin(false))}catch(e){return fin(false)}setTimeout(()=>fin(p.state==='running'),250)})}
 /* controls: hidden until mouse move or tap, fade after 3 s */
 const ui=document.getElementById('ui'),pp=document.getElementById('pp'),fsb=document.getElementById('fs'),nx=document.getElementById('nx'),pv=document.getElementById('pv');let hideT=0,paused=false;
 function poke(){if(BOOT.on)return;ui.classList.add('show');document.body.classList.remove('idle');clearTimeout(hideT);hideT=setTimeout(()=>{ui.classList.remove('show');document.body.classList.add('idle')},3000)}
@@ -811,16 +822,16 @@ document.body.classList.add('idle');addEventListener('resize',size);
 const fpsEl=document.getElementById('fps');if(Q.has('fps'))fpsEl.hidden=false;
 let last=0,lastDraw=0,fc=0,fw=0,cost=0;
 function tick(now){requestAnimationFrame(tick);if(!last)last=now;const real=(now-last)/1000,dt=Math.min(.05,real);last=now;RT+=real-dt;
- if(BOOT.on&&BOOT.out<0){drawBoot(now/1000);return}
+ if(BOOT.on&&BOOT.out<0){drawBoot(now/1000);d3Pump(8);return}   // the boot card is the idle time to build the 3D Duds
  if(paused){if(now-lastDraw>=250){lastDraw=now;draw()}return}
- const t0=performance.now();step(dt);draw();lastDraw=now;
+ const t0=performance.now();step(dt);draw();lastDraw=now;d3Pump(3);
  if(!fpsEl.hidden){cost+=performance.now()-t0;fc++;fw+=dt;if(fw>=1){fpsEl.textContent=`${Math.round(fc/fw)} fps · ${(cost/fc).toFixed(1)} ms · ${(NXT||CUR).key}`;fc=0;fw=0;cost=0}}}
 // capture hooks: ?manual stops the loop; advance(seconds) steps at 60 Hz then draws one frame
 window.advance=(sec,hz=60)=>{const n=Math.round(sec*hz);for(let i=0;i<n;i++)step(1/hz);draw()};
 window.CDROM={state:()=>({T:+T.toFixed(1),ch:CUR.key,next:NXT&&NXT.key,card:CM.card&&CM.card.id,cs:CM.state,duds:CUR.sim.duds.length,bag:CM.bag.length}),next:k=>startSwitch(k)};
 size();
 window.ready=Promise.race([Promise.all(['124px Jq','700 110px Pix','112px VT','52px VT','48px VT','52px Atk','700 56px Atk','44px Mono','700 46px Mono'].map(f=>document.fonts.load(f))),new Promise(r=>setTimeout(r,3000))])
- .then(()=>{bootLoading();return new Promise(r=>setTimeout(r,50))}).then(()=>{makeContour();makeScan();makeD3();makeMazeTex();CUR={key:FIRST};CUR.sim=make(CUR.key);TTL.k=CUR.key;TTL.t0=-1;CUR.sim.spawn({ant:'V',eyes:'normal',mouth:'flat',legs:'spider',pal:'yellow'},true);chEnd=RT+hold();
+ .then(()=>{bootLoading();return new Promise(r=>setTimeout(r,50))}).then(()=>{makeContour();makeScan();makeMazeTex();if(Q.has('manual'))ensureD3();CUR={key:FIRST};CUR.sim=make(CUR.key);TTL.k=CUR.key;TTL.t0=-1;CUR.sim.spawn({ant:'V',eyes:'normal',mouth:'flat',legs:'spider',pal:'yellow'},true);chEnd=RT+hold();
   for(const c of ACTIVE)cardLayout(c);return GO&&BOOT.on&&!Q.has('manual')?canSound():false})
  .then(ok=>{if(ok){BOOT.on=false;document.body.classList.remove('boot');soundButton();bootChime()}if(!Q.has('manual'))requestAnimationFrame(tick);else draw()});
 </script></body></html>

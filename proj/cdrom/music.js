@@ -141,9 +141,14 @@ function take(k,i){const s=st(k);if(s.retireAt||!s.want){for(const o of s.srcs.v
 const drop=f=>{for(const q in S)if(f(q)){const s=S[q];s.gen++;s.buf.clear();s.req.clear()}};   // forget rendered sections (the tune's position moved)
 const deskKey=()=>keyFor(mode,'desk'),introFor=k=>INTRO_ON&&(mode==='chips'||mode==='overclock')&&k===deskKey();
 function tick(){if(!ctx)return;const t=ctx.currentTime;
- if(began&&!playing){if(!need(active,0,true))return;const t0=t+.12;GRID=[{t:t0,i:0,...segOf(scOf(active))}];playing=true;
-  if(introFor(active)){const ib=needIntro();if(ib)startIntro(null,t0,ib)}sb.textContent=snd.muted?'Unmute':'Mute';
-  bus.gain.cancelScheduledValues(t);bus.gain.setValueAtTime(0,t);bus.gain.linearRampToValueAtTime(target(),t+2.5)}
+ if(began&&!playing){const wi=introFor(active),ib=wi?needIntro(true):null;
+  // Nov 21 (Bryan: the airship link's melody was skipped, and it took ~20 s): the intro is the opening, so it is rendered FIRST and
+  // waited for (INTRO_WAIT at most). It used to be asked for only after the first section was ready, so it missed its cue and the
+  // tune never played. Its stream's first section is silent under it (chips) or dropped by startIntro (Overclock), so no waiting for that.
+  if(wi&&!ib&&performance.now()-beganAt<INTRO_WAIT)return;
+  if(!ib&&!need(active,0,true))return;const t0=t+.12;GRID=[{t:t0,i:0,...segOf(scOf(active))}];playing=true;
+  if(ib)startIntro(null,t0,ib);sb.textContent=snd.muted?'Unmute':'Mute';
+  bus.gain.cancelScheduledValues(t);bus.gain.setValueAtTime(0,t);bus.gain.linearRampToValueAtTime(target(),t+(ib&&GO?.3:2.5))}   // the ?go / ?airship launch: sound at once, no 2.5 s fade-in
  if(!playing)return;const i0=idx(t);while(GRID.length>1&&GRID[1].t<t-120)GRID.shift();
  for(const k in S){const s=S[k];if(s.retireAt&&t>=s.retireAt)retire(k);if(!s.want)continue;
   for(let i=Math.max(0,i0,s.minI);i<=idx(t+AHEAD);i++){if(s.srcs.has(i))continue;const at=secT(i);if(s.retireAt&&at>=s.retireAt)break;
@@ -157,8 +162,9 @@ function tick(){if(!ctx)return;const t=ctx.currentTime;
  const keep=new Set([active,nk,pend&&pend.to,mp&&mp.to]);   // free the sections of streams nobody will play (old tempos, old modes)
  for(const k in S){const s=S[k];if(!s.want&&!s.retireAt&&!keep.has(k)&&(s.buf.size||s.req.size)){s.gen++;s.buf.clear();s.req.clear()}}
  stepMode()}
-function needIntro(){if(introBuf)return introBuf;if(introRaw&&ctx){introBuf=toBuf(introRaw[0],introRaw[1]);introRaw=null;return introBuf}
- if(!introReq&&INTRO_ON){introReq=true;submit('intro',0,null,false,(L,R)=>{introRaw=[L,R]})}return null}
+let beganAt=0;const INTRO_WAIT=15000;   // ms start() will wait for the intro before giving up and starting without it
+function needIntro(urgent){if(introBuf)return introBuf;if(introRaw&&ctx){introBuf=toBuf(introRaw[0],introRaw[1]);introRaw=null;return introBuf}
+ if(INTRO_ON){if(!introReq){introReq=true;submit('intro',0,null,!!urgent,(L,R)=>{introRaw=[L,R]})}else if(urgent)submit('intro',0,null,true,null)}return null}   // urgent: jump the render queue
 const curves=()=>{const up=new Float32Array(64),dn=new Float32Array(64);for(let i=0;i<64;i++){const p=i/63;up[i]=Math.sin(p*Math.PI/2);dn[i]=Math.cos(p*Math.PI/2)}return{up,dn}};
 // the intro plays from tx. Chips: the snes stream stays silent under it and fades in over 2 bars from the first bar line after
 // bar 8. Overclock (Oct 9): Overclock restarts at its head exactly where the intro ends (a new grid segment at tIn); the intro
@@ -185,10 +191,12 @@ function start(key){const AC=window.AudioContext||window.webkitAudioContext;if(!
  lp.connect(bus);lp.connect(dl);dl.connect(fb);fb.connect(dl);dl.connect(wet);wet.connect(bus);skin=lp;
  try{ctx.resume()}catch(e){}
  for(const k in SC)if(k!=='overclock')mk(k);lbase=0;obase=0;chan=key;active=keyFor(mode,key);if(!scOf(active)){mode='chips';active=CH[key]||'snes';label()}const s=st(active);s.want=true;s.g.gain.value=1;
- began=true;snd.started=true;sb.textContent='Preparing sound…';setup();need(active,0,true);clearInterval(tmr);tmr=setInterval(tick,400);return true}
+ began=true;beganAt=performance.now();snd.started=true;sb.textContent='Preparing sound…';setup();if(introFor(active))needIntro(true);else need(active,0,true);
+ clearInterval(tmr);tmr=setInterval(tick,400);tick();const ff=setInterval(()=>{if(playing||performance.now()-beganAt>60000)clearInterval(ff);else tick()},50);return true}   // tick now and every 50 ms until playing: the 400 ms poll made the start late
 function gain(){if(!bus)return;const g=bus.gain,t=ctx.currentTime;g.cancelScheduledValues(t);g.setTargetAtTime(target(),t,.12)}
 function pause(p){if(!ctx)return;try{p?ctx.suspend():ctx.resume()}catch(e){}}
-function prefetch(key){const k=keyFor(mode,key);if(!k||!scOf(k)||ctx)return;setup();submit(k,0,null,false,(L,R)=>{if(!ctx)raw.set(k+'|0',[L,R])});if(introFor(k))needIntro()}
+const pfDone=new Set();
+function prefetch(key){const k=keyFor(mode,key);if(!k||!scOf(k)||ctx||pfDone.has(k))return;pfDone.add(k);setup();if(introFor(k))needIntro();submit(k,0,null,false,(L,R)=>{if(!ctx)raw.set(k+'|0',[L,R])})}   // the intro is queued before the first section
 
 /* ---------- channel switches: crossfade on a bar line ---------- */
 function want(key){chan=key;if(!playing||mode==='lounge'||mp){pend=null;return}const to=keyFor(mode,key);if(!to||to===active){pend=null;return}pend={to,from:active,key,t0:performance.now()}}
