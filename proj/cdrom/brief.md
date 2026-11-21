@@ -47,7 +47,7 @@ CS living poster: reuse its timer/TICKET OUT, controls, music streaming, wake lo
   your seatbelt for... THE DUD DIMENSION! · Warning: may contain... MAXIMUM MULTIMEDIA! · Strap in! Next stop... THE INFORMATION
   SUPERHIGHWAY!
 - Click / any key = begin with sound (+ a short C-major "ta-daa" chime, `BOOT_CHIME`); M = silent; F = fullscreen. The card dithers
-  into Tomb of the Duds!. Unattended, it begins silently after 90 s (`?bootwait=N`). `?noboot` / `?manual` skip it. A "LOADING...
+  into Tomb of the Duds!. Unattended, it begins silently after 90 s (`?bootwait=N`). `?noboot` / `?manual` skip it. **Link options (Nov 21):** `?ch=KEY` locks to one era; `?start=KEY` starts there, then rotates; `?go` skips the boot card and starts the sound at once *if the browser allows it* (a throwaway AudioContext is probed first; if it can't run, the boot card shows as normal); `?airship` = `?start=desk&go`. Keys: `ascii dos stars desk maze`. A "LOADING...
   PLEASE WAIT" line shows while the channels are built. Reduced motion: no zoom, hop or glint.
 
 ## Cards

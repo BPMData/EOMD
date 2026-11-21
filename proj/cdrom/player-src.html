@@ -687,7 +687,7 @@ function drawTitle(c){if(!TTL.k||NXT||!CUR||TTL.k!==CUR.key||!TITLES[TTL.k])retu
 /* ================= boot screen (Oct 8): a cheesy CD-ROM title card; the click that leaves it starts the sound ================= */
 // A marble plaque with a gold "Dud Lab" logo and a goggled mascot, then a typed setup line and a punch line that zooms in.
 // Click or any key = begin with sound; M = begin without sound; F = fullscreen. One tagline per open, in rotation
-// (?line=N picks one). Unattended, it begins silently after BOOT_AUTO s (?bootwait=N). ?noboot (and ?manual) skip it.
+// (?line=N picks one). Unattended, it begins silently after BOOT_AUTO s (?bootwait=N). ?noboot (and ?manual) skip it. ?go skips it when the browser allows sound.
 const BOOT_LINES=[['NOW EMBARKING UPON...','A CYBER ADVENTURE!'],['Preparing to Float Upon....','THE TEMPORAL SUPERHIGHWAY!'],
  ['The future is now...','AND ALSO 1980!'],['Please insert disc 1 of...','INFINITY!'],['You are about to experience...','TOTAL EDUTAINMENT!'],
  ['Fasten your seatbelt for...','THE DUD DIMENSION!'],['Warning: may contain...','MAXIMUM MULTIMEDIA!'],['Strap in! Next stop...','THE INFORMATION SUPERHIGHWAY!']];
@@ -766,6 +766,10 @@ addEventListener('click',()=>{if(BOOT.on&&BOOT.out<0)bootGo(true)},true);
 /*__ADDONS__*/
 /* ================= channel surf: ~4-5 min each, ordered-dither dissolve; cards + Duds persist ================= */
 const ORDER=['ascii','dos','stars','desk','maze'],LOCK=ORDER.includes(Q.get('ch'))?Q.get('ch'):null,SURF=+Q.get('surf')||0,DIS=2;
+// ?ch=KEY locks to one era. ?start=KEY starts there and then rotates as usual. ?airship = ?start=desk&go (the homepage easter egg).
+// ?go skips the boot card and starts the sound at once, but only if the browser lets this page start audio (see canSound);
+// otherwise the boot card shows as usual and its click starts the sound.
+const GO=Q.has('go')||Q.has('airship'),FIRST=LOCK||(ORDER.includes(Q.get('start'))?Q.get('start'):Q.has('airship')?'desk':ORDER[0]);
 const make=k=>k==='desk'?new Desk():k==='maze'?new Maze():k==='stars'?new Stars():k==='ascii'?new Dungeon():new GSim(k);
 let CUR,NXT=null,disT0=0,chEnd=0,RT=0;   // RT: real seconds; the era dwell runs on it because T lags when frames are slow or the tab is throttled
 const hold=()=>SURF||240+R()*60;
@@ -789,6 +793,10 @@ function draw(){const s=cv.width/W;
   const x=b2.getContext('2d');x.setTransform(1,0,0,1,0,0);x.globalCompositeOperation='destination-in';x.imageSmoothingEnabled=false;x.drawImage(ditherMask(Math.min(1,(T-disT0)/DIS)),0,0,b2.width,b2.height);x.globalCompositeOperation='source-over';
   ctx.setTransform(1,0,0,1,0,0);ctx.drawImage(b1,0,0);ctx.drawImage(b2,0,0)}
  ctx.setTransform(s,0,0,s,0,0);drawTitle(ctx);drawClock(ctx);ctx.drawImage(SCAN,0,0,W,H);bootOver(ctx)}
+// Can this page start audio without a click? A throwaway AudioContext tells: it runs only if the browser counts the visit as
+// activated (a same-origin link click, or an iframe the page opened with allow="autoplay"). Resolves false after 250 ms if not.
+function canSound(){return new Promise(res=>{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return res(false);let p;try{p=new AC()}catch(e){return res(false)}
+ try{p.resume().catch(()=>{})}catch(e){}setTimeout(()=>{const ok=p.state==='running';try{p.close()}catch(e){}res(ok)},250)})}
 /* controls: hidden until mouse move or tap, fade after 3 s */
 const ui=document.getElementById('ui'),pp=document.getElementById('pp'),fsb=document.getElementById('fs'),nx=document.getElementById('nx'),pv=document.getElementById('pv');let hideT=0,paused=false;
 function poke(){if(BOOT.on)return;ui.classList.add('show');document.body.classList.remove('idle');clearTimeout(hideT);hideT=setTimeout(()=>{ui.classList.remove('show');document.body.classList.add('idle')},3000)}
@@ -811,6 +819,7 @@ window.advance=(sec,hz=60)=>{const n=Math.round(sec*hz);for(let i=0;i<n;i++)step
 window.CDROM={state:()=>({T:+T.toFixed(1),ch:CUR.key,next:NXT&&NXT.key,card:CM.card&&CM.card.id,cs:CM.state,duds:CUR.sim.duds.length,bag:CM.bag.length}),next:k=>startSwitch(k)};
 size();
 window.ready=Promise.race([Promise.all(['124px Jq','700 110px Pix','112px VT','52px VT','48px VT','52px Atk','700 56px Atk','44px Mono','700 46px Mono'].map(f=>document.fonts.load(f))),new Promise(r=>setTimeout(r,3000))])
- .then(()=>{bootLoading();return new Promise(r=>setTimeout(r,50))}).then(()=>{makeContour();makeScan();makeD3();makeMazeTex();CUR={key:LOCK||ORDER[0]};CUR.sim=make(CUR.key);TTL.k=CUR.key;TTL.t0=-1;CUR.sim.spawn({ant:'V',eyes:'normal',mouth:'flat',legs:'spider',pal:'yellow'},true);chEnd=RT+hold();
-  for(const c of ACTIVE)cardLayout(c);if(!Q.has('manual'))requestAnimationFrame(tick);else draw()});
+ .then(()=>{bootLoading();return new Promise(r=>setTimeout(r,50))}).then(()=>{makeContour();makeScan();makeD3();makeMazeTex();CUR={key:FIRST};CUR.sim=make(CUR.key);TTL.k=CUR.key;TTL.t0=-1;CUR.sim.spawn({ant:'V',eyes:'normal',mouth:'flat',legs:'spider',pal:'yellow'},true);chEnd=RT+hold();
+  for(const c of ACTIVE)cardLayout(c);return GO&&BOOT.on&&!Q.has('manual')?canSound():false})
+ .then(ok=>{if(ok){BOOT.on=false;document.body.classList.remove('boot');soundButton();bootChime()}if(!Q.has('manual'))requestAnimationFrame(tick);else draw()});
 </script></body></html>
