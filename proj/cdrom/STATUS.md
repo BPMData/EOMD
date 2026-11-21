@@ -3,6 +3,21 @@
 _Moved from the root `STATUS.md` on Oct 25, 2026 (context plan step 2); the root file is now a short index. Update this file when working on the CD-ROM screensaver._
 
 ## Status
+- **Nov 21, airship link starts instantly (Bryan: "took twenty seconds, and sometimes skipped the intro melody"; built, tested in headless
+  Chromium incl. 5x CPU throttle, `players/` refreshed; not yet heard on Bryan's machine):** two causes, both fixed in the sources.
+  (1) *Slow:* `makeD3()` (8 boss + 3 planet Duds x 36 voxel frames) ran as one ~1.9 s block at boot (~10 s on a slow laptop) and the audio
+  worker only started after it, yet only the Lab Maze and Starfield draw those frames. Now `d3Steps()` is a generator the frame loop works
+  through in 3 ms slices (8 ms while the boot card waits); `make('maze'|'stars')` calls `ensureD3()` first, `?manual` builds it up front. Same
+  seed, same order: Maze, Starfield and Desk frames are pixel-identical to the old build (`?manual&vseed=7`, UI hidden). Also: `?go`/`?airship`
+  call `MUS.prefetch(FIRST)` while the script loads (the worker used to start only after boot), `canSound()` answers when `resume()` settles
+  instead of always waiting 250 ms, and `start()` ticks at once and every 50 ms until playing (it was a 400 ms poll).
+  (2) *Skipped melody:* the Contour intro was only requested after the first section had rendered (and by `prefetch`, a 1.5 s timer that
+  returns early once the AudioContext exists), so whenever `start()` won that race the intro missed its cue and never played; reproduced at 5x
+  CPU. Now `prefetch` queues the intro before section 0, `start()` asks for it urgently, and `tick()` waits for it (`INTRO_WAIT` 15 s, then starts
+  without) instead of waiting for section 0, which is silent under the intro (Chips) or dropped by `startIntro` (Overclock). A `?go`/`?airship`
+  start also fades the bus in over 0.3 s instead of 2.5 s so the first harp notes are audible (the one audible change; knob: `t+(ib&&GO?.3:2.5)`
+  in `tick()` in `music.js`). Measured first sound (intro buffer): 4.2 s -> 0.9 s unthrottled; 17.4 s with the melody skipped -> 2.8 s with it at
+  5x CPU; boot-card click -> sound 33 ms. Idea not done: `<link rel=prefetch>` of the player from the homepage link on hover.
 - **Nov 21, link options (built, tested in headless Chromium, `players/` refreshed):** `?start=KEY` starts on an era and then rotates (`?ch=KEY` still locks);
   `?go` skips the boot card and starts the sound at once when the browser lets the page (`canSound()` probes with a throwaway
   AudioContext, 250 ms; if blocked, the boot card shows and its click starts the sound as before); `?airship` = `?start=desk&go`
