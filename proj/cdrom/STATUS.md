@@ -9,7 +9,7 @@ _Moved from the root `STATUS.md` on Oct 25, 2026 (context plan step 2); the root
   (made for an easter-egg link on Bryan's homepage). Tested: same-origin link click starts the sound; a cross-site link click
   does not (boot card shows); a cross-site iframe with `allow="autoplay"` opened by a click on the host page does; `start=desk`
   rotates (desk → maze → ascii with `surf=6`); `ch=desk` stays; a bad `start` falls back to ascii. Not tested: Safari, Firefox (stricter; the fallback covers them).
-  Edits: `FIRST`/`GO`/`canSound` in `player-src.html`, `music.js` prefetch uses `FIRST`.
+  The key `desk` is the old "Contour Desk" name (sketch A); `airship` is accepted as an alias in `?ch=` and `?start=`. Edits: `FIRST`/`GO`/`canSound` in `player-src.html`, `music.js` prefetch uses `FIRST`.
 - **CS Lab Screensaver ("CD-ROM"): Stage 4 runs on Bryan's Mac; extras through 9f built.** Brief: `proj/cdrom/brief.md` v3.1
   (covers the music modes, Overclock, the timer readout, the word structures; does NOT yet describe the 9c passes or the 9e long form).
   - **Seen/heard and approved:** Overclock as the default mode (Oct 9: "soooo much better than chips"), clear sampler on Their Finest

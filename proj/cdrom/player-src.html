@@ -765,11 +765,12 @@ addEventListener('click',()=>{if(BOOT.on&&BOOT.out<0)bootGo(true)},true);
 
 /*__ADDONS__*/
 /* ================= channel surf: ~4-5 min each, ordered-dither dissolve; cards + Duds persist ================= */
-const ORDER=['ascii','dos','stars','desk','maze'],LOCK=ORDER.includes(Q.get('ch'))?Q.get('ch'):null,SURF=+Q.get('surf')||0,DIS=2;
+const ORDER=['ascii','dos','stars','desk','maze'],eraKey=k=>k==='airship'?'desk':k,   // the key `desk` is the old "Contour Desk" name; `airship` is accepted in ?ch= and ?start=
+ LOCK=ORDER.includes(eraKey(Q.get('ch')))?eraKey(Q.get('ch')):null,SURF=+Q.get('surf')||0,DIS=2;
 // ?ch=KEY locks to one era. ?start=KEY starts there and then rotates as usual. ?airship = ?start=desk&go (the homepage easter egg).
 // ?go skips the boot card and starts the sound at once, but only if the browser lets this page start audio (see canSound);
 // otherwise the boot card shows as usual and its click starts the sound.
-const GO=Q.has('go')||Q.has('airship'),FIRST=LOCK||(ORDER.includes(Q.get('start'))?Q.get('start'):Q.has('airship')?'desk':ORDER[0]);
+const GO=Q.has('go')||Q.has('airship'),FIRST=LOCK||(ORDER.includes(eraKey(Q.get('start')))?eraKey(Q.get('start')):Q.has('airship')?'desk':ORDER[0]);
 const make=k=>k==='desk'?new Desk():k==='maze'?new Maze():k==='stars'?new Stars():k==='ascii'?new Dungeon():new GSim(k);
 let CUR,NXT=null,disT0=0,chEnd=0,RT=0;   // RT: real seconds; the era dwell runs on it because T lags when frames are slow or the tab is throttled
 const hold=()=>SURF||240+R()*60;
