@@ -101,7 +101,7 @@ standalone player, or MAKE BOTH). The cartridge's music is laid in exactly in sy
 - **Everything else** (living posters, the screensaver) is stepped one frame at a time, so
   nothing drops, at any length. Their music is recorded from a second, real-time play of the page, so it isn't locked to
   the picture (fine for most things; it means a 10-minute clip takes about 10 minutes for the music plus the frames).
-- **URL options** pick what plays: `vseed=7` for a living poster, `noboot` to skip the screensaver's boot screen.
+- **URL options** pick what plays: `vseed=7` for a living poster, `noboot` to skip the screensaver's boot screen. For the screensaver: `ch=airship` locks to one era (`ascii`, `dos`, `stars`, `desk` or `airship` = Their Finest Duds, `maze`), `start=airship` starts there and then rotates, and `airship` (= `start=desk` + `go`) starts on the airship and begins the music at once when the browser allows it (same-site link click, or an iframe with `allow="autoplay"`); otherwise the boot screen shows and its click starts the sound. `go` alone does the same from the first era.
 - Size presets: 1080p landscape, 1080×1920 portrait, 4K, 720p.
 
 It needs **ffmpeg** (macOS: `brew install ffmpeg`; the tool finds it, or press BROWSE) and **Playwright** with Chromium:

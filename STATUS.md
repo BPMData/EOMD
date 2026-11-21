@@ -3,13 +3,13 @@
 > **Visitors:** this is the project's working log, kept for the people and AI assistants working on it. For what
 > EOMD is and how to use it, start with [README.md](README.md).
 
-_Last updated: Nov 4, 2026 (fresh-eyes review added to the design stages; Academies film: clock + timer version). Each piece's history, limits and open questions live in its
+_Last updated: Nov 21, 2026 (CD-ROM link options `?start=`, `?go`, `?airship`; before that Nov 4: fresh-eyes review added to the design stages; Academies film: clock + timer version). Each piece's history, limits and open questions live in its
 folder's `STATUS.md`; repo-wide history in `notes/history.md`._
 
 ## Pieces
 | Piece | State | Next | Status file |
 |---|---|---|---|
-| CS Lab Screensaver ("CD-ROM") | Stage 4 on Bryan's Mac; extras through 9h built | Check the 9h builds; stage 5 extras | `proj/cdrom/STATUS.md` |
+| CS Lab Screensaver ("CD-ROM") | Stage 4 on Bryan's Mac; extras through 9h built; Nov 21 link options (`?airship`) | Check the 9h builds; stage 5 extras; add the easter-egg link on the homepage | `proj/cdrom/STATUS.md` |
 | Academies hallway film | Done; Bryan rendered the MP4 (Oct 20). Clock + timer versions published Nov 4: the film (`players/danbury-academies-clock.html`) and the Sanctioned Corporate Calm study loop (`players/sanctioned-corporate-calm.html`) | Watch the clock + timer version on a classroom screen; hero size and chip icons | `academies-film/STATUS.md` |
 | Living posters (SSR, CS, Exploration) | Done | Parked items (5-min timer, random vine entry); rebuild CS + SSR | `living/STATUS.md` |
 | CSE hallway loop (new, full creative) | Done; published Oct 25 (`players/cse-loop.html`) | ES/PT check; real-TV check | `proj/cse-loop/STATUS.md` |

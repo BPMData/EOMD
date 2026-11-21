@@ -268,4 +268,4 @@ function setGain(){MUS.gain()}
 async function soundButton(){if(!snd.started){MUS.start((NXT||CUR).key);return}if(!MUS.playing())return;snd.muted=!snd.muted;sb.textContent=snd.muted?'Unmute':'Mute';setGain()}
 sb.onclick=soundButton;vs.oninput=()=>{snd.vol=vs.value/100;setGain()};mb.onclick=()=>MUS.toggle();
 addEventListener('keydown',e=>{if(e.key==='l'||e.key==='L')MUS.toggle()});
-setTimeout(()=>MUS.prefetch((typeof CUR!=='undefined'&&CUR&&CUR.key)||LOCK||ORDER[0]),1500);
+setTimeout(()=>MUS.prefetch((typeof CUR!=='undefined'&&CUR&&CUR.key)||FIRST),1500);
