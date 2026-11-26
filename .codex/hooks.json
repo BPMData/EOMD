@@ -1,0 +1,39 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|apply_patch|write_file|edit_file|.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 .agents/hooks/stage_gate.py --harness codex --event PreToolUse",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash|read_file|view_image|apply_patch|write_file|edit_file|spawn_agent|.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 .agents/hooks/stage_gate.py --harness codex --event PostToolUse || true",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 .agents/hooks/stage_gate.py --harness codex --event Stop",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  }
+}

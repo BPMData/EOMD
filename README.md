@@ -26,16 +26,25 @@ nothing here is classroom-only. Make whatever you want. Animate your tax returns
 
 ## How it's meant to be used
 
-**Clone the whole repo to your drive and let your AI coding assistant go nuts.** Claude Code, Qwen via AnythingLLM,
-Cursor, Aider, whatever you use: point it at this folder and describe what you want.
+**Clone the whole repo to your drive and work with an AI coding assistant.** Antigravity, Claude Code, Codex, Cursor,
+or any other assistant: point it at this folder and describe what you want.
 
 ```bash
 git clone https://github.com/BPMData/EOMD.git
 ```
 
-The repo is set up for that:
-- **`CLAUDE.md`** is the map: the house rules and where to go; each folder has its own `CLAUDE.md` with its files and how to build. Claude Code reads them
-  automatically; with any other assistant, tell it "read CLAUDE.md and STATUS.md first" (STATUS.md is an index; each piece has its own STATUS.md in its folder).
+The repo is set up for a staged design-first workflow:
+- **`CLAUDE.md` and `AGENTS.md`** hold the house rules and routing; each folder has its own `CLAUDE.md` with its files
+  and how to build. Ask your assistant to "read `CLAUDE.md` and `STATUS.md` first" if it doesn't load them automatically.
+- **New pieces start with `/new-piece` (`brief/INTERVIEW.md`):** short plain-English rounds that check existing
+  `proj/<name>/` and `brief/clients/` files first, ask for your writing voice early, keep jokes/asides as side notes
+  until you make them main, skip production deadlines, and set `Mode` (`efficient` vs. `full creative`) plus `Budget`
+  (`light | standard | deep`).
+- **Fresh-eyes review & autonomous QA (`/auto-piece`):** in full creative mode, storyboard stills and choice panels go
+  through an **isolated fresh-eyes reviewer subagent** (`brief/CRAFT.md` §11) before you see them; once approved,
+  `/toolbox` opens and `/auto-piece` builds `players/<name>.html`, checks 48 kHz audio (`ebur128` / spectrograms), and
+  runs a final fresh-eyes visual/audio review (`proj/<name>/qa/review.md`). Programmatic hooks
+  (`.agents/hooks/stage_gate.py`) enforce stage gates and receipts across Antigravity, Claude Code, and Codex.
 - **`STATUS.md`** is the working state: what's finished, what's untested, what's next.
 - **Pieces are small JSON "cartridges"** (see below), so asking an AI for a new piece costs a short JSON file instead of
   a new 600-line program, and the math (noise, 3D, physics, the music arranger) never has to be rewritten.
@@ -151,7 +160,8 @@ the project: the reusable parts are already here, so a new piece is mostly a sho
 | `score/` | Music cartridges (`*.json`) and `FORMAT.md`, which explains every field |
 | `audio/` | The music engine: instruments, the arranger and one file per arranger style |
 | `tools/` | The Python scripts you run (builds, MP4 export, music tools) |
-| `brief/` | How a new piece starts: the client interview, the brief template, and the brief behind the Academies film as the example |
+| `brief/` | How a new piece starts: the client interview, brief and storyboard templates, craft guide, house taste, client profiles, and the Academies brief as the example |
+| `.agents/`, `.claude/`, `.codex/` | Skills (`new-piece`, `auto-piece`, `toolbox`), `fresh-eyes-reviewer` subagent, and cross-harness stage-gate hooks |
 | `proj/<piece>/` | One piece's brief, copy and sources (`cdrom`, `pltw`, `cs`, `ex`, `ssr`, `academies`) |
 | `living/`, `jukebox/` | The living-poster engine and the jukebox page |
 | `engine/` | The starter timeline engine the Academies film grew from; `engine/src/audio/dsp.js` is the DSP everything uses |

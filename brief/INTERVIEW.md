@@ -33,6 +33,12 @@ It works in any chat, not only in this repo: paste this file and `TEMPLATE.md` i
 - **Hunt the landmines:** words the piece must never say, promises it must never make, things it must never rank.
   (Academies: never "choose" or "pick" an academy, never promise placement, no academy above another.)
 - **Facts come from the client, with a source.** Never fill a gap yourself; keep a running list of what's missing.
+- **Ask for the client's voice early.** One sentence they'd write about the subject, or a page of theirs they like,
+  is enough. Draft every line of copy in that voice, not in clipped "X. Y. Z." AI cadence (`taste/house.md` T35).
+- **Weigh asides before you build on them.** Clients think out loud: jokes, "maybe we should mention X". An aside is
+  a **side note** until the client says otherwise. It never becomes a beat by itself or a main message; log it as
+  **side**, and in the next reflect-back ask what weight it gets: "You mentioned X. Main point, a quick side note, or
+  just a joke?" Only an answer of "main point" makes it a main point (`taste/house.md` T38).
 - **Reflect back** in one sentence per round ("So: a 30-s loop for the cafeteria TV, sound off, for 9th graders
   who've never heard of PLTW."). Misreadings surface while they're cheap.
 - **Delegation must be explicit.** "You decide" is a fine answer for concept, design and music ("Concept, script,
@@ -48,19 +54,19 @@ It works in any chat, not only in this repo: paste this file and `TEMPLATE.md` i
 **1. The ask**
 - ★ First, check it belongs here: motion pieces, players, posters and screen loops do. An infographic (a page that
   explains something with numbers) belongs in ProofEr (`BPMData/ProofEr`); say so and stop.
-- ★ What is it, where will it be seen, and by when? *"A 90-second video for the robotics club's open-house night,
-  shown once on a projector, by Nov 15."*
-- ★ How to build it, in Claude-usage terms (numbers from "Usage estimates" below; say they are rough):
-  "There are two good ways to make your video:
-  1. **Ready-made styles (quicker).** Built mostly from designs this kit already has. It uses a small part of your
-     Claude usage: roughly 5–20% of one 5-hour limit.
-  2. **From scratch (most original).** Designed only for your video. It uses a lot: roughly half to all of one 5-hour
-     limit. It's best to start it just before your limit resets, or before you step away for a few hours (overnight,
-     or before work), and check back later.
-  Either way there's no surprise bill: if you hit your limit, Claude stops (unless you've switched on paid extra
-  usage), and you pick up where you left off after it resets. Which would you like?"
-  (Ready-made styles = efficient mode; from scratch = full creative mode. The numbers assume a Pro plan and the
-  recommended setting, Opus 5.5 at medium effort; a bigger plan uses a smaller share.)
+- ★ What is it, who is it for, and where will it be seen? *"A 90-second video for the robotics club's open-house night,
+  shown once on a projector."* Don't ask for a production deadline or set one (`taste/house.md` T39; if an event date
+  belongs on screen, put it in §5 facts).
+- ★ Usage budget (`Budget: light | standard | deep`): ask in everyday words how much session usage they want to spend:
+  *Light* (keep under ~25% of a 5-hour Pro limit—fewer workers/reviews), *Standard* (balanced—Opus medium / Hydrogen
+  High coordination, lighter helper workers), or *Deep* (go all-out on custom concepts, iterations, and QA).
+- ★ How to build it, in plain words:
+  1. **Ready-made styles (quicker / efficient mode).** Built mostly from designs this kit already has. Uses much less
+     of your session usage.
+  2. **From scratch (most original / full creative mode).** Designed only for your piece. Uses more usage—best started
+     with headroom or when you can step away and check back.
+  Either way there's no surprise bill: if you hit your limit, the tool stops and you pick up where you left off. Which
+  would you like?
 
 **2. Purpose and tone**
 - ★ After watching, what should a viewer know, feel and do? One line each.
@@ -77,8 +83,9 @@ It works in any chat, not only in this repo: paste this file and `TEMPLATE.md` i
 - What plays it (a laptop, a TV, a phone, a projector, a video upload), and who presses start?
 
 **4. How the subject works**
-- What's the system or story behind it that the piece must get right? *(Academies: every 9th grader starts in
-  Exploration, ranks pathways, and placement is by lottery.)*
+- What's the system or story behind it that the piece must get right? What do viewers usually get wrong, and does a
+  walk-up viewer need a 3-second primer before the payoff? *(Academies: every 9th grader starts in Exploration, ranks
+  pathways, and placement is by lottery.)*
 - ★ What must it never say or imply?
 
 **5. Content and facts**
@@ -139,9 +146,10 @@ model knows where the piece is and what it may open. Update it at each gate and 
 stage commit.
 
 0. **Ask round 1 first;** open nothing else before it. Once round 1 is answered, copy `TEMPLATE.md` to
-   `proj/<name>/brief.md` with `Stage: interview` and the mode, and fill it in as answers come. Once you know who the
-   client is, read their file in `clients/` if there is one.
-1. **Reflect back** the whole piece in one paragraph, plus the open questions.
+   `proj/<name>/brief.md` with `Stage: interview`, the mode, and the `Budget:` tier, and fill it in as answers come.
+   Once you know who the client is, read their file in `clients/` if there is one.
+1. **Reflect back** the whole piece in one paragraph, plus the open questions. Name the side notes separately
+   ("Side notes, a line each unless you say otherwise: ..."), so the client sees how much room each one gets.
 2. **Draft the brief** (`Stage: brief`), in the client's words where possible, with the reasons kept. Mark gaps
    **ASK** and Claude's drafts (translations, suggested copy) **DRAFT**. In §13 list the house taste items that apply
    (`taste/house.md`). Commit.
