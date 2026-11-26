@@ -1,0 +1,7 @@
+[features]
+hooks = true
+
+# EOMD subagent efficiency defaults (never use fable or reasoning above high)
+[agents.fresh_eyes_reviewer]
+description = "Isolated EOMD fresh-eyes reviewer for stills, galleries, audio sheets, and final players (CRAFT.md §11)"
+model_reasoning_effort = "medium"

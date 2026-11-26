@@ -4,7 +4,8 @@ EOMD (Efficient Offline Motion Designer) makes motion-design pieces for clients:
 with synthesized music. The repo is maintained by Bryan Murphy; a client can be anyone, and is usually not technical.
 
 Read the root `STATUS.md` index at the start of every session; read a piece's own `STATUS.md` (in its folder) when
-working on that piece. Update both at the end of a working session.
+working on that piece. Update them after substantive design, copy, audio, or build changes; skip for file moves,
+trivial fixes, or pure Q&A.
 
 ## Rules for every piece
 - **Never invent facts:** names, dates, programs, places, numbers. If it isn't in a brief, copy file or config, ask.
@@ -26,10 +27,12 @@ working on that piece. Update both at the end of a working session.
 
 ## New pieces: interview first
 Before any NEW piece (a new video, poster or player; not a change to an existing one), run `/new-piece`: interview
-the client, then write `proj/<name>/brief.md` and get it approved. A one-line request is the start of the interview,
-not the brief. Details: `brief/INTERVIEW.md`.
-- **Gates:** interview → brief approved → concepts → storyboard, stills and sound concept → build. The brief's status
-  line carries `Stage:`, so any session knows where it is.
+the client, then write `proj/<name>/brief.md` (`Budget: light | standard | deep`) and get it approved. A one-line
+request is the start of the interview, not the brief. Details: `brief/INTERVIEW.md`.
+- **Gates:** interview → brief approved → concepts → storyboard, stills and sound concept (with isolated fresh-eyes
+  subagent review, `brief/CRAFT.md` §11) → build & QA. Once approved, `auto-piece` (`.claude/skills/auto-piece/SKILL.md`)
+  runs the autonomous build and fresh-eyes visual/audio QA; `.agents/hooks/stage_gate.py` enforces gates across
+  Antigravity, Claude Code, and Codex. The brief's status line carries `Stage:`.
 - **Design comes before tools.** During design, stay out of the picture, sound and tool folders (`gen/`, `living/`,
   `engine/`, `academies-film/`, `players/`, `dist/`, `media/`, `audio/`, `score/`, `jukebox/`, `tools/`), other
   pieces' `proj/` folders and their `STATUS.md` files (the full list: `notes/context-plan.md`, "The restricted

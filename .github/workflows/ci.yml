@@ -63,3 +63,13 @@ jobs:
           python-version: '3.12'
       - name: tools/check_stage_reads.py (never fails; reports peeks as warnings)
         run: python tools/check_stage_reads.py || true
+
+  hooks-and-skills:
+    name: hook gates, manifests, and skill checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python3 .agents/hooks/test_stage_gate.py -v

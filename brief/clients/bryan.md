@@ -21,6 +21,11 @@ Use these as the starting answer for "How it's watched"; confirm them per piece.
 - Classroom loops: the same students hear them every day, so nothing harsh on repeat.
 
 
-## His taste
-The house taste profile (`brief/taste/house.md`) is distilled from his verdicts; it is the default for everyone, so
-there is no separate Bryan profile. His own words for each verdict stay in that piece's brief or `STATUS.md`.
+## His voice and taste
+- **His voice:** long, clause-heavy sentences, colons and semicolons, dry jokes; he rewrites clipped AI cadence on
+  sight (`T35`).
+- **Taste he's named:** loves illustrated reference books (DK-style) and period-true pixel/arcade craft; hates generic
+  default AI web gloss, rounded cards everywhere, and anything that reads like homework.
+- **Testing:** Chromium on Mac (no iPhone), and doesn't use reduced motion; test in Chromium and say so.
+- The house taste profile (`brief/taste/house.md`) is distilled from his verdicts and is the default for everyone. His
+  own words for each verdict stay in that piece's brief or `STATUS.md`.

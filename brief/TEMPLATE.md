@@ -1,6 +1,6 @@
 # Brief: <piece name>
 
-Status: DRAFT | APPROVED <date> by <name> · Stage: interview | brief | concepts | storyboard | build · Mode: efficient | full creative · Client: <name> · Sign-off: <names>
+Status: DRAFT | APPROVED <date> by <name> · Stage: interview | brief | concepts | storyboard | build · Mode: efficient | full creative · Budget: light | standard | deep · Client: <name> · Sign-off: <names>
 Usage: <model, effort> · <share of a 5-hour limit, per stage, as the Claude app or Claude Code shows it>
 
 _Copy to `proj/<name>/brief.md` once round 1 of the interview is answered (`brief/INTERVIEW.md`) and update `Stage:` at each gate. Write it in the client's words where
@@ -8,7 +8,8 @@ possible and keep the reasons. **ASK** = missing, **DRAFT** = Claude's draft (tr
 **Claude's call** = delegated by the client. `brief/example-academies.md` shows the level of detail to aim for._
 
 ## 1. The ask
-_What it is, where it plays, how long it runs, by when._
+_What it is, who it's for, where it plays, how long it runs. No production deadline (`taste/house.md` T39; real event
+dates belong in §5)._
 
 ## 2. Purpose and tone
 _What viewers should know, feel and do afterwards; what they believe now vs after; the tone in three words; what it
@@ -23,11 +24,13 @@ it, what plays it._
 _The system or story the piece must get right, and the words or promises to avoid._
 
 ## 5. Content and facts
-_Every fact that appears on screen, with its source. Fixed copy: the path of the copy file, used word for word._
+_Every fact that appears on screen, with its source. Fixed copy: the path of the copy file, used word for word.
+Weight: **main** (the piece is built on it) or **side** (a cameo or passing line). Anything said in passing stays
+**side** until the client calls it main (`taste/house.md` T38)._
 
-| Fact | Source |
-|---|---|
-| | |
+| Fact | Weight | Source |
+|---|---|---|
+| | | |
 
 ## 6. Structure and hierarchy
 _Beats; hero vs supporting text in each; whether every beat must stand alone; how often the name or message must be

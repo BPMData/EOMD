@@ -1,0 +1,39 @@
+{
+  "eomd-stage-gate": {
+    "PreToolUse": [
+      {
+        "matcher": "write_file|edit_file|run_command|invoke_subagent",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh -c 'f=.agents/hooks/stage_gate.py; [ -f \"$f\" ] || f=hooks/stage_gate.py; exec python3 \"$f\" --harness antigravity --event PreToolUse'",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "invoke_subagent|read_file|write_file|edit_file|run_command",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh -c 'f=.agents/hooks/stage_gate.py; [ -f \"$f\" ] || f=hooks/stage_gate.py; exec python3 \"$f\" --harness antigravity --event PostToolUse'",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh -c 'f=.agents/hooks/stage_gate.py; [ -f \"$f\" ] || f=hooks/stage_gate.py; exec python3 \"$f\" --harness antigravity --event Stop'",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  }
+}
