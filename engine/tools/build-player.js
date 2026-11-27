@@ -1,8 +1,21 @@
 // Builds dist/player.html: ONE self-contained kiosk file (scripts, font, audio synth inlined).
 // Usage: node tools/build-player.js   (re-run after editing config.js or any src file)
-const fs = require('fs'), path = require('path'); const R = (f) => fs.readFileSync(path.join(__dirname, '..', f), 'utf8');
-const vis = ['config.js','src/core/core.js','src/core/fontdata.js','src/draw/draw.js','src/draw/icons.js','src/scenes/common.js', 'src/scenes/card.js','src/film.js','src/fx/lens.js','src/player/runtime.js'];
-const aud = ['config.js','src/audio/dsp.js','src/audio/music.js','src/audio/sfx.js','src/audio/master.js'];
+const fs = require('fs'),
+  path = require('path');
+const R = (f) => fs.readFileSync(path.join(__dirname, '..', f), 'utf8');
+const vis = [
+  'config.js',
+  'src/core/core.js',
+  'src/core/fontdata.js',
+  'src/draw/draw.js',
+  'src/draw/icons.js',
+  'src/scenes/common.js',
+  'src/scenes/card.js',
+  'src/film.js',
+  'src/fx/lens.js',
+  'src/player/runtime.js',
+];
+const aud = ['config.js', 'src/audio/dsp.js', 'src/audio/music.js', 'src/audio/sfx.js', 'src/audio/master.js'];
 const esc = (s) => s.replace(/<\/script/gi, '<\\/script');
 const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Motion loop</title>

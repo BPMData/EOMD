@@ -61,6 +61,9 @@ polished and lost.
 ## Maintainer rules (for working on this repo)
 - **Scripts Bryan runs are Thonny-friendly:** the Run button, no command-line arguments, every setting in a `SETTINGS`
   block at the top (`tools/CLAUDE.md`).
+- **Formatting:** run `npx prettier --write` on changed files before committing (`npm ci` once; config in `.prettierrc`,
+  skips in `.prettierignore`: markdown, build output, and the `gen/` sources `gen/build.py` parses). CI runs
+  `prettier --check .`.
 - **Edit in place, commit per stage:** change the source files directly (no patcher scripts), and commit at the end
   of each stage or delivered change with a message that says what changed.
 - **Bryan works through GitHub:** when the person in the session is Bryan, push each delivered change to the

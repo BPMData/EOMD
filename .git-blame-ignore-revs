@@ -1,0 +1,4 @@
+# Prettier 3.3.3 reformat of the whole repo (formatting only).
+# GitHub honours this file automatically. Locally: git config blame.ignoreRevsFile .git-blame-ignore-revs
+# This hash only survives a merge commit (not Squash or Rebase).
+2ce814f3efb9420c04d447772cbaceb6cdf4e3f6

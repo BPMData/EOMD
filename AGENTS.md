@@ -17,5 +17,7 @@ restricted-path stage order).
      and finish QA before presenting.
 - **Programmatic gates:** `.agents/hooks/stage_gate.py` (wired in `.agents/hooks.json`, `.claude/settings.json`, and
   `.codex/hooks.json`) enforces stage order, budget limits, inspected stills/QA PNGs, and fresh-eyes review receipts.
+- **Formatting:** run `npx prettier --write` on changed files before committing (`npm ci` once). CI runs
+  `prettier --check .`; see `.prettierignore` for what is skipped.
 - **Fast ops & bookkeeping:** For file moves, non-visual tweaks, or pure Q&A (unless asked), skip `STATUS.md` updates
   and Playwright/MP4 renders.
