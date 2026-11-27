@@ -20,3 +20,6 @@ proj/cse-loop/cse-loop-maker.html
 .claude/launch.json
 
 node_modules/
+
+# Written by .agents/hooks/stage_gate.py (local session state)
+.qa_checked.json
