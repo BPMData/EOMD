@@ -10,12 +10,14 @@
 <script src="src/scenes/common.js"></script>
 <script src="src/scenes/card.js"></script>
 <script src="src/film.js"></script>
+<script src="src/fx/lens.js"></script>
 <script>
 // Headless capture page. ?w=1920&h=1080
 const q = new URLSearchParams(location.search);
 const W = +(q.get('w') || 1920), H = +(q.get('h') || 1080);
 const cv = document.getElementById('c'); cv.width = W; cv.height = H;
 const ctx = cv.getContext('2d', { alpha: false });
-window.renderAt = (t) => { DHS.film.render(ctx, t, W, H); };
+const lens = DHS.lens.attach(cv, DHS.lens.fromQuery(location.search, DHS.config.lens));
+window.renderAt = (t) => { DHS.film.render(ctx, t, W, H); if (lens && lens.ok) lens.draw(cv, t); };
 DHS.type.load().then(() => { DHS.film.build(); window.ready = true; });
 </script></body></html>

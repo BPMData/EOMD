@@ -6,6 +6,10 @@
     film: { bpm: 96, beatsPerBar: 4, sampleRate: 48000, fps: 30 },
     colors: { bg: '#0A1633', white: '#FFFFFF', ink: '#0A1633' },
     footer: { left: 'Your Organization', right: 'Your tagline here.' },
+    // Optional WebGL2 finish (src/fx/lens.js): null = off. {} = the defaults; or set any knob, e.g.
+    // { bloom: 0.25, threshold: 0.8, streak: 0.06, fringe: 0.6, vignette: 0.3, grain: 0.02, tone: 'none' }.
+    // Try it on any player with ?lens=1 (and ?lens=0 to compare).
+    lens: null,
     // instrument: tine | marimba | pluck | pulse | keys | mallet | voice | whistle | chime
     // icons: see src/draw/icons.js (bulb, chart, heartPulse, dna, stopwatch, cross, turbine, leafHouse,
     //        sprout, network, code, shield, scales, book, toque, bridge, robotArm, gear, tower, headphones, bezier)

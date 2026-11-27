@@ -4,8 +4,30 @@
     {
       "name": "cse-loop",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8765", "--bind", "127.0.0.1", "--directory", "proj/cse-loop"],
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8765",
+        "--bind",
+        "127.0.0.1",
+        "--directory",
+        "proj/cse-loop"
+      ],
       "port": 8765
+    },
+    {
+      "name": "engine",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8766",
+        "--bind",
+        "127.0.0.1",
+        "--directory",
+        "engine"
+      ],
+      "port": 8766
     }
   ]
 }

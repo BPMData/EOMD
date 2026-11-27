@@ -103,7 +103,10 @@ FILM_AUDIO_JS = r"""
 
 FILM_FRAME_JS = r"""
 ([t, w, h, q]) => { const c = window.__cap || (window.__cap = Object.assign(document.createElement('canvas'), { width: w, height: h }));
-  DHS.film.render(c.getContext('2d'), t, w, h, 1); return c.toDataURL('image/jpeg', q); }
+  DHS.film.render(c.getContext('2d'), t, w, h, 1);
+  const k = DHS.lens && DHS.config && DHS.config.lens;  // engine pieces with the optional lens finish
+  if (k) { const L = window.__lens || (window.__lens = DHS.lens.create(k)); if (L.ok && L.draw(c, t)) return L.canvas.toDataURL('image/jpeg', q); }
+  return c.toDataURL('image/jpeg', q); }
 """
 
 
