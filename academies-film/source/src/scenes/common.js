@@ -3,7 +3,10 @@
   'use strict';
   const DHS = (G.DHS = G.DHS || {});
   const { clamp, inv, lerp, TAU } = DHS.math;
-  const E = DHS.ease, T = DHS.type, D = DHS.draw, C = DHS.color;
+  const E = DHS.ease,
+    T = DHS.type,
+    D = DHS.draw,
+    C = DHS.color;
   const S = (DHS.common = {});
 
   // Visibility of a revealed element: rises in from below at tIn, lifts out upward at tOut
@@ -34,18 +37,36 @@
     const m = S.stackMetrics(ctx, spec);
     let y = spec.anchor === 'center' ? spec.y - m.total / 2 : spec.y;
     const o = { color: spec.color, align: spec.align || 'left' };
-    let k = 0; const st = spec.stagger || 0.085;
-    if (spec.lead) { y += m.leadSize; drawEl(ctx, spec.lead, spec.x, y, m.leadSize, S.vis(t, spec.tIn, spec.tOut), { ...o, role: 'text' }); y += m.leadSize * 0.55; k++; }
+    let k = 0;
+    const st = spec.stagger || 0.085;
+    if (spec.lead) {
+      y += m.leadSize;
+      drawEl(ctx, spec.lead, spec.x, y, m.leadSize, S.vis(t, spec.tIn, spec.tOut), { ...o, role: 'text' });
+      y += m.leadSize * 0.55;
+      k++;
+    }
     y += m.size * 0.8;
     spec.lines.forEach((ln, i) => {
-      drawEl(ctx, ln, spec.x, y, m.size, S.vis(t, spec.tIn + k * st, spec.tOut == null ? null : spec.tOut + k * 0.04), { ...o, role: 'display' });
-      if (i < spec.lines.length - 1) y += m.lh; k++;
+      drawEl(ctx, ln, spec.x, y, m.size, S.vis(t, spec.tIn + k * st, spec.tOut == null ? null : spec.tOut + k * 0.04), {
+        ...o,
+        role: 'display',
+      });
+      if (i < spec.lines.length - 1) y += m.lh;
+      k++;
     });
     if (spec.sub) {
       y += m.size * 0.42;
       spec.sub.forEach((ln) => {
         y += m.subSize * 1.3;
-        drawEl(ctx, ln, spec.x, y, m.subSize, S.vis(t, spec.tIn + 0.12 + k * st, spec.tOut == null ? null : spec.tOut + k * 0.03), { ...o, role: 'text' });
+        drawEl(
+          ctx,
+          ln,
+          spec.x,
+          y,
+          m.subSize,
+          S.vis(t, spec.tIn + 0.12 + k * st, spec.tOut == null ? null : spec.tOut + k * 0.03),
+          { ...o, role: 'text' }
+        );
         k++;
       });
     }
@@ -54,10 +75,14 @@
 
   // Background: flat brand color with a soft, low-contrast light falloff (keeps brand hue true)
   S.wash = (ctx, W, H, color, lx, ly) => {
-    ctx.fillStyle = color; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = color;
+    ctx.fillRect(0, 0, W, H);
     const g = ctx.createRadialGradient(lx, ly, 0, lx, ly, Math.hypot(W, H) * 0.75);
-    g.addColorStop(0, 'rgba(255,255,255,0.055)'); g.addColorStop(0.55, 'rgba(255,255,255,0)'); g.addColorStop(1, 'rgba(0,0,0,0.10)');
-    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    g.addColorStop(0, 'rgba(255,255,255,0.055)');
+    g.addColorStop(0.55, 'rgba(255,255,255,0)');
+    g.addColorStop(1, 'rgba(0,0,0,0.10)');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
   };
 
   // Hex iris clip (used for academy + end-card entrances)
@@ -70,8 +95,12 @@
     if (p <= 0 || p >= 1) return;
     const R = (Math.hypot(Math.max(cx, W - cx), Math.max(cy, H - cy)) / Math.cos(Math.PI / 6)) * 1.04;
     const lag = DHS.ease.outCubic(clamp(p * 1.08));
-    ctx.save(); ctx.globalAlpha = 0.9 * (1 - p);
+    ctx.save();
+    ctx.globalAlpha = 0.9 * (1 - p);
     D.hexPath(ctx, cx, cy, R * lag + 14, -Math.PI / 2 + spin * (1 - p) * 0.9, 0.1);
-    ctx.lineWidth = 8; ctx.strokeStyle = color; ctx.stroke(); ctx.restore();
+    ctx.lineWidth = 8;
+    ctx.strokeStyle = color;
+    ctx.stroke();
+    ctx.restore();
   };
 })(globalThis);

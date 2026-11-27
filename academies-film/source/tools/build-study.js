@@ -1,9 +1,22 @@
 // Builds dist/study.html: 20-min generative study loop (streams live + "Download WAV").
 // Usage: node tools/build-study.js
-const fs = require('fs'), path = require('path'); const R = (f) => fs.readFileSync(path.join(__dirname, '..', f), 'utf8');
+const fs = require('fs'),
+  path = require('path');
+const R = (f) => fs.readFileSync(path.join(__dirname, '..', f), 'utf8');
 const esc = (s) => s.replace(/<\/script/gi, '<\\/script');
-const vis = ['config.js','src/core/core.js','src/core/fontdata.js','src/draw/draw.js','src/draw/icons.js','src/scenes/common.js','src/scenes/hub.js','src/audio/dsp.js','src/audio/music.js','src/audio/longform.js'];
-const aud = ['config.js','src/audio/dsp.js','src/audio/music.js','src/audio/longform.js'];
+const vis = [
+  'config.js',
+  'src/core/core.js',
+  'src/core/fontdata.js',
+  'src/draw/draw.js',
+  'src/draw/icons.js',
+  'src/scenes/common.js',
+  'src/scenes/hub.js',
+  'src/audio/dsp.js',
+  'src/audio/music.js',
+  'src/audio/longform.js',
+];
+const aud = ['config.js', 'src/audio/dsp.js', 'src/audio/music.js', 'src/audio/longform.js'];
 const worker = `
 let S=null, idx=0;
 self.onmessage=(e)=>{const d=e.data,LF=DHS.longform,n=LF.plan.length;
@@ -63,4 +76,5 @@ let idle;addEventListener('mousemove',()=>{document.body.classList.remove('idle'
 document.body.classList.add('idle');addEventListener('dblclick',()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen());
 requestAnimationFrame(frame);window.__st=()=>({state:ac&&ac.state,t:ac&&ac.currentTime,n:sched.length,nextT,pending});window.__ready=true;})();
 </script></body></html>`;
-fs.writeFileSync(path.join(__dirname, '..', 'dist', 'study.html'), html); console.log('dist/study.html', (html.length / 1024).toFixed(0) + ' KB');
+fs.writeFileSync(path.join(__dirname, '..', 'dist', 'study.html'), html);
+console.log('dist/study.html', (html.length / 1024).toFixed(0) + ' KB');
