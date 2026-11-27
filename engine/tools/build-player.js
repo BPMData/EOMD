@@ -1,7 +1,7 @@
 // Builds dist/player.html: ONE self-contained kiosk file (scripts, font, audio synth inlined).
 // Usage: node tools/build-player.js   (re-run after editing config.js or any src file)
 const fs = require('fs'), path = require('path'); const R = (f) => fs.readFileSync(path.join(__dirname, '..', f), 'utf8');
-const vis = ['config.js','src/core/core.js','src/core/fontdata.js','src/draw/draw.js','src/draw/icons.js','src/scenes/common.js', 'src/scenes/card.js','src/film.js','src/player/runtime.js'];
+const vis = ['config.js','src/core/core.js','src/core/fontdata.js','src/draw/draw.js','src/draw/icons.js','src/scenes/common.js', 'src/scenes/card.js','src/film.js','src/fx/lens.js','src/player/runtime.js'];
 const aud = ['config.js','src/audio/dsp.js','src/audio/music.js','src/audio/sfx.js','src/audio/master.js'];
 const esc = (s) => s.replace(/<\/script/gi, '<\\/script');
 const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -16,7 +16,7 @@ ${vis.map((f) => `<script>${esc(R(f))}</script>`).join('\n')}
 <script>
 (async()=>{const q=new URLSearchParams(location.search),$=(i)=>document.getElementById(i);
 await DHS.type.load();DHS.film.build();
-const P=DHS.runtime.create($('c'),{orientation:q.get('orient')||'auto',fps:+(q.get('fps')||30),maxScale:+(q.get('scale')||1),muted:q.get('mute')==='1'});
+const P=DHS.runtime.create($('c'),{orientation:q.get('orient')||'auto',fps:+(q.get('fps')||30),maxScale:+(q.get('scale')||1),muted:q.get('mute')==='1',lens:DHS.lens.fromQuery(location.search,DHS.config.lens)});
 P.onStatus(s=>{window.__dhsStatus=s;$('st').textContent={synth:'Preparing sound…',blocked:'Click for sound',playing:''}[s]??'';});
 P.start();P.enableAudio();
 const gesture=()=>{if(!P.st.muted)P.enableAudio();};addEventListener('pointerdown',gesture);addEventListener('keydown',gesture);

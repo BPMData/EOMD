@@ -11,6 +11,8 @@
 
   R.create = (canvas, opts = {}) => {
     const ctx = canvas.getContext('2d', { alpha: false });
+    // optional WebGL2 finish (src/fx/lens.js): opts.lens = knobs, or null/absent for none
+    const lens = opts.lens && DHS.lens ? DHS.lens.attach(canvas, opts.lens) : null;
     const st = { playing: true, muted: !!opts.muted, orient: opts.orientation || 'auto', maxScale: opts.maxScale || 1,
       base: 0, t0: performance.now() / 1000, audio: null, src: null, aBase: 0, aT0: 0, status: '', listeners: [] };
     const L = () => DHS.film.length;
@@ -40,7 +42,8 @@
     const frame = (now) => {
       raf = requestAnimationFrame(frame);
       if (now && now - last < 1000 / cap - 3) return; last = now || 0; // 30 fps cap (even cadence on 60 Hz screens)
-      DHS.film.render(ctx, time(), dims[0], dims[1], dims[2]);
+      const t = time(); DHS.film.render(ctx, t, dims[0], dims[1], dims[2]);
+      if (lens && lens.ok) lens.draw(canvas, t);
       frames++; const n = performance.now(); if (n - fpsT > 1000) { fps = (frames * 1000) / (n - fpsT); frames = 0; fpsT = n; }
     };
 
@@ -70,7 +73,7 @@
     const freezeClock = () => { st.base = clockNow(); st.t0 = performance.now() / 1000; };
 
     const api = {
-      ctx, st, time, fit, get fps() { return fps; }, get audioReady() { return !!buffer; },
+      ctx, st, time, fit, lens, get view() { return lens && lens.ok ? lens.canvas : canvas; }, get fps() { return fps; }, get audioReady() { return !!buffer; },
       get audioRunning() { return !!(st.audio && st.audio.state === 'running' && st.src); },
       onStatus(f) { st.listeners.push(f); },
       start() { if (!raf) frame(); },

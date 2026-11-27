@@ -24,6 +24,7 @@ written from scratch are all fair game: spend the tokens. Reuse the plumbing, ne
 | Procedural fields and textures | gen layers: `field` (flow-field streaks), `contour` (isolines over noise), `reaction` (reaction-diffusion), `truchet` (tiles rewired by waves), `halftone` (overprinted dot screens), `julia` (fractal), `harmonograph` (pendulum drawings), `tree` (recursive branching), `depth` (3D dot-and-wire meshes morphing), `tunnel` (rings flown through) | `gen/API.md` |
 | Layers combined with blend modes | gen layer `stack` | `gen/API.md` |
 | Something that grows forever without a timeline (a screen that lives all day) | Living engine: vines on a curl-noise field, text cards that bloom, cursive words written by a pen, a session timer | `living/` (`living/README.md`) |
+| A filmed finish over any canvas picture (glow, streak, edge fringe, tone curve, vignette, grain) | `DHS.lens`: a WebGL2 pass chain over the finished 2D frame, knobs per piece, pure function of time, plain canvas if no WebGL2. Wired into the engine players (`lens:` in `config.js`, `?lens=1`); other builds inline the file | `engine/src/fx/lens.js` (`engine/README.md`) |
 | Anything none of these does | Write it: a new gen layer, a new engine scene, or a player from scratch on Canvas 2D | — |
 
 ## Sound
