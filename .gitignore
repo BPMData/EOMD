@@ -18,3 +18,5 @@ proj/cse-loop/cse-loop-maker.html
 
 # Claude desktop app preview config (local only)
 .claude/launch.json
+
+node_modules/
