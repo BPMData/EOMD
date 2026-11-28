@@ -31,6 +31,25 @@ videos blur the line between interactive scrollytelling and video." Not yet: see
   - the beat model and essay player shell (§2, §5);
   - GPU type (§3) and sound hits and beds (§4).
   Every file is MIT and needs only the `DHS` namespace.
+- [ ] **`kit/KIT.json`: the kit's manifest, agreed with ProofEr (Nov 28).** ProofEr's sync script is being written
+  against this exact shape, so change it only together with ProofEr:
+  ```json
+  {
+    "version": "0.1.0",
+    "license": "MIT",
+    "files": {
+      "fx/lens.js": "<sha256 of the file, lowercase hex>"
+    }
+  }
+  ```
+  - `files` keys are paths under `kit/`, with forward slashes. Every file in `kit/` except `KIT.json` is listed, and
+    nothing outside `kit/`.
+  - `version` follows semver: bump the patch for fixes, the minor for new files or knobs, and the major for anything
+    that breaks a piece built on an older kit. Each bump gets a line in `kit/CHANGELOG.md`.
+  - Every kit file keeps an MIT header comment naming EOMD.
+  - A Thonny-friendly `tools/build_kit.py` copies the parts into `kit/` and rewrites `KIT.json` (hashes and the
+    file list; the version is set by hand). CI fails if `KIT.json` doesn't match the files.
+  - ProofEr copies the files into `vendor/eomd-kit/`, checks every hash, and keeps its own copy of `KIT.json` there.
 - [ ] **ProofEr brings in the kit with a sync script** (Thonny-friendly, `SETTINGS` block): it copies a pinned kit
   version into ProofEr. ProofEr's CI fails if a synced file was edited in place, because changes go upstream to EOMD
   first.
