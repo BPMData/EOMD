@@ -135,4 +135,64 @@
     for (let i = 0; i < N; i++) { if (i > 0) acc += r[i] - r[(i - La - 1 + N) % N]; const gg = acc / (La + 1); out.L[i] = bus.L[i] * gg; out.R[i] = bus.R[i] * gg; if (1 - gg > maxGR) maxGR = 1 - gg; }
     return { bus: out, maxGR: P.todb(1 - maxGR), hits };
   };
+
+  // ---- yielding twins, for synthesis on the main thread without freezing the page.
+  // P.steps.* are generators with the same math, in the same order, as the functions above (sample-identical
+  // results); they only add a `yield` every few thousand samples. Drive one to the end with P.drain(gen) (same
+  // result, synchronous), or in time slices with P.runAsync(gen) so the page keeps drawing between slices.
+  const S = (P.steps = {});
+  S.circular = function* (bus, makeProc) {
+    const N = bus.N, out = P.bus(N), proc = makeProc();
+    for (let pass = 0; pass < 2; pass++) for (let i = 0; i < N; i++) { const [l, r] = proc(bus.L[i], bus.R[i]); if (pass) { out.L[i] = l; out.R[i] = r; } if ((i & 16383) === 16383) yield; }
+    return out;
+  };
+  S.kPower = function* (bus, sr) {
+    const N = bus.N, kl = P.kweight(sr), kr = P.kweight(sr), hop = Math.round(sr * 0.1), nh = Math.floor(N / hop), pw = new Float64Array(nh);
+    for (let pass = 0; pass < 2; pass++) for (let i = 0; i < nh * hop; i++) { const l = kl(bus.L[i]), r = kr(bus.R[i]); if (pass) pw[(i / hop) | 0] += (l * l + r * r) / hop; if ((i & 65535) === 65535) yield; }
+    return pw;
+  };
+  S.lufs = function* (bus, sr) {
+    const pw = yield* S.kPower(bus, sr), nh = pw.length, blocks = [];
+    for (let i = 0; i < nh; i++) { let s = 0; for (let k = 0; k < 4; k++) s += pw[(i + k) % nh]; blocks.push(s / 4); }
+    const g1 = blocks.filter((b) => lk(b) > -70); const m1 = g1.reduce((a, b) => a + b, 0) / g1.length;
+    const g2 = g1.filter((b) => lk(b) > lk(m1) - 10); return lk(g2.reduce((a, b) => a + b, 0) / g2.length);
+  };
+  S.truePeakEnv = function* (ch) {
+    const N = ch.length, out = new Float32Array(N);
+    for (let i = 0; i < N; i++) { let m = Math.abs(ch[i]); for (let p = 1; p < OS; p++) { const row = tpKernel[p]; let s = 0; for (let j = 0; j < row.length; j++) { let idx = i - TP_TAPS + j; if (idx < 0) idx += N; else if (idx >= N) idx -= N; s += ch[idx] * row[j]; } const a = Math.abs(s); if (a > m) m = a; } out[i] = m; if ((i & 8191) === 8191) yield; }
+    return out;
+  };
+  S.limit = function* (bus, sr, ceiling, { look = 0.002, release = 0.12 } = {}) {
+    const N = bus.N, eL = yield* S.truePeakEnv(bus.L), eR = yield* S.truePeakEnv(bus.R), La = Math.max(2, Math.round(look * sr));
+    const req = new Float32Array(N); let hits = 0;
+    yield;
+    for (let i = 0; i < N; i++) { const m = Math.max(eL[i], eR[i]); req[i] = m > ceiling ? ceiling / m : 1; if (m > ceiling) hits++; }
+    if (!hits) return { bus, maxGR: 0, hits };
+    yield;
+    const mn = new Float32Array(N); for (let i = 0; i < N; i++) { let m = 1; for (let k = 0; k <= La; k++) { const v = req[(i + k) % N]; if (v < m) m = v; } mn[i] = m; if ((i & 16383) === 16383) yield; }
+    const rel = 1 - Math.exp(-1 / (release * sr)), r = new Float32Array(N); let g = 1;
+    for (let pass = 0; pass < 2; pass++) for (let i = 0; i < N; i++) { g = Math.min(mn[i], g + (1 - g) * rel); r[i] = g; if ((i & 262143) === 262143) yield; }
+    yield;
+    const out = P.bus(N); let acc = 0; for (let k = 0; k <= La; k++) acc += r[(N - k) % N]; let maxGR = 0;
+    for (let i = 0; i < N; i++) { if (i > 0) acc += r[i] - r[(i - La - 1 + N) % N]; const gg = acc / (La + 1); out.L[i] = bus.L[i] * gg; out.R[i] = bus.R[i] * gg; if (1 - gg > maxGR) maxGR = 1 - gg; if ((i & 262143) === 262143) yield; }
+    return { bus: out, maxGR: P.todb(1 - maxGR), hits };
+  };
+  // Run a generator to the end, synchronously; returns its result.
+  P.drain = (gen) => { for (;;) { const r = gen.next(); if (r.done) return r.value; } };
+  // Run a generator in slices of about budgetMs, handing the page back between slices (so it keeps drawing and
+  // answering clicks). Resolves with the generator's result. onProgress(slices) is called after each slice.
+  P.runAsync = (gen, { budgetMs = 8, onProgress } = {}) => new Promise((resolve, reject) => {
+    const now = () => (G.performance ? G.performance.now() : Date.now());
+    let next, slices = 0;
+    if (G.MessageChannel) { const ch = new G.MessageChannel(); ch.port1.onmessage = () => tick(); next = () => ch.port2.postMessage(0); }
+    else next = () => setTimeout(tick, 0);
+    const tick = () => {
+      const t0 = now();
+      try { for (;;) { const r = gen.next(); if (r.done) return resolve(r.value); if (now() - t0 >= budgetMs) break; } }
+      catch (e) { return reject(e); }
+      slices++; if (onProgress) onProgress(slices);
+      next(); // a new task: the browser can paint and handle input before it runs (a message isn't throttled in background tabs the way timers are)
+    };
+    next();
+  });
 })(globalThis);

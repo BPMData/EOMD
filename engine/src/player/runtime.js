@@ -48,15 +48,36 @@
     };
 
     // ---- audio
+    // Main thread, in ~8 ms slices, so the picture keeps playing while the sound is made (older builds without
+    // renderAsync: one blocking render).
+    // The kiosk build keeps the audio code only as text for the worker (#dhs-audio-src), so load it into the page
+    // first (dev.html already has it as scripts).
+    const loadAudioHere = () => {
+      if (DHS.audio && DHS.audio.render) return;
+      const srcEl = document.getElementById('dhs-audio-src');
+      if (!srcEl) throw new Error('no audio code in the page');
+      const s = document.createElement('script'); s.textContent = srcEl.textContent; document.head.append(s);
+      if (!(DHS.audio && DHS.audio.render)) throw new Error('audio code did not load');
+    };
+    const mainThread = (cues) => Promise.resolve().then(() => {
+      loadAudioHere();
+      return DHS.audio.renderAsync
+        ? DHS.audio.renderAsync({ cues }, { budgetMs: 8 })
+        : new Promise((res, rej) => setTimeout(() => { try { res(DHS.audio.render({ cues })); } catch (e) { rej(e); } }, 30));
+    }).then((r) => ({ L: r.master.L, R: r.master.R, sr: r.sr }));
     const synth = () => new Promise((resolve, reject) => {
       const cues = (DHS.film.tl || DHS.film.build()).cues;
       const srcEl = document.getElementById('dhs-audio-src');
-      if (srcEl && G.Worker && G.Blob) {
+      let fellBack = false;
+      const fallback = (why) => { if (fellBack) return; fellBack = true; if (why) console.warn('audio worker unavailable, synthesizing on the main thread:', why); mainThread(cues).then(resolve, reject); };
+      if (!(srcEl && G.Worker && G.Blob && opts.worker !== false)) return fallback();
+      try { // a blob worker can be blocked (file:// rules, a content policy): then fall back instead of going silent
         const code = srcEl.textContent + '\nself.onmessage=(e)=>{const r=DHS.audio.render({cues:e.data.cues});self.postMessage({L:r.master.L,R:r.master.R,sr:r.sr},[r.master.L.buffer,r.master.R.buffer]);};';
         const w = new Worker(URL.createObjectURL(new Blob([code], { type: 'text/javascript' })));
-        w.onmessage = (e) => { resolve(e.data); w.terminate(); }; w.onerror = (e) => reject(e);
+        w.onmessage = (e) => { if (fellBack) return; resolve(e.data); w.terminate(); };
+        w.onerror = (e) => { e.preventDefault && e.preventDefault(); w.terminate(); fallback(e.message || 'worker error'); };
         w.postMessage({ cues });
-      } else setTimeout(() => { try { const r = DHS.audio.render({ cues }); resolve({ L: r.master.L, R: r.master.R, sr: r.sr }); } catch (e) { reject(e); } }, 30);
+      } catch (e) { fallback(e.message); }
     });
     let buffer = null, synthP = null;
     const startSource = () => {

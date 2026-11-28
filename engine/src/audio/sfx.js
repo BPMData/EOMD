@@ -36,12 +36,14 @@
 
   X.gains = { whoosh: 0.5, swell: 0.4, slide: 0.35, pop: 0.3, tick: 0.14, thump: 0.55, rewind: 0.45, unwind: 0.45 };
 
-  X.render = (cues, sr, N) => {
+  // renderSteps yields after each cue and inside the reverb; render runs it straight through (sample-identical).
+  X.renderSteps = function* (cues, sr, N) {
     const bus = P.bus(N), wet = P.bus(N);
     for (const c of cues) { const f = S[c.type]; if (!f) continue; const b = f(sr, c), g = X.gains[c.type] * (c.gain ?? 1), pan = c.pan || 0;
-      P.write(bus, b, Math.round(c.t * sr), g, pan); P.write(wet, b, Math.round(c.t * sr), g * 0.25, pan); }
-    const verb = P.circular(wet, P.reverb({ sr, size: 0.7, damp: 0.6, hp: 250, lp: 4500 }));
+      P.write(bus, b, Math.round(c.t * sr), g, pan); P.write(wet, b, Math.round(c.t * sr), g * 0.25, pan); yield; }
+    const verb = yield* P.steps.circular(wet, P.reverb({ sr, size: 0.7, damp: 0.6, hp: 250, lp: 4500 }));
     P.mixInto(bus, verb, 1);
     return bus;
   };
+  X.render = (cues, sr, N) => P.drain(X.renderSteps(cues, sr, N));
 })(globalThis);

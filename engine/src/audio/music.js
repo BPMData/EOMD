@@ -93,7 +93,9 @@
   PH.chime = [0, 1].flatMap((b) => [0, 2, 4, 6, 10, 12].map((st, j) => [st + 16 * b, PH.chimeBar[b][j], 2, j ? 0.8 : 1]));
 
   // ------------------------------------------------------------ arrangement
-  M.render = (opts = {}) => {
+  // renderSteps: a generator (yields between bars, sections and effect chunks; see P.steps in dsp.js);
+  // render: the same thing run straight through (sample-identical).
+  M.renderSteps = function* (opts = {}) {
     const c = DHS.config, sr = opts.sr || c.film.sampleRate;
     const beat = 60 / c.film.bpm, barS = beat * c.film.beatsPerBar, bars = c.film.bars, N = Math.round(bars * barS * sr);
     const stepN = Math.round((beat / 4) * sr), barN = stepN * 16; // 7500 / 120000 samples @ 48 kHz
@@ -113,26 +115,28 @@
       const ch = M.chordAt(b);
       [[0, 0, 3, 1], [3, 0, 1, .55], [6, 12, 2, .8], [8, 0, 3, .95], [11, 0, 1, .5], [14, 7, 2, .7]].forEach(([s, iv, len, v]) =>
         P.write(B.bass, I.bass(sr, ch.bass + iv, len * stepS * 0.9, v), at(b, s), 0.4));
-      ch.pad.forEach((m) => { const [l, r] = I.pad(sr, m, barS, b * barS); P.write(B.pad, l, at(b, 0), 0.11, -0.7); P.write(B.pad, r, at(b, 0), 0.11, 0.7); });
+      yield;
+      for (const m of ch.pad) { const [l, r] = I.pad(sr, m, barS, b * barS); P.write(B.pad, l, at(b, 0), 0.11, -0.7); P.write(B.pad, r, at(b, 0), 0.11, 0.7); yield; }
     }
 
     // --- leads, each rendered alone then level-matched so no section jumps out
     const sec = c.sections, leadTarget = opts.leadTarget || -18; // K-weighted dBFS-ish RMS target per section
     const sections = [];
-    const addSection = (id, bar0, nBars, fillFn, pan = 0, send = 0.25, echo = 0.2) => { const bus = P.bus(N); fillFn(bus, bar0); sections.push({ id, bar0, nBars, bus, pan, send, echo }); };
+    const addSection = function* (id, bar0, nBars, fillFn, pan = 0, send = 0.25, echo = 0.2) { const bus = P.bus(N); yield* fillFn(bus, bar0); sections.push({ id, bar0, nBars, bus, pan, send, echo }); };
     const notes = (inst, list, bar0) => (bus) => list.forEach(([s, m, len, v]) => P.write(bus, I[inst](sr, m, len * stepS * 0.92, v), at(bar0, s), 1));
 
     // one lead per section, from config.sections[i].instrument (2-bar phrase repeated)
     let barPos = 0;
-    c.sections.forEach((sd, i) => {
-      const b0 = barPos; barPos += sd.bars; const inst = sd.instrument; if (!inst || !PH[inst]) return;
+    for (const [i, sd] of c.sections.entries()) {
+      const b0 = barPos; barPos += sd.bars; const inst = sd.instrument; if (!inst || !PH[inst]) continue;
       const ph = PH[inst], v = Array.isArray(ph) ? ph : (ph.a || ph.b), pan = i % 2 ? 0.2 : -0.2;
-      addSection(sd.id, b0, sd.bars, (bus) => { for (let r = 0; r < sd.bars; r += 2) { const bb = b0 + r;
+      yield* addSection(sd.id, b0, sd.bars, function* (bus) { for (let r = 0; r < sd.bars; r += 2) { const bb = b0 + r;
         if (inst === 'keys') v.forEach(({ s: st, bar, len, v: vel }) => M.chordAt(bb + bar - 1).keys.forEach((m, q) => P.write(bus, I.keys(sr, m, len * stepS * 0.9, vel * (q === 3 ? 1 : 0.7)), at(bb, st), 0.5)));
         else if (inst === 'pluck') v.forEach(([st, m, len, vel], k) => P.write(bus, I.pluck(sr, m, 0, vel, k), at(bb, st), 1));
         else { v.filter((n) => n[0] < 32).forEach(([st, m, len, vel]) => P.write(bus, I[inst](sr, m, len * stepS * 0.92, vel), at(bb, st), 1));
-          if (inst === 'mallet') for (let q = 2; q < 32; q += 4) P.write(bus, I.woodblock(sr), at(bb, q), 0.35, 0.4); } } }, pan, inst === 'voice' ? 0.35 : 0.25, 0.2);
-    });
+          if (inst === 'mallet') for (let q = 2; q < 32; q += 4) P.write(bus, I.woodblock(sr), at(bb, q), 0.35, 0.4); } yield; } }, pan, inst === 'voice' ? 0.35 : 0.25, 0.2);
+      yield;
+    }
 
     // level-match on K-weighted power inside each section's own span
     const kw = (bus, bar0, nBars) => { const kl = P.kweight(sr); let s = 0, cnt = 0; for (let k = 0; k < nBars * barN; k++) { const i = (bar0 * barN + k) % N; const x = kl((bus.L[i] + bus.R[i]) * 0.5); s += x * x; cnt++; } return 10 * Math.log10(s / cnt + 1e-20); };
@@ -144,19 +148,23 @@
       const pl = Math.cos((S.pan + 1) * Math.PI / 4) * Math.SQRT2, pr = Math.sin((S.pan + 1) * Math.PI / 4) * Math.SQRT2;
       for (let i = 0; i < N; i++) { const x = (S.bus.L[i] + S.bus.R[i]) * 0.5 * g; B.lead.L[i] += x * pl; B.lead.R[i] += x * pr; B.wet.L[i] += x * S.send; B.wet.R[i] += x * S.send; }
       S.echoGain = S.echo * g;
+      yield;
     }
     // echo send: per-section amount
     const echoIn = P.bus(N); for (const S of sections) for (let i = 0; i < N; i++) { const x = (S.bus.L[i] + S.bus.R[i]) * 0.5 * S.echoGain; echoIn.L[i] += x; echoIn.R[i] += x; }
+    yield;
 
     // --- effects, processed circularly
-    const echo = P.circular(echoIn, P.delay({ sr, time: beat * 0.75, fb: 0.3, lp: 2800 }));
+    const echo = yield* P.steps.circular(echoIn, P.delay({ sr, time: beat * 0.75, fb: 0.3, lp: 2800 }));
     P.mixInto(B.wet, echo, 0.35);
-    const verb = P.circular(B.wet, P.reverb({ sr, size: 0.84, damp: 0.5, width: 1, hp: 200, lp: 5500 }));
+    const verb = yield* P.steps.circular(B.wet, P.reverb({ sr, size: 0.84, damp: 0.5, width: 1, hp: 200, lp: 5500 }));
 
     // --- sum music (gentle bus EQ: low-cut 30 Hz, soft high-shelf cut above 7 kHz → never harsh)
     const mix = P.bus(N);
     P.mixInto(mix, B.drums, 1); P.mixInto(mix, B.bass, 1); P.mixInto(mix, B.pad, 1); P.mixInto(mix, B.lead, 1); P.mixInto(mix, echo, 0.55); P.mixInto(mix, verb, 1.1);
-    const music = P.circular(mix, () => { const hl = P.rbjHighpass(30, 0.7, sr), hr2 = P.rbjHighpass(30, 0.7, sr), sl = P.rbjShelfHi(9000, -2, sr), sr2 = P.rbjShelfHi(9000, -2, sr); return (l, r) => [sl(hl(l)), sr2(hr2(r))]; });
+    yield;
+    const music = yield* P.steps.circular(mix, () => { const hl = P.rbjHighpass(30, 0.7, sr), hr2 = P.rbjHighpass(30, 0.7, sr), sl = P.rbjShelfHi(9000, -2, sr), sr2 = P.rbjShelfHi(9000, -2, sr); return (l, r) => [sl(hl(l)), sr2(hr2(r))]; });
     return { sr, N, music, buses: B, sections: sections.map(({ id, bar0, nBars }) => ({ id, bar0, nBars })) };
   };
+  M.render = (opts = {}) => P.drain(M.renderSteps(opts));
 })(globalThis);
