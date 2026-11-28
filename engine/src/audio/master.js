@@ -13,28 +13,32 @@
   A.CEILING_DBTP = -1.5;
   A.SFX_DB = -3; // SFX bus trim relative to music (sounds are already quiet by design)
 
-  A.render = (opts = {}) => {
+  // renderSteps: the whole render as a generator (yields every few ms of work); render runs it straight through
+  // (sample-identical); renderAsync runs it in time slices so a page synthesizing on its main thread keeps drawing.
+  A.renderSteps = function* (opts = {}) {
     const log = opts.log || (() => {});
     const sr = opts.sr || DHS.config.film.sampleRate;
     const cues = opts.cues || (DHS.film.tl || DHS.film.build()).cues;
     log('music…');
-    const m = DHS.music.render({ sr });
+    const m = yield* DHS.music.renderSteps({ sr });
     log('sfx…');
-    const sfx = DHS.sfx.render(cues, sr, m.N);
+    const sfx = yield* DHS.sfx.renderSteps(cues, sr, m.N);
     const N = m.N,
       sg = P.db(A.SFX_DB);
     const mix = P.bus(N);
     P.mixInto(mix, m.music, 1);
     P.mixInto(mix, sfx, sg);
+    yield;
     log('master…');
-    let g = P.db(A.TARGET_LUFS - P.lufs(mix, sr)),
+    let g = P.db(A.TARGET_LUFS - (yield* P.steps.lufs(mix, sr))),
       lim,
       lufs;
     for (let it = 0; it < 4; it++) {
       const pre = P.bus(N);
       P.mixInto(pre, mix, g);
-      lim = P.limit(pre, sr, P.db(A.CEILING_DBTP));
-      lufs = P.lufs(lim.bus, sr);
+      yield;
+      lim = yield* P.steps.limit(pre, sr, P.db(A.CEILING_DBTP));
+      lufs = yield* P.steps.lufs(lim.bus, sr);
       if (Math.abs(lufs - A.TARGET_LUFS) < 0.05) break;
       g *= P.db(A.TARGET_LUFS - lufs);
     }
@@ -74,6 +78,8 @@
     }
     return { sr, N, music, sfx: sfxOut, master, report };
   };
+  A.render = (opts = {}) => P.drain(A.renderSteps(opts));
+  A.renderAsync = (opts = {}, run = {}) => P.runAsync(A.renderSteps(opts), run);
 
   // Interleave to 16-bit (or float) WAV bytes — Node export helper (also usable in-browser)
   A.wav = (bus, sr, bits = 24) => {

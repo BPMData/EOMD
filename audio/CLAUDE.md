@@ -22,7 +22,7 @@ push; Node 26 on the Mac doesn't match it (`tools/STATUS.md`), so on the Mac poi
 | `arranger.js` | Arranger core (~16 lines): `sectionLen`, `section` dispatcher on `score.style` (unknown → comp4), `run`, `bind`, `loopSections` |
 | `style-*.js` | One file per style, each registers `MUSIC.styles.<name>`: `comp4` (endless, generative), `film24` (fixed seamless loop), `rounds` (20-min study loop), `lounge` (Encyclopedia Lounge: endless seeded bossa, head + generative choruses, key lifts; also `MUSIC.loungePlan`), `chip`, `loungechip`, `overclock` (the last two: `proj/cdrom/CLAUDE.md`) |
 | `chips.js`, `style-chip.js` | CD-ROM era sound chips (`fm`, `tia`, `beep`, `snes`, `arcade`) and the `chip` style that drives them (`MUSIC.chipEvents` for MIDI). `chips.js` loads before the arranger; opt-in clear sampler (`clear: 1`, `CHIPS.snes.postClear`), the intro's `pulse` lead (`CHIPS.snes.leads`) |
-| `../engine/src/audio/dsp.js` | The DSP everything uses |
+| `../engine/src/audio/dsp.js` | The DSP everything uses. `P.steps.*` are yielding twins of `circular`, `kPower`, `lufs`, `truePeakEnv` and `limit` (same samples); `P.drain` runs a generator straight through, `P.runAsync` runs it in ~8 ms slices so a page synthesizing on its main thread keeps drawing |
 | `../score/*.json` | Music cartridges, ~2 KB each; one file = a whole 20-min stream. Every field: `score/FORMAT.md` |
 
 **Load order:** dsp, instruments, instruments-film, instruments-cdrom, chips, arranger, styles.

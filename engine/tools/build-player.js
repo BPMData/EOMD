@@ -29,7 +29,7 @@ ${vis.map((f) => `<script>${esc(R(f))}</script>`).join('\n')}
 <script>
 (async()=>{const q=new URLSearchParams(location.search),$=(i)=>document.getElementById(i);
 await DHS.type.load();DHS.film.build();
-const P=DHS.runtime.create($('c'),{orientation:q.get('orient')||'auto',fps:+(q.get('fps')||30),maxScale:+(q.get('scale')||1),muted:q.get('mute')==='1',lens:DHS.lens.fromQuery(location.search,DHS.config.lens)});
+const P=DHS.runtime.create($('c'),{orientation:q.get('orient')||'auto',fps:+(q.get('fps')||30),maxScale:+(q.get('scale')||1),muted:q.get('mute')==='1',lens:DHS.lens.fromQuery(location.search,DHS.config.lens),worker:q.get('worker')!=='0'});
 P.onStatus(s=>{window.__dhsStatus=s;$('st').textContent={synth:'Preparing sound…',blocked:'Click for sound',playing:''}[s]??'';});
 P.start();P.enableAudio();
 const gesture=()=>{if(!P.st.muted)P.enableAudio();};addEventListener('pointerdown',gesture);addEventListener('keydown',gesture);

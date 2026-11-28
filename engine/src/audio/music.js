@@ -379,7 +379,9 @@
   );
 
   // ------------------------------------------------------------ arrangement
-  M.render = (opts = {}) => {
+  // renderSteps: a generator (yields between bars, sections and effect chunks; see P.steps in dsp.js);
+  // render: the same thing run straight through (sample-identical).
+  M.renderSteps = function* (opts = {}) {
     const c = DHS.config,
       sr = opts.sr || c.film.sampleRate;
     const beat = 60 / c.film.bpm,
@@ -422,20 +424,22 @@
         [11, 0, 1, 0.5],
         [14, 7, 2, 0.7],
       ].forEach(([s, iv, len, v]) => P.write(B.bass, I.bass(sr, ch.bass + iv, len * stepS * 0.9, v), at(b, s), 0.4));
-      ch.pad.forEach((m) => {
+      yield;
+      for (const m of ch.pad) {
         const [l, r] = I.pad(sr, m, barS, b * barS);
         P.write(B.pad, l, at(b, 0), 0.11, -0.7);
         P.write(B.pad, r, at(b, 0), 0.11, 0.7);
-      });
+        yield;
+      }
     }
 
     // --- leads, each rendered alone then level-matched so no section jumps out
     const sec = c.sections,
       leadTarget = opts.leadTarget || -18; // K-weighted dBFS-ish RMS target per section
     const sections = [];
-    const addSection = (id, bar0, nBars, fillFn, pan = 0, send = 0.25, echo = 0.2) => {
+    const addSection = function* (id, bar0, nBars, fillFn, pan = 0, send = 0.25, echo = 0.2) {
       const bus = P.bus(N);
-      fillFn(bus, bar0);
+      yield* fillFn(bus, bar0);
       sections.push({ id, bar0, nBars, bus, pan, send, echo });
     };
     const notes = (inst, list, bar0) => (bus) =>
@@ -443,19 +447,19 @@
 
     // one lead per section, from config.sections[i].instrument (2-bar phrase repeated)
     let barPos = 0;
-    c.sections.forEach((sd, i) => {
+    for (const [i, sd] of c.sections.entries()) {
       const b0 = barPos;
       barPos += sd.bars;
       const inst = sd.instrument;
-      if (!inst || !PH[inst]) return;
+      if (!inst || !PH[inst]) continue;
       const ph = PH[inst],
         v = Array.isArray(ph) ? ph : ph.a || ph.b,
         pan = i % 2 ? 0.2 : -0.2;
-      addSection(
+      yield* addSection(
         sd.id,
         b0,
         sd.bars,
-        (bus) => {
+        function* (bus) {
           for (let r = 0; r < sd.bars; r += 2) {
             const bb = b0 + r;
             if (inst === 'keys')
@@ -473,13 +477,15 @@
               if (inst === 'mallet')
                 for (let q = 2; q < 32; q += 4) P.write(bus, I.woodblock(sr), at(bb, q), 0.35, 0.4);
             }
+            yield;
           }
         },
         pan,
         inst === 'voice' ? 0.35 : 0.25,
         0.2
       );
-    });
+      yield;
+    }
 
     // level-match on K-weighted power inside each section's own span
     const kw = (bus, bar0, nBars) => {
@@ -510,6 +516,7 @@
         B.wet.R[i] += x * S.send;
       }
       S.echoGain = S.echo * g;
+      yield;
     }
     // echo send: per-section amount
     const echoIn = P.bus(N);
@@ -519,11 +526,12 @@
         echoIn.L[i] += x;
         echoIn.R[i] += x;
       }
+    yield;
 
     // --- effects, processed circularly
-    const echo = P.circular(echoIn, P.delay({ sr, time: beat * 0.75, fb: 0.3, lp: 2800 }));
+    const echo = yield* P.steps.circular(echoIn, P.delay({ sr, time: beat * 0.75, fb: 0.3, lp: 2800 }));
     P.mixInto(B.wet, echo, 0.35);
-    const verb = P.circular(B.wet, P.reverb({ sr, size: 0.84, damp: 0.5, width: 1, hp: 200, lp: 5500 }));
+    const verb = yield* P.steps.circular(B.wet, P.reverb({ sr, size: 0.84, damp: 0.5, width: 1, hp: 200, lp: 5500 }));
 
     // --- sum music (gentle bus EQ: low-cut 30 Hz, soft high-shelf cut above 7 kHz → never harsh)
     const mix = P.bus(N);
@@ -533,7 +541,8 @@
     P.mixInto(mix, B.lead, 1);
     P.mixInto(mix, echo, 0.55);
     P.mixInto(mix, verb, 1.1);
-    const music = P.circular(mix, () => {
+    yield;
+    const music = yield* P.steps.circular(mix, () => {
       const hl = P.rbjHighpass(30, 0.7, sr),
         hr2 = P.rbjHighpass(30, 0.7, sr),
         sl = P.rbjShelfHi(9000, -2, sr),
@@ -542,4 +551,5 @@
     });
     return { sr, N, music, buses: B, sections: sections.map(({ id, bar0, nBars }) => ({ id, bar0, nBars })) };
   };
+  M.render = (opts = {}) => P.drain(M.renderSteps(opts));
 })(globalThis);
