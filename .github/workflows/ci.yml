@@ -5,6 +5,8 @@
 #           and compares them with tests/hashes.json (0 mismatches = no music changed).
 #           Pinned to Node 22, the version the baseline was made with (Node 26 does the math slightly differently).
 #   format  prettier --check . (Prettier 3.3.3, pinned in package.json; this repo has no linter).
+#   kit     tools/build_kit.py CHECK: kit/ copies match their engine sources and kit/KIT.json (hashes, file list,
+#           version with a CHANGELOG section). The format is agreed with ProofEr (TODO.md §0).
 #   stage-reads  the peeking audit (tools/check_stage_reads.py): reads of restricted paths made by a new piece's session
 #           before its toolbox gate, from proj/*/access.jsonl. Warnings only, never a failure.
 name: CI
@@ -64,6 +66,17 @@ jobs:
           node-version: '22'
       - run: npm ci
       - run: npx prettier --check .
+
+  kit:
+    name: kit check (kit/KIT.json)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: tools/build_kit.py CHECK
+        run: python -c "import sys; sys.path.insert(0, 'tools'); import build_kit; sys.exit(1 if build_kit.check() else 0)"
 
   stage-reads:
     name: stage-read audit (warnings only)

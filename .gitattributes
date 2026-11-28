@@ -1,0 +1,2 @@
+# The kit is hash-listed in kit/KIT.json (sha256 of the exact bytes): keep LF on every checkout
+kit/** text eol=lf

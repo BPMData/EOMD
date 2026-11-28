@@ -6,5 +6,8 @@ inside `engine/`, e.g. `node tools/build-player.js`).
 
 - `engine/src/audio/dsp.js` is the DSP every player uses: a change to it follows the regression rule in
   `audio/CLAUDE.md`.
+- `engine/src/fx/lens.js` and `engine/src/audio/dsp.js` are copied into `kit/` for ProofEr: after changing either, run
+  `tools/build_kit.py` and commit `kit/` too (CI fails on a stale copy). A release also bumps `kit/KIT.json`'s version
+  and adds a `kit/CHANGELOG.md` section.
 - `engine/tools/html_to_mp4.py` is the original MP4 script; use `tools/html_to_mp4.py` instead.
 - Don't open `engine/` for living-poster or jukebox work (only `dsp.js`, for DSP internals).

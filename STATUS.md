@@ -3,7 +3,7 @@
 > **Visitors:** this is the project's working log, kept for the people and AI assistants working on it. For what
 > EOMD is and how to use it, start with [README.md](README.md).
 
-_Last updated: Nov 28, 2026 (video-essay plan in `TODO.md`; lens upgraded: 6-level glow, halation, AgX/ACES, grade, dither; engine audio fallback renders in slices and works when the worker is blocked. Nov 27: optional WebGL2 lens finish, ideas taken from the Q-Day player; before that Nov 21: CD-ROM link options `?start=`, `?go`, `?airship`; before that Nov 4: fresh-eyes review added to the design stages; Academies film: clock + timer version). Each piece's history, limits and open questions live in its
+_Last updated: Nov 28, 2026 (kit v0.1.0: `kit/` + `tools/build_kit.py` for ProofEr; both repos are AGPLv3, so no licence obstacle; video-essay plan in `TODO.md`; lens upgraded: 6-level glow, halation, AgX/ACES, grade, dither; engine audio fallback renders in slices and works when the worker is blocked. Nov 27: optional WebGL2 lens finish, ideas taken from the Q-Day player; before that Nov 21: CD-ROM link options `?start=`, `?go`, `?airship`; before that Nov 4: fresh-eyes review added to the design stages; Academies film: clock + timer version). Each piece's history, limits and open questions live in its
 folder's `STATUS.md`; repo-wide history in `notes/history.md`._
 
 ## Pieces
@@ -15,7 +15,7 @@ folder's `STATUS.md`; repo-wide history in `notes/history.md`._
 | CSE hallway loop (new, full creative) | Done; published Oct 25 (`players/cse-loop.html`) | ES/PT check; real-TV check | `proj/cse-loop/STATUS.md` |
 | PLTW CSE promo | r2 published ("cheesy as hell, but exactly what I asked for") | The PLTW test below | `proj/pltw/STATUS.md` |
 | Engine lens finish (`engine/src/fx/lens.js`) | Built Nov 27, upgraded Nov 28; in the engine's dev, kiosk, stills and MP4 paths; off by default | Not yet seen on a real TV; not yet inlined in CD-ROM, living or gen |
-| Video essays (Q-Day / Last Boring Slide level) | Planned: `TODO.md`. Decided Nov 28: EOMD builds the engine as a versioned kit; ProofEr hosts motion essays (TODO §0) | The kit folder and ProofEr's sync script, then the GPU scene layer |
+| Video essays (Q-Day / Last Boring Slide level) | Planned: `TODO.md`. Decided Nov 28: EOMD builds the engine as a versioned kit; ProofEr hosts motion essays (TODO §0) | Kit v0.1.0 built (`kit/`, `tools/build_kit.py`); next: ProofEr's sync script against it, then the GPU scene layer |
 | gen library (incl. Dust Type) | Working; `tools/gen_export.py` | Check Dust Type knobs | `gen/STATUS.md` |
 | Jukebox | 15 cartridges | Redesign its look | `jukebox/STATUS.md` |
 

@@ -1,0 +1,10 @@
+{
+  "version": "0.1.0",
+  "license": "AGPL-3.0-only",
+  "files": {
+    "CHANGELOG.md": "4bc8fa8ef1065d54aba8e337409917cbb415307fcdca164cb83a0e11710c5549",
+    "README.md": "b5ce6fc04654eaeeb5300f647d1ca2634b9aa6cbc8b1dd62b974b073eac97234",
+    "audio/dsp.js": "0d12522bbf01dce3ac69b2cc76e8a677ab396d422afbe642a58d566873d2992e",
+    "fx/lens.js": "c7dad14003011acc4677bd586be8a66aceeb438150f4d365c90e15d2a59d1176"
+  }
+}
