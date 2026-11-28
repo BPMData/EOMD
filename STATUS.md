@@ -22,6 +22,8 @@ folder's `STATUS.md`; repo-wide history in `notes/history.md`._
 ## Across the repo
 - **CI** runs the gen build + smoke test and the audio regression CHECK (Node 22) on every push; the stage-read audit
   (warnings only) and the first-question eval (only with an `ANTHROPIC_API_KEY` secret) are new.
+- **Formatting (Nov 27):** the repo is formatted with Prettier 3.3.3 (`npx prettier --write`); CI runs `prettier --check .`.
+  Markdown, build output and the `gen/` sources that `gen/build.py` parses are skipped (`.prettierignore`).
 - **Regression baseline:** settled for Node 22; the Mac's Node 26 doesn't match it (`tools/STATUS.md`).
 - **New pieces:** interview → brief → concepts → storyboard → build; tools open at the gate via `/toolbox`
   (`notes/context-plan.md`). Taste defaults: `brief/taste/house.md`.

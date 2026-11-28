@@ -1,0 +1,27 @@
+# Build output (rebuilt by tools/build*.py, gen/build.py and the engine/academies build scripts)
+dist/
+players/
+proj/cse-loop/cse-loop.html
+proj/cse-loop/choices-sound*.html
+academies-film/danbury-academies-player.html
+academies-film/sanctioned-corporate-calm.html
+
+# Generated files that CI checks are byte-identical to a fresh gen/build.py run
+gen/carts/_bundle.js
+
+# Sources that gen/build.py parses with regexes to write gen/KNOBS.md (layers, G.knobHelp in stage.js, m3d shapes) (they expect double-quoted comment strings and
+# the current line layout); reformatting them silently drops knob descriptions from KNOBS.md and fails CI
+gen/layers/*.js
+gen/m3d.js
+gen/stage.js
+
+# Lockfiles
+package-lock.json
+
+# Vendored/generated data: base64 fonts, tool-written baselines, logs
+**/fontdata.js
+tests/hashes.json
+**/access.jsonl
+
+# Documentation, interview questions, research prompts and outputs: not reformatted (Bryan's call)
+*.md

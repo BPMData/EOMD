@@ -25,25 +25,25 @@
 
   // A knob at 0 turns its part off (bloom, streak, halation, fringe, vignette, grain, dither).
   const DEFAULTS = {
-    exposure: 1,      // multiplies the picture (linear light) before tone and grade
-    bloom: 0.25,      // glow strength. Type is in the picture, so glow also haloes white text: keep it low and check legibility
-    threshold: 0.8,   // brightness (0..1, brightest channel) where glow starts
-    knee: 0.15,       // softness of that threshold
-    radius: 0.85,     // how far the glow spreads (0.5 tight .. 1 wide)
-    levels: 6,        // glow levels (1..6); fewer = tighter and cheaper
-    halation: 0,      // 0..1: glow pushed toward red, like film
-    streak: 0.06,     // horizontal streak from the glow; 0 = off
+    exposure: 1, // multiplies the picture (linear light) before tone and grade
+    bloom: 0.25, // glow strength. Type is in the picture, so glow also haloes white text: keep it low and check legibility
+    threshold: 0.8, // brightness (0..1, brightest channel) where glow starts
+    knee: 0.15, // softness of that threshold
+    radius: 0.85, // how far the glow spreads (0.5 tight .. 1 wide)
+    levels: 6, // glow levels (1..6); fewer = tighter and cheaper
+    halation: 0, // 0..1: glow pushed toward red, like film
+    streak: 0.06, // horizontal streak from the glow; 0 = off
     streakTint: [0.7, 0.78, 1.0],
-    fringe: 0.6,      // colour fringe at the screen corners, in pixels; grows with distance from the centre, 0 at it
-    tone: 'none',     // 'none' keeps brand colours; 'aces' (alias 'film') rolls off highlights, whites ~20% darker; 'agx' softer, more neutral
-    contrast: 1,      // around mid-grey, after the tone curve
-    saturation: 1,    // 0 = grey, 1 = as is
-    lift: [0, 0, 0],  // raises the shadows toward this colour (0..0.1 is plenty)
-    gain: [1, 1, 1],  // multiplies the highlights per channel (a warm grade: [1.03, 1, 0.96])
-    vignette: 0.3,    // corner darkening (0..1)
-    grain: 0.02,      // grain amplitude in the midtones (0.02 = +/-1%)
-    grainFps: 24,     // how often grain and dither change; frozen under prefers-reduced-motion
-    dither: 1,        // final dither in 8-bit shades (1 = +/-1 shade, triangular); 0 = off
+    fringe: 0.6, // colour fringe at the screen corners, in pixels; grows with distance from the centre, 0 at it
+    tone: 'none', // 'none' keeps brand colours; 'aces' (alias 'film') rolls off highlights, whites ~20% darker; 'agx' softer, more neutral
+    contrast: 1, // around mid-grey, after the tone curve
+    saturation: 1, // 0 = grey, 1 = as is
+    lift: [0, 0, 0], // raises the shadows toward this colour (0..0.1 is plenty)
+    gain: [1, 1, 1], // multiplies the highlights per channel (a warm grade: [1.03, 1, 0.96])
+    vignette: 0.3, // corner darkening (0..1)
+    grain: 0.02, // grain amplitude in the midtones (0.02 = +/-1%)
+    grainFps: 24, // how often grain and dither change; frozen under prefers-reduced-motion
+    dither: 1, // final dither in 8-bit shades (1 = +/-1 shade, triangular); 0 = off
   };
 
   const VS = `#version 300 es
@@ -56,7 +56,9 @@ float luma(vec3 c){return dot(c,vec3(.2126,.7152,.0722));}
 float h13(vec3 p){p=fract(p*.1031);p+=dot(p,p.zyx+31.32);return fract((p.x+p.y)*p.z);}
 `;
   // 13-tap downsample (sRGB source on the first level, with the soft threshold); linear light after that
-  const DOWN = HEAD + `uniform sampler2D S;uniform vec2 uPx;uniform float uFirst,uTh,uKnee;
+  const DOWN =
+    HEAD +
+    `uniform sampler2D S;uniform vec2 uPx;uniform float uFirst,uTh,uKnee;
 vec3 s(vec2 d){vec3 c=texture(S,v+d*uPx).rgb;
  if(uFirst>.5){float m=max(c.r,max(c.g,c.b));c=toLin(c)*smoothstep(uTh-uKnee,uTh+uKnee,m);c/=1.+luma(c)*.12;}
  return c;}
@@ -66,11 +68,15 @@ void main(){vec3 c=s(vec2(0))*.125;
  c+=(s(vec2(-2,-2))+s(vec2(2,-2))+s(vec2(-2,2))+s(vec2(2,2)))*.03125;
  o=vec4(c,1.);}`;
   // 3x3 tent upsample of the smaller level, added to this level's downsample
-  const UP = HEAD + `uniform sampler2D S,B;uniform vec2 uPx;uniform float uR;
+  const UP =
+    HEAD +
+    `uniform sampler2D S,B;uniform vec2 uPx;uniform float uR;
 void main(){vec3 c=vec3(0);
  for(int y=-1;y<=1;y++)for(int x=-1;x<=1;x++){float w=(x==0?2.:1.)*(y==0?2.:1.);c+=w*texture(S,v+vec2(x,y)*uPx*uR).rgb;}
  o=vec4(texture(B,v).rgb+c/16.,1.);}`;
-  const POST = HEAD + `uniform sampler2D S,B,SB;uniform vec2 R;uniform vec3 uTint,uLift,uGain;
+  const POST =
+    HEAD +
+    `uniform sampler2D S,B,SB;uniform vec2 R;uniform vec3 uTint,uLift,uGain;
 uniform float uExp,uBloom,uHal,uStreak,uFringe,uTone,uCon,uSat,uVig,uGrain,uDither,uSeed;
 vec3 aces(vec3 x){return clamp((x*(2.51*x+.03))/(x*(2.43*x+.59)+.14),0.,1.);}
 vec3 agx(vec3 v){const mat3 M=mat3(.842479062253094,.0423282422610123,.0423756549057051,.0784335999999992,.878468636469772,.0784336,.0792237451477643,.0791661274605434,.879142973793104);
@@ -114,26 +120,51 @@ void main(){vec2 q=v-.5;
     api.dispose = () => {};
     if (!canvas) return api;
     // preserveDrawingBuffer: stills and MP4 frames (page screenshots, toDataURL) always see the last frame
-    const gl = canvas.getContext('webgl2', { alpha: false, antialias: false, depth: false, stencil: false, preserveDrawingBuffer: true });
+    const gl = canvas.getContext('webgl2', {
+      alpha: false,
+      antialias: false,
+      depth: false,
+      stencil: false,
+      preserveDrawingBuffer: true,
+    });
     if (!gl) return api;
 
     const mk = (fs) => {
       const p = gl.createProgram();
-      for (const [ty, src] of [[gl.VERTEX_SHADER, VS], [gl.FRAGMENT_SHADER, fs]]) {
-        const sh = gl.createShader(ty); gl.shaderSource(sh, src); gl.compileShader(sh);
-        if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) { console.error('lens:', gl.getShaderInfoLog(sh)); return null; }
+      for (const [ty, src] of [
+        [gl.VERTEX_SHADER, VS],
+        [gl.FRAGMENT_SHADER, fs],
+      ]) {
+        const sh = gl.createShader(ty);
+        gl.shaderSource(sh, src);
+        gl.compileShader(sh);
+        if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
+          console.error('lens:', gl.getShaderInfoLog(sh));
+          return null;
+        }
         gl.attachShader(p, sh);
       }
-      gl.bindAttribLocation(p, 0, 'a'); gl.linkProgram(p);
-      if (!gl.getProgramParameter(p, gl.LINK_STATUS)) { console.error('lens:', gl.getProgramInfoLog(p)); return null; }
-      const u = {}, n = gl.getProgramParameter(p, gl.ACTIVE_UNIFORMS);
-      for (let i = 0; i < n; i++) { const inf = gl.getActiveUniform(p, i); u[inf.name.replace(/\[0\]$/, '')] = gl.getUniformLocation(p, inf.name); }
+      gl.bindAttribLocation(p, 0, 'a');
+      gl.linkProgram(p);
+      if (!gl.getProgramParameter(p, gl.LINK_STATUS)) {
+        console.error('lens:', gl.getProgramInfoLog(p));
+        return null;
+      }
+      const u = {},
+        n = gl.getProgramParameter(p, gl.ACTIVE_UNIFORMS);
+      for (let i = 0; i < n; i++) {
+        const inf = gl.getActiveUniform(p, i);
+        u[inf.name.replace(/\[0\]$/, '')] = gl.getUniformLocation(p, inf.name);
+      }
       return { p, u };
     };
     const tex = () => {
-      const t = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, t);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      const t = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, t);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
       return t;
     };
     let half = false; // half-float glow buffers when the GPU can render to them (linear light needs the precision)
@@ -141,91 +172,176 @@ void main(){vec2 q=v-.5;
       const t = tex();
       if (half) gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA16F, w, h, 0, gl.RGBA, gl.HALF_FLOAT, null);
       else gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-      const f = gl.createFramebuffer(); gl.bindFramebuffer(gl.FRAMEBUFFER, f);
+      const f = gl.createFramebuffer();
+      gl.bindFramebuffer(gl.FRAMEBUFFER, f);
       gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, t, 0);
       return { t, f, w, h };
     };
-    const free = (x) => { if (x) { gl.deleteTexture(x.t); gl.deleteFramebuffer(x.f); } };
+    const free = (x) => {
+      if (x) {
+        gl.deleteTexture(x.t);
+        gl.deleteFramebuffer(x.f);
+      }
+    };
 
     const MAXL = 6;
-  const BLOOM_K = 0.5; // calibration: bloom 0.25 matches the first lens next to a bright edge, with a wider, softer tail
-    let P = null, src = null, down = [], up = [], W = 0, H = 0, lost = false;
-    const freeAll = () => { down.forEach(free); up.forEach(free); down = []; up = []; };
+    const BLOOM_K = 0.5; // calibration: bloom 0.25 matches the first lens next to a bright edge, with a wider, softer tail
+    let P = null,
+      src = null,
+      down = [],
+      up = [],
+      W = 0,
+      H = 0,
+      lost = false;
+    const freeAll = () => {
+      down.forEach(free);
+      up.forEach(free);
+      down = [];
+      up = [];
+    };
     const init = () => {
       P = { down: mk(DOWN), up: mk(UP), post: mk(POST) };
       if (!P.down || !P.up || !P.post) return false;
       half = !!gl.getExtension('EXT_color_buffer_float') || !!gl.getExtension('EXT_color_buffer_half_float');
       gl.getExtension('OES_texture_float_linear');
-      const vao = gl.createVertexArray(); gl.bindVertexArray(vao);
+      const vao = gl.createVertexArray();
+      gl.bindVertexArray(vao);
       gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW); // one triangle over the screen
-      gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
-      src = tex(); down = []; up = []; W = H = 0;
+      gl.enableVertexAttribArray(0);
+      gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+      src = tex();
+      down = [];
+      up = [];
+      W = H = 0;
       return true;
     };
-    const fail = () => { if (!api.ok) return; api.ok = false; if (api.onfail) api.onfail(); };
-    canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); lost = true; fail(); });
-    canvas.addEventListener('webglcontextrestored', () => { lost = false; if (init()) api.ok = true; });
+    const fail = () => {
+      if (!api.ok) return;
+      api.ok = false;
+      if (api.onfail) api.onfail();
+    };
+    canvas.addEventListener('webglcontextlost', (e) => {
+      e.preventDefault();
+      lost = true;
+      fail();
+    });
+    canvas.addEventListener('webglcontextrestored', () => {
+      lost = false;
+      if (init()) api.ok = true;
+    });
     if (!init()) return api;
 
-    const setf = (u, n, ...a) => { const l = u[n]; if (l != null) gl['uniform' + a.length + 'f'](l, ...a); };
+    const setf = (u, n, ...a) => {
+      const l = u[n];
+      if (l != null) gl['uniform' + a.length + 'f'](l, ...a);
+    };
     const pass = (pr, out, texs) => {
       gl.bindFramebuffer(gl.FRAMEBUFFER, out ? out.f : null);
-      gl.viewport(0, 0, out ? out.w : W, out ? out.h : H); gl.useProgram(pr.p);
-      texs.forEach(([name, t], i) => { gl.activeTexture(gl.TEXTURE0 + i); gl.bindTexture(gl.TEXTURE_2D, t); if (pr.u[name] != null) gl.uniform1i(pr.u[name], i); });
+      gl.viewport(0, 0, out ? out.w : W, out ? out.h : H);
+      gl.useProgram(pr.p);
+      texs.forEach(([name, t], i) => {
+        gl.activeTexture(gl.TEXTURE0 + i);
+        gl.bindTexture(gl.TEXTURE_2D, t);
+        if (pr.u[name] != null) gl.uniform1i(pr.u[name], i);
+      });
     };
     const tri = () => gl.drawArrays(gl.TRIANGLES, 0, 3);
 
     // source: any canvas, image or video. t: seconds (seeds grain and dither).
     api.draw = (source, t = 0) => {
       if (!api.ok || lost) return false;
-      const w = source.width, h = source.height;
+      const w = source.width,
+        h = source.height;
       if (!w || !h) return false;
       if (w !== W || h !== H) {
-        W = w; H = h; canvas.width = w; canvas.height = h; freeAll();
+        W = w;
+        H = h;
+        canvas.width = w;
+        canvas.height = h;
+        freeAll();
         for (let l = 0; l < MAXL; l++) {
-          const s = 2 << l, lw = Math.max(1, Math.round(w / s)), lh = Math.max(1, Math.round(h / s));
-          down.push(target(lw, lh)); up.push(target(lw, lh));
+          const s = 2 << l,
+            lw = Math.max(1, Math.round(w / s)),
+            lh = Math.max(1, Math.round(h / s));
+          down.push(target(lw, lh));
+          up.push(target(lw, lh));
         }
       }
-      gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, src);
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, src);
       gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
       gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
 
-      const glow = k.bloom > 0 || k.streak > 0, L = Math.max(1, Math.min(MAXL, Math.round(k.levels)));
-      let glowTex = down[0].t, streakTex = down[0].t, streakN = 1;
+      const glow = k.bloom > 0 || k.streak > 0,
+        L = Math.max(1, Math.min(MAXL, Math.round(k.levels)));
+      let glowTex = down[0].t,
+        streakTex = down[0].t,
+        streakN = 1;
       if (glow) {
-        let prev = src, pw = W, ph = H;
+        let prev = src,
+          pw = W,
+          ph = H;
         for (let l = 0; l < L; l++) {
           pass(P.down, down[l], [['S', prev]]);
-          setf(P.down.u, 'uPx', 1 / pw, 1 / ph); setf(P.down.u, 'uFirst', l ? 0 : 1);
-          setf(P.down.u, 'uTh', k.threshold); setf(P.down.u, 'uKnee', Math.max(1e-3, k.knee)); tri();
-          prev = down[l].t; pw = down[l].w; ph = down[l].h;
+          setf(P.down.u, 'uPx', 1 / pw, 1 / ph);
+          setf(P.down.u, 'uFirst', l ? 0 : 1);
+          setf(P.down.u, 'uTh', k.threshold);
+          setf(P.down.u, 'uKnee', Math.max(1e-3, k.knee));
+          tri();
+          prev = down[l].t;
+          pw = down[l].w;
+          ph = down[l].h;
         }
         let small = down[L - 1];
         for (let l = L - 2; l >= 0; l--) {
-          pass(P.up, up[l], [['S', small.t], ['B', down[l].t]]);
-          setf(P.up.u, 'uPx', 1 / small.w, 1 / small.h); setf(P.up.u, 'uR', k.radius); tri();
+          pass(P.up, up[l], [
+            ['S', small.t],
+            ['B', down[l].t],
+          ]);
+          setf(P.up.u, 'uPx', 1 / small.w, 1 / small.h);
+          setf(P.up.u, 'uR', k.radius);
+          tri();
           small = up[l];
         }
         glowTex = small.t;
         const j = L > 3 ? 2 : Math.max(0, L - 2); // a soft level, so the streak has no ghost copies
-        streakTex = L > 1 ? up[j].t : down[0].t; streakN = L > 1 ? L - j : 1; // up[j] holds L-j levels added together
+        streakTex = L > 1 ? up[j].t : down[0].t;
+        streakN = L > 1 ? L - j : 1; // up[j] holds L-j levels added together
       }
-      const u = P.post.u, seedN = reduced() ? 0 : Math.floor(Math.max(0, t) * k.grainFps);
-      pass(P.post, null, [['S', src], ['B', glowTex], ['SB', streakTex]]);
-      setf(u, 'R', W, H); setf(u, 'uExp', k.exposure);
-      setf(u, 'uBloom', glow ? (k.bloom * BLOOM_K) / L : 0); setf(u, 'uHal', k.halation); setf(u, 'uStreak', glow ? k.streak / streakN : 0);
-      setf(u, 'uTint', ...k.streakTint); setf(u, 'uFringe', k.fringe);
-      setf(u, 'uTone', TONE[k.tone] || 0); setf(u, 'uCon', k.contrast); setf(u, 'uSat', k.saturation);
-      setf(u, 'uLift', ...k.lift); setf(u, 'uGain', ...k.gain);
-      setf(u, 'uVig', k.vignette); setf(u, 'uGrain', k.grain); setf(u, 'uDither', k.dither);
+      const u = P.post.u,
+        seedN = reduced() ? 0 : Math.floor(Math.max(0, t) * k.grainFps);
+      pass(P.post, null, [
+        ['S', src],
+        ['B', glowTex],
+        ['SB', streakTex],
+      ]);
+      setf(u, 'R', W, H);
+      setf(u, 'uExp', k.exposure);
+      setf(u, 'uBloom', glow ? (k.bloom * BLOOM_K) / L : 0);
+      setf(u, 'uHal', k.halation);
+      setf(u, 'uStreak', glow ? k.streak / streakN : 0);
+      setf(u, 'uTint', ...k.streakTint);
+      setf(u, 'uFringe', k.fringe);
+      setf(u, 'uTone', TONE[k.tone] || 0);
+      setf(u, 'uCon', k.contrast);
+      setf(u, 'uSat', k.saturation);
+      setf(u, 'uLift', ...k.lift);
+      setf(u, 'uGain', ...k.gain);
+      setf(u, 'uVig', k.vignette);
+      setf(u, 'uGrain', k.grain);
+      setf(u, 'uDither', k.dither);
       setf(u, 'uSeed', (((seedN % 61) + 61) % 61) * 1.37);
       tri();
       return true;
     };
-    api.dispose = () => { freeAll(); const x = gl.getExtension('WEBGL_lose_context'); if (x) x.loseContext(); api.ok = false; };
+    api.dispose = () => {
+      freeAll();
+      const x = gl.getExtension('WEBGL_lose_context');
+      if (x) x.loseContext();
+      api.ok = false;
+    };
     api.ok = true;
     return api;
   }
@@ -245,11 +361,16 @@ void main(){vec2 q=v-.5;
     if (!knobs) return null;
     const L = create(knobs);
     if (!L.ok) return null;
-    L.canvas.className = canvas.className; L.canvas.id = (canvas.id || 'c') + '-lens';
+    L.canvas.className = canvas.className;
+    L.canvas.id = (canvas.id || 'c') + '-lens';
     L.canvas.setAttribute('aria-hidden', canvas.getAttribute('aria-hidden') || 'false');
     if (canvas.getAttribute('aria-label')) L.canvas.setAttribute('aria-label', canvas.getAttribute('aria-label'));
-    canvas.after(L.canvas); canvas.style.display = 'none';
-    L.onfail = () => { L.canvas.remove(); canvas.style.display = ''; };
+    canvas.after(L.canvas);
+    canvas.style.display = 'none';
+    L.onfail = () => {
+      L.canvas.remove();
+      canvas.style.display = '';
+    };
     return L;
   };
 

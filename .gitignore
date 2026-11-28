@@ -18,3 +18,8 @@ proj/cse-loop/cse-loop-maker.html
 
 # Claude desktop app preview config (local only)
 .claude/launch.json
+
+node_modules/
+
+# Written by .agents/hooks/stage_gate.py (local session state)
+.qa_checked.json

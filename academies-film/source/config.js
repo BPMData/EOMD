@@ -13,18 +13,18 @@
 
     // Section plan in BARS (sums to 24). Changing these reflows the whole film.
     sections: {
-      exploration: { startBar: 2, bars: 3 },   // 5.0 – 12.5 s
-      academies:   { startBar: 5, barsEach: 2 }, // 12.5 – 47.5 s (7 × 5 s)
-      hub:         { startBar: 19, bars: 7 },  // 47.5 s → wraps → 5.0 s (end card, rewind, title, unwind)
+      exploration: { startBar: 2, bars: 3 }, // 5.0 – 12.5 s
+      academies: { startBar: 5, barsEach: 2 }, // 12.5 – 47.5 s (7 × 5 s)
+      hub: { startBar: 19, bars: 7 }, // 47.5 s → wraps → 5.0 s (end card, rewind, title, unwind)
     },
 
     // ---- Brand -------------------------------------------------------------
     colors: {
-      danburyBlue: '#0033A0',  // anchor color
-      hatGray: '#A2AAAD',      // large shapes only, never text
+      danburyBlue: '#0033A0', // anchor color
+      hatGray: '#A2AAAD', // large shapes only, never text
       white: '#FFFFFF',
-      ink: '#0A1633',          // dark text for yellow + teal backgrounds
-      exploration: '#009CA6',  // Exploration Academy teal (loop start/return)
+      ink: '#0A1633', // dark text for yellow + teal backgrounds
+      exploration: '#009CA6', // Exploration Academy teal (loop start/return)
     },
 
     school: {
@@ -40,13 +40,15 @@
 
     // ---- On-screen copy ----------------------------------------------------
     copy: {
-      greeting: ['Hello', 'Hola', 'Olá'],                    // EN / ES / PT-BR
+      greeting: ['Hello', 'Hola', 'Olá'], // EN / ES / PT-BR
       introSub: '7 career academies. 21 pathways.',
       exploration: {
         a: { lead: 'Every 9th grader starts in the', lines: ['Exploration', 'Academy'] },
         b: { lead: 'Get to know all', lines: ['7 academies', 'and 21 pathways'] },
-        c: { lines: ['Explore.', 'Rank carefully.'],
-             sub: ['Pathways are open to every student', 'and assigned by lottery, so your', 'ranking matters.'] },
+        c: {
+          lines: ['Explore.', 'Rank carefully.'],
+          sub: ['Pathways are open to every student', 'and assigned by lottery, so your', 'ranking matters.'],
+        },
         rankLabel: 'Your ranking',
       },
       academyKicker: 'Career academy, grades 10–12',
@@ -55,7 +57,11 @@
       end: {
         kicker: 'Your next step',
         lines: ['Explore.', 'Find your fit.'],
-        body: ['Explore all 7 academies in 9th grade.', 'Rank your academy choices with care.', 'Questions? Talk to your counselor.'],
+        body: [
+          'Explore all 7 academies in 9th grade.',
+          'Rank your academy choices with care.',
+          'Questions? Talk to your counselor.',
+        ],
         lockupSub: 'Home of the Hatters',
       },
     },
@@ -66,8 +72,13 @@
     // flourish = optional cognate morph (EN / ES / PT-BR), max 3–4 per loop incl. greeting
     academies: [
       {
-        id: 'etec', name: 'Emerging Technology & Entrepreneurship', nameLines: ['Emerging', 'Technology &', 'Entrepreneurship'],
-        color: '#527A8A', campus: 'west', motif: 'ticker', instrument: 'tine',
+        id: 'etec',
+        name: 'Emerging Technology & Entrepreneurship',
+        nameLines: ['Emerging', 'Technology &', 'Entrepreneurship'],
+        color: '#527A8A',
+        campus: 'west',
+        motif: 'ticker',
+        instrument: 'tine',
         flourish: ['Technology', 'Tecnología', 'Tecnologia'],
         pathways: [
           { name: 'Business & Entrepreneurship', icon: 'bulb' },
@@ -76,8 +87,13 @@
         ],
       },
       {
-        id: 'sim', name: 'Scientific Innovation & Medicine', nameLines: ['Scientific', 'Innovation &', 'Medicine'],
-        color: '#DC4405', campus: 'west', motif: 'ecg', instrument: 'marimba',
+        id: 'sim',
+        name: 'Scientific Innovation & Medicine',
+        nameLines: ['Scientific', 'Innovation &', 'Medicine'],
+        color: '#DC4405',
+        campus: 'west',
+        motif: 'ecg',
+        instrument: 'marimba',
         pathways: [
           { name: 'Biomedical', icon: 'dna' },
           { name: 'Sports & Human Performance', icon: 'stopwatch' },
@@ -85,8 +101,13 @@
         ],
       },
       {
-        id: 'ceg', name: 'Clean Energy & Green Design', nameLines: ['Clean Energy &', 'Green Design'],
-        color: '#006341', campus: 'west', motif: 'skylight', instrument: 'pluck',
+        id: 'ceg',
+        name: 'Clean Energy & Green Design',
+        nameLines: ['Clean Energy &', 'Green Design'],
+        color: '#006341',
+        campus: 'west',
+        motif: 'skylight',
+        instrument: 'pluck',
         flourish: ['Energy', 'Energía', 'Energia'],
         pathways: [
           { name: 'Clean & Renewable Energy', icon: 'turbine' },
@@ -95,8 +116,13 @@
         ],
       },
       {
-        id: 'itc', name: 'Information Technology & Cybersecurity', nameLines: ['Information', 'Technology &', 'Cybersecurity'],
-        color: '#D50032', campus: 'main', motif: 'network', instrument: 'pulse',
+        id: 'itc',
+        name: 'Information Technology & Cybersecurity',
+        nameLines: ['Information', 'Technology &', 'Cybersecurity'],
+        color: '#D50032',
+        campus: 'main',
+        motif: 'network',
+        instrument: 'pulse',
         pathways: [
           { name: 'Networking', icon: 'network' },
           { name: 'Computer Programming & Gaming', icon: 'code' },
@@ -104,8 +130,13 @@
         ],
       },
       {
-        id: 'pps', name: 'Professional & Public Service', nameLines: ['Professional &', 'Public Service'],
-        color: '#FFD100', campus: 'main', motif: 'steam', instrument: 'keys',
+        id: 'pps',
+        name: 'Professional & Public Service',
+        nameLines: ['Professional &', 'Public Service'],
+        color: '#FFD100',
+        campus: 'main',
+        motif: 'steam',
+        instrument: 'keys',
         pathways: [
           { name: 'Justice & Law', icon: 'scales' },
           { name: 'Education & Human Development', icon: 'book' },
@@ -113,8 +144,13 @@
         ],
       },
       {
-        id: 'aed', name: 'Art, Engineering & Design', nameLines: ['Art, Engineering', '& Design'],
-        color: '#0033A0', campus: 'main', motif: 'blueprint', instrument: 'mallet',
+        id: 'aed',
+        name: 'Art, Engineering & Design',
+        nameLines: ['Art, Engineering', '& Design'],
+        color: '#0033A0',
+        campus: 'main',
+        motif: 'blueprint',
+        instrument: 'mallet',
         flourish: ['Art', 'Arte'],
         pathways: [
           { name: 'Art, Architecture & Civil Engineering', icon: 'bridge' },
@@ -123,8 +159,13 @@
         ],
       },
       {
-        id: 'cd', name: 'Communication & Design', nameLines: ['Communication', '& Design'],
-        color: '#5C068C', campus: 'main', motif: 'waves', instrument: 'voice',
+        id: 'cd',
+        name: 'Communication & Design',
+        nameLines: ['Communication', '& Design'],
+        color: '#5C068C',
+        campus: 'main',
+        motif: 'waves',
+        instrument: 'voice',
         pathways: [
           { name: 'Broadcasting & Multimedia', icon: 'tower' },
           { name: 'Audio Engineering & Design', icon: 'headphones' },

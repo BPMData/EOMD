@@ -1,0 +1,8 @@
+{
+  "name": "eomd",
+  "private": true,
+  "description": "Tooling only (Prettier). EOMD itself has no npm dependencies.",
+  "devDependencies": {
+    "prettier": "3.3.3"
+  }
+}
