@@ -25,3 +25,6 @@ tests/hashes.json
 
 # Documentation, interview questions, research prompts and outputs: not reformatted (Bryan's call)
 *.md
+
+# The kit: generated copies and hash-listed docs (tools/build_kit.py); reformatting would break KIT.json's sha256s
+kit/

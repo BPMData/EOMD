@@ -19,6 +19,7 @@ Status, the regression history and known limits: `tools/STATUS.md`.
 | `render_piece.py` | Renders a one-off score (`proj/<name>/music.js` setting `PIECE.render(sr)`) to WAV + MP3 at `TARGET_LUFS`, true-peak limited, ffmpeg-checked |
 | `calibrate.py`, `porter.py`, `midi.py`, `regress.py` | Music library tools (`audio/CLAUDE.md`) |
 | `hershey_words.py` | Makes the `living/words*.json` files for any word list (`VARIANT`) |
+| `build_kit.py` | Builds `kit/` (engine parts ProofEr copies in) from their engine sources, with headers, and rewrites `kit/KIT.json` (sha256 of every file; the version is set by hand, with a `kit/CHANGELOG.md` section). `MODE = 'check'` changes nothing and lists problems; CI runs it |
 | `check_stage_reads.py` | The peeking audit: restricted reads before a new piece's toolbox gate, from the stage logs `proj/*/access.jsonl` (written by the hook `.claude/hooks/stage_log.py`). Warnings only; CI runs it |
 | `eval_new_piece.py` | The first-question eval: a one-sentence new-piece request on a copy of the repo (Sonnet, read-only, capped at $0.50), checking files opened, context and cost before the first question; PASS/FAIL. CI runs it (`.github/workflows/eval.yml`) when the context files change and an `ANTHROPIC_API_KEY` secret exists |
 

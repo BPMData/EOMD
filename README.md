@@ -165,6 +165,7 @@ the project: the reusable parts are already here, so a new piece is mostly a sho
 | `proj/<piece>/` | One piece's brief, copy and sources (`cdrom`, `pltw`, `cs`, `ex`, `ssr`, `academies`) |
 | `living/`, `jukebox/` | The living-poster engine and the jukebox page |
 | `engine/` | The starter timeline engine the Academies film grew from; `engine/src/audio/dsp.js` is the DSP everything uses |
+| `kit/` | Engine parts packaged for other projects (the lens, the DSP), versioned, with sha256s in `kit/KIT.json`; built by `tools/build_kit.py`, never edited by hand |
 | `academies-film/` | The finished Academies hallway film |
 | `fonts/` | Downloaded open-source fonts and their licenses |
 

@@ -24,19 +24,21 @@ EOMD has the picture and the sound.
 Bryan: "Maybe we need to re-merge the projects at some point, especially as these new Q-Day / Last Boring Slide-style
 videos blur the line between interactive scrollytelling and video." Not yet: see the merge triggers below.
 
-- [ ] **The kit: EOMD exports its engine parts as one versioned folder** (`kit/`, with a version and a changelog):
+- [ ] **The kit: EOMD exports its engine parts as one versioned folder** (`kit/`, with a version and a changelog).
+  **v0.1.0 built Nov 28** (lens, DSP with `P.steps`/`P.runAsync`; `tools/build_kit.py`, CI check): add each part
+  below as it lands:
   - the lens;
   - the GPU toolkit, scene host and shader scene cartridges (§1);
   - the DSP and sliced synthesis (`P.steps`, `P.runAsync`);
   - the beat model and essay player shell (§2, §5);
   - GPU type (§3) and sound hits and beds (§4).
-  Every file is MIT and needs only the `DHS` namespace.
+  Every file needs only the `DHS` namespace.
 - [ ] **`kit/KIT.json`: the kit's manifest, agreed with ProofEr (Nov 28).** ProofEr's sync script is being written
   against this exact shape, so change it only together with ProofEr:
   ```json
   {
     "version": "0.1.0",
-    "license": "MIT",
+    "license": "AGPL-3.0-only",
     "files": {
       "fx/lens.js": "<sha256 of the file, lowercase hex>"
     }
@@ -46,9 +48,10 @@ videos blur the line between interactive scrollytelling and video." Not yet: see
     nothing outside `kit/`.
   - `version` follows semver: bump the patch for fixes, the minor for new files or knobs, and the major for anything
     that breaks a piece built on an older kit. Each bump gets a line in `kit/CHANGELOG.md`.
-  - Every kit file keeps an MIT header comment naming EOMD.
-  - A Thonny-friendly `tools/build_kit.py` copies the parts into `kit/` and rewrites `KIT.json` (hashes and the
-    file list; the version is set by hand). CI fails if `KIT.json` doesn't match the files.
+  - Every kit file starts with a header comment: copyright, `SPDX-License-Identifier: AGPL-3.0-only`, and its source
+    path in EOMD.
+  - `tools/build_kit.py` (done) copies the parts into `kit/` and rewrites `KIT.json` (hashes and the file list; the
+    version is set by hand). CI fails if `KIT.json` doesn't match the files or a copy is stale.
   - ProofEr copies the files into `vendor/eomd-kit/`, checks every hash, and keeps its own copy of `KIT.json` there.
 - [ ] **ProofEr brings in the kit with a sync script** (Thonny-friendly, `SETTINGS` block): it copies a pinned kit
   version into ProofEr. ProofEr's CI fails if a synced file was edited in place, because changes go upstream to EOMD
@@ -64,8 +67,10 @@ videos blur the line between interactive scrollytelling and video." Not yet: see
 - [ ] **Drift check for the duplicated process files.** These are copies in both repos: `stage_gate.py`,
   `check_stage_reads.py`, `eval_new_piece.py`, the `auto-piece` skill, fresh-eyes review and the interview core. A
   script reports where the two copies differ, instead of finding out by hand (as PR #14 did).
-- [ ] **Licences.** EOMD is MIT and ProofEr is AGPLv3, so the one-way direction works today: MIT code can be included
-  in an AGPL project. Nothing moves from ProofEr into EOMD without Bryan deciding to relicense it.
+- [x] **Licences: no obstacle.** Both repos are AGPLv3 with the same copyright holder (EOMD switched from MIT on Oct
+  26, 2026; `notes/history.md`'s Oct 20 line predates that). Code can move either way, and a merge needs no
+  relicensing. The kit's SPDX id is `AGPL-3.0-only`, matching what `LICENSE` and the README say; switch both repos to
+  `-or-later` only as a deliberate choice.
 - [ ] **Write the boundary into both `CLAUDE.md` files ("Where to go").**
   - **EOMD:** motion pieces for screens: hallway loops, posters, promos, screensavers, players. Also the engine and
     the kit.
@@ -80,7 +85,7 @@ folder and one engine when any of these happens:
 - kit or process sync PRs become routine rather than occasional;
 - requests keep landing in the wrong repo (Knife Country already did once).
 
-Merging means choosing one licence, and keeping each front door's first-question context small (EOMD's is 7.7k
+Merging means keeping each front door's first-question context small (EOMD's is 7.7k
 tokens today).
 
 ## 1. The picture: GPU scenes and how they join

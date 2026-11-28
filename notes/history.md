@@ -57,7 +57,7 @@ _Moved from the root `STATUS.md` on Oct 25, 2026 (context plan step 2); the root
 - **Rule added Oct 20:** CLAUDE.md "New pieces": ask efficient vs full creative mode first; words inside the picture;
   one-off music scored to picture. `tools/html_to_mp4.py` renders picture-only when a page is silent (no more crash).
   Known gap: `tools/html_to_mp4.py` still can't hear a gen cartridge's `<audio>` track (use `tools/gen_export.py`).
-- **Public on GitHub (Oct 20): https://github.com/BPMData/EOMD** (Efficient Offline Motion Designer), MIT license (Bryan Patrick Murphy), `README.md` for visitors. Commits use the noreply address `123925276+BPMData@users.noreply.github.com`.
+- **Public on GitHub (Oct 20): https://github.com/BPMData/EOMD** (Efficient Offline Motion Designer), MIT license (Bryan Patrick Murphy; switched to AGPLv3 on Oct 26), `README.md` for visitors. Commits use the noreply address `123925276+BPMData@users.noreply.github.com`.
 - **Prebuilt players in `players/` (Oct 20):** every build made fresh from the current sources (jukebox, CD-ROM + ambient, the three
   living posters, gen) and copied in. Each one was loaded headless: no script errors, sound starts, frames render. That means the 9h
   scripts (jukebox CD-ROM cartridges, ambient version) have now run; their levels and the AMBIENT_VER stamp are still unheard/unseen by Bryan.
