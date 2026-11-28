@@ -15,7 +15,7 @@ folder's `STATUS.md`; repo-wide history in `notes/history.md`._
 | CSE hallway loop (new, full creative) | Done; published Oct 25 (`players/cse-loop.html`) | ES/PT check; real-TV check | `proj/cse-loop/STATUS.md` |
 | PLTW CSE promo | r2 published ("cheesy as hell, but exactly what I asked for") | The PLTW test below | `proj/pltw/STATUS.md` |
 | Engine lens finish (`engine/src/fx/lens.js`) | Built Nov 27, upgraded Nov 28; in the engine's dev, kiosk, stills and MP4 paths; off by default | Not yet seen on a real TV; not yet inlined in CD-ROM, living or gen |
-| Video essays (Q-Day / Last Boring Slide level) | Planned: `TODO.md` | Bryan decides where the format lives (TODO §0), then the GPU scene layer |
+| Video essays (Q-Day / Last Boring Slide level) | Planned: `TODO.md`. Decided Nov 28: EOMD builds the engine as a versioned kit; ProofEr hosts motion essays (TODO §0) | The kit folder and ProofEr's sync script, then the GPU scene layer |
 | gen library (incl. Dust Type) | Working; `tools/gen_export.py` | Check Dust Type knobs | `gen/STATUS.md` |
 | Jukebox | 15 cartridges | Redesign its look | `jukebox/STATUS.md` |
 

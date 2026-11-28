@@ -12,17 +12,57 @@ background beds, presenter tools). Take their mechanisms, never their look or mu
 - Engine audio renders in slices on the main thread (`P.steps`, `P.runAsync`, `DHS.audio.renderAsync`). A blocked
   worker now falls back to it instead of going silent.
 
-Ordered by what unblocks the most. Each item says where it would live. "Essay player" means the new player route in
-item 0.
+Ordered by what unblocks the most. Each item says where it would live. "Essay player" means the player shell EOMD
+builds for the kit (§0), which ProofEr uses for motion essays.
 
-## 0. Decide first (Bryan)
-- [ ] **Where does the essay format live?** The options:
-  - a fourth route in this repo (`essay/`, next to `engine/`, `gen/` and `living/`);
-  - a sister repo that reuses EOMD's engine pieces (the way ProofEr split off).
-  Write the answer into `CLAUDE.md` ("Where to go"), with the line between essay and infographic. Right now anything
-  that mainly explains with numbers goes to ProofEr.
+## 0. Where things live (decided Nov 28, 2026)
+**The plan: sister repos, one-way.** EOMD is the motion and sound engine; ProofEr is the home of the video essay. A
+Q-Day-style piece is a sourced essay that plays like a film. ProofEr already has what's hard about that: the research →
+figures-checked gates, two independent sources per figure, honest-chart rules, a sources section, and a content policy.
+EOMD has the picture and the sound.
+
+Bryan: "Maybe we need to re-merge the projects at some point, especially as these new Q-Day / Last Boring Slide-style
+videos blur the line between interactive scrollytelling and video." Not yet: see the merge triggers below.
+
+- [ ] **The kit: EOMD exports its engine parts as one versioned folder** (`kit/`, with a version and a changelog):
+  - the lens;
+  - the GPU toolkit, scene host and shader scene cartridges (§1);
+  - the DSP and sliced synthesis (`P.steps`, `P.runAsync`);
+  - the beat model and essay player shell (§2, §5);
+  - GPU type (§3) and sound hits and beds (§4).
+  Every file is MIT and needs only the `DHS` namespace.
+- [ ] **ProofEr brings in the kit with a sync script** (Thonny-friendly, `SETTINGS` block): it copies a pinned kit
+  version into ProofEr. ProofEr's CI fails if a synced file was edited in place, because changes go upstream to EOMD
+  first.
+- [ ] **ProofEr gets a "motion essay" format.** It uses its own interview and research and figures gates, plus the
+  kit's player. Its brief adds:
+  - running time;
+  - whether it plays by itself or a presenter drives it;
+  - speaker notes;
+  - sound;
+  - per-scene budget.
+  (This takes over §8's interview item, which moves to ProofEr.)
+- [ ] **Drift check for the duplicated process files.** These are copies in both repos: `stage_gate.py`,
+  `check_stage_reads.py`, `eval_new_piece.py`, the `auto-piece` skill, fresh-eyes review and the interview core. A
+  script reports where the two copies differ, instead of finding out by hand (as PR #14 did).
+- [ ] **Licences.** EOMD is MIT and ProofEr is AGPLv3, so the one-way direction works today: MIT code can be included
+  in an AGPL project. Nothing moves from ProofEr into EOMD without Bryan deciding to relicense it.
+- [ ] **Write the boundary into both `CLAUDE.md` files ("Where to go").**
+  - **EOMD:** motion pieces for screens: hallway loops, posters, promos, screensavers, players. Also the engine and
+    the kit.
+  - **ProofEr:** anything sourced: infographics, scrolling data essays, and motion essays.
+  - **Test:** if a piece's claims need sources, it's ProofEr, however much it moves.
 - [ ] **No three.js.** The Last Boring Slide bundles it. Rebuild everything below in plain WebGL2, as the lens is.
   Confirm this rule and add it to `engine/CLAUDE.md`.
+
+**Merge triggers.** Re-merge into one repo with two front doors ("motion piece", "sourced piece") sharing one method
+folder and one engine when any of these happens:
+- most new pieces need both ProofEr's research gates and EOMD's engine;
+- kit or process sync PRs become routine rather than occasional;
+- requests keep landing in the wrong repo (Knife Country already did once).
+
+Merging means choosing one licence, and keeping each front door's first-question context small (EOMD's is 7.7k
+tokens today).
 
 ## 1. The picture: GPU scenes and how they join
 - [ ] **Shader scenes.** Each scene is one fragment shader over the whole screen:
@@ -139,7 +179,7 @@ item 0.
   page, then `renderAsync`) and re-run `tools/build_academies_clock.py`.
 
 ## 8. Process (how a client gets one)
-- [ ] **`/new-piece` interview and `brief/TEMPLATE.md` for essays.** Ask about:
+- [ ] **In ProofEr, not here (§0): `/new-piece` interview and `brief/TEMPLATE.md` for motion essays.** Ask about:
   - running time;
   - whether it plays by itself or a presenter drives it;
   - whether it needs speaker notes;
